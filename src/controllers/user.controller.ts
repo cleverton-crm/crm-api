@@ -52,7 +52,21 @@ export class UserController {
     description: fs.readFileSync('docs/users/register.md').toString(),
   })
   async registration(@Body() userData: UserDto): Promise<any> {
-    return ResponseSuccessData('Поздравляем ');
+    const userResponse = await firstValueFrom(
+      this.userServiceClient.send('user:register', userData),
+    );
+    if (userResponse.statusCode !== HttpStatus.CREATED) {
+      throw new HttpException(
+        {
+          statusCode: userResponse.statusCode,
+          message: userResponse.message,
+          errors: userResponse.errors,
+        },
+        userResponse.statusCode,
+      );
+    }
+    this.logger.log(cyan(userResponse));
+    return userResponse;
   }
 
   @Post('/login')
