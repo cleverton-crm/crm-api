@@ -75,7 +75,20 @@ export class UserController {
     description: fs.readFileSync('docs/users/login.md').toString(),
   })
   async login(@Body() userData: UserDto): Promise<UserResponseTokensDto> {
-    return { accessToken: '', refreshToken: '' };
+    const userResponse = await firstValueFrom(
+      this.userServiceClient.send('user:login', userData),
+    );
+    if (userResponse.statusCode !== HttpStatus.OK) {
+      throw new HttpException(
+        {
+          statusCode: userResponse.statusCode,
+          message: userResponse.message,
+          errors: userResponse.errors,
+        },
+        userResponse.statusCode,
+      );
+    }
+    return userResponse;
   }
 
   @Get('/verify')
