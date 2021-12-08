@@ -1,0 +1,15 @@
+version: '3.9'
+services:
+  user:
+    build: .
+    container_name: core_api
+    restart: unless-stopped
+    hostname: api
+    ports:
+     - "4000:4000"
+    networks:
+      - backend
+networks:
+  backend:
+    name: microserver_backend
+    driver: bridge

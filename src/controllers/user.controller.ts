@@ -52,7 +52,21 @@ export class UserController {
     description: fs.readFileSync('docs/users/register.md').toString(),
   })
   async registration(@Body() userData: UserDto): Promise<any> {
-    return ResponseSuccessData('Поздравляем ');
+    const userResponse = await firstValueFrom(
+      this.userServiceClient.send('user:register', userData),
+    );
+    if (userResponse.statusCode !== HttpStatus.CREATED) {
+      throw new HttpException(
+        {
+          statusCode: userResponse.statusCode,
+          message: userResponse.message,
+          errors: userResponse.errors,
+        },
+        userResponse.statusCode,
+      );
+    }
+    this.logger.log(cyan(userResponse));
+    return userResponse;
   }
 
   @Post('/login')
@@ -61,7 +75,22 @@ export class UserController {
     description: fs.readFileSync('docs/users/login.md').toString(),
   })
   async login(@Body() userData: UserDto): Promise<UserResponseTokensDto> {
-    return { accessToken: '', refreshToken: '' };
+    userData['type'] = 'users';
+    const userResponse = await firstValueFrom(
+      this.userServiceClient.send('user:login', userData),
+    );
+    if (userResponse.statusCode !== HttpStatus.OK) {
+      throw new HttpException(
+        {
+          statusCode: userResponse.statusCode,
+          message: userResponse.message,
+          errors: userResponse.errors,
+        },
+        userResponse.statusCode,
+      );
+    }
+    this.logger.log(cyan(JSON.stringify(userResponse)));
+    return userResponse;
   }
 
   @Get('/verify')
