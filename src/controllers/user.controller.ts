@@ -34,7 +34,6 @@ import { AuthGuard } from '../guards/auth.guard';
 import { RolesGuard } from '../guards/roles.guard';
 import * as fs from 'fs';
 import { Roles } from '../decorators/roles.decorator';
-import { ResponseSuccessData } from 'src/helpers/global';
 
 @ApiTags('User')
 @Controller('users')

@@ -8,12 +8,18 @@ import { JwtConfigService } from './services/jwt.service';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { HttpExceptionFilter } from './filters/http-exception.filter';
 import { RolesController } from './controllers/roles.controller';
+import * as path from 'path';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: `.env`,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: path.resolve(__dirname, '..', './public'),
+      exclude: ['/v2*', '/api*'],
     }),
     JwtModule.registerAsync({
       useClass: JwtConfigService,

@@ -25,6 +25,7 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
+  fs.writeFileSync('./public/swagger-spec.json', JSON.stringify(document));
   await app.listen(configService.get('port'), () => {
     logger.log(cyan(`Started listening on port ${configService.get('port')}`));
     if (typeof process.send === 'function') {

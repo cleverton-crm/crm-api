@@ -247,6 +247,13 @@
     jsonc-parser "3.0.0"
     pluralize "8.0.0"
 
+"@nestjs/serve-static@^2.2.2":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@nestjs/serve-static/-/serve-static-2.2.2.tgz#8e9dc2fc6c042ddac5133b957d6bc25d9f8fa225"
+  integrity sha512-3Mr+Q/npS3N7iGoF3Wd6Lj9QcjMGxbNrSqupi5cviM0IKrZ1BHl5qekW95rWYNATAVqoTmjGROAq+nKKpuUagQ==
+  dependencies:
+    path-to-regexp "0.1.7"
+
 "@nestjs/swagger@^5.1.5":
   version "5.1.5"
   resolved "https://registry.yarnpkg.com/@nestjs/swagger/-/swagger-5.1.5.tgz#ee565e98b6d05b7a5d90c9f15b4d72586b6f77cf"
@@ -1293,7 +1300,7 @@ cookiejar@^2.1.2:
 
 "core-types@https://github.com/cleverdeus/core-types.git":
   version "1.0.0"
-  resolved "https://github.com/cleverdeus/core-types.git#b0eae2ee60e710688951bc92ca9068b1af070ec7"
+  resolved "https://github.com/cleverdeus/core-types.git#4336faf8ee9ccc5b56aa568d61125f0c8f2453ea"
   dependencies:
     mongodb "^4.2.1"
     mongoose "^6.1.0"
