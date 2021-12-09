@@ -15,8 +15,7 @@ Sentry.init({
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
     const response = host.switchToHttp().getResponse();
-
-    console.log(response);
+    console.dir(response.req.body, { depth: 1 });
     const status =
       exception instanceof HttpException
         ? exception.getStatus()
