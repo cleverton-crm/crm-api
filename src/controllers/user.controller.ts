@@ -75,6 +75,7 @@ export class UserController {
     description: fs.readFileSync('docs/users/login.md').toString(),
   })
   async login(@Body() userData: UserDto): Promise<UserResponseTokensDto> {
+    userData['type'] = 'users';
     const userResponse = await firstValueFrom(
       this.userServiceClient.send('user:login', userData),
     );
@@ -88,6 +89,7 @@ export class UserController {
         userResponse.statusCode,
       );
     }
+    this.logger.log(cyan(JSON.stringify(userResponse)));
     return userResponse;
   }
 

@@ -6,9 +6,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import * as Sentry from '@sentry/node';
-import { Response } from 'express';
 
-// If you have a Sentry DSN, add it here for error tracking and uncomment the Sentry lines (12, 28)
 Sentry.init({
   dsn: 'http://20e9a4157b594d8d863d246450fc8658@dev.cleverdeus.com:9000/2',
 });
@@ -16,9 +14,9 @@ Sentry.init({
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
-    const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
+    const response = host.switchToHttp().getResponse();
 
+    console.log(response);
     const status =
       exception instanceof HttpException
         ? exception.getStatus()
@@ -34,7 +32,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       statusCode: status,
       message:
         'There are some problems with the modules. Check ports and addresses',
-      error: 'Internal server error',
+      error: 'Microservice Error',
     });
   }
 }

@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { CustomerController } from './controllers/customer.controller';
 import { UserController } from './controllers/user.controller';
 import { ClientProxyFactory } from '@nestjs/microservices';
 import { ConfigService } from './services/config.service';
