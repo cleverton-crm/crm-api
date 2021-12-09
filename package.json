@@ -1,13 +1,13 @@
 {
   "name": "cleverdeus-api",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "",
   "author": "",
   "private": true,
   "license": "MIT",
   "scripts": {
     "env:load": "env-url https://dev.cleverdeus.com/config/development.json",
-    "pm2:prod": "pm2 stop micro-api && pm2 start dist/main.js --name micro-api",
+    "pm2:prod": "env-url https://dev.cleverdeus.com/config/development.json pm2 start pm2.config.js --env development",
     "pm2:dev": "pm2 start pm2.config.js --env development",
     "prebuild": "rimraf dist",
     "build": "nest build",
