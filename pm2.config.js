@@ -9,7 +9,7 @@ module.exports = {
       env: {
         PORT: 4000,
       },
-      env: 'env-url https://dev.cleverdeus.com/config/development.json',
+      env: '.env',
       env_production: {
         NODE_ENV: 'production',
       },
