@@ -14,7 +14,7 @@ async function bootstrap() {
   app.enableCors();
 
   app.useGlobalPipes(new ValidationPipe());
-  const logger = new Logger(AppModule.name);
+  const logger = new Logger('NestApplication');
   const configService = new ConfigService();
   const config = new DocumentBuilder()
     .setTitle('Cleverdeus microservices')
