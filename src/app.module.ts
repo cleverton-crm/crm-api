@@ -10,6 +10,7 @@ import { HttpExceptionFilter } from './filters/http-exception.filter';
 import { RolesController } from './controllers/roles.controller';
 import * as path from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { ProfileController } from './controllers/profile.controller';
 
 @Module({
   imports: [
@@ -25,7 +26,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
       useClass: JwtConfigService,
     }),
   ],
-  controllers: [UserController, RolesController],
+  controllers: [UserController, RolesController, ProfileController],
   providers: [
     ConfigService,
     {
@@ -45,6 +46,14 @@ import { ServeStaticModule } from '@nestjs/serve-static';
       useFactory: (configService: ConfigService) => {
         const rolesServiceOptions = configService.get('rolesService');
         return ClientProxyFactory.create(rolesServiceOptions);
+      },
+      inject: [ConfigService],
+    },
+    {
+      provide: 'PROFILE_SERVICE',
+      useFactory: (configService: ConfigService) => {
+        const profileServiceOptions = configService.get('profileService');
+        return ClientProxyFactory.create(profileServiceOptions);
       },
       inject: [ConfigService],
     },
