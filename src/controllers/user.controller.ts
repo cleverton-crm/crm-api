@@ -98,7 +98,21 @@ export class UserController {
     description: fs.readFileSync('docs/users/verify.md').toString(),
   })
   async verificationUser(@Query('secretKey') secretKey: string) {
-    return secretKey;
+    const userResponse = await firstValueFrom(
+      this.userServiceClient.send('user:verify', secretKey),
+    );
+    if (userResponse.statusCode !== HttpStatus.OK) {
+      throw new HttpException(
+        {
+          statusCode: userResponse.statusCode,
+          message: userResponse.message,
+          errors: userResponse.errors,
+        },
+        userResponse.statusCode,
+      );
+    }
+    this.logger.log(cyan(JSON.stringify(userResponse)));
+    return userResponse;
   }
 
   @Patch('/password/forgot')
