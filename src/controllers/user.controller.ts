@@ -64,7 +64,7 @@ export class UserController {
         userResponse.statusCode,
       );
     }
-    this.logger.log(cyan(userResponse));
+    this.logger.log(cyan(`Registered user ${userResponse}`));
     return userResponse;
   }
 
