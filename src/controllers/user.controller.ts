@@ -98,6 +98,7 @@ export class UserController {
     description: fs.readFileSync('docs/users/verify.md').toString(),
   })
   async verificationUser(@Query('secretKey') secretKey: string) {
+    console.log({ key: secretKey });
     const userResponse = await firstValueFrom(
       this.userServiceClient.send('user:verify', secretKey),
     );
