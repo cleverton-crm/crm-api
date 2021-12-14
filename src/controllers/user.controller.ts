@@ -10,6 +10,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
@@ -33,7 +34,8 @@ import {
 import { AuthGuard } from '../guards/auth.guard';
 import { RolesGuard } from '../guards/roles.guard';
 import * as fs from 'fs';
-import { Roles } from '../decorators/roles.decorator';
+import { IpAddress } from '../decorators/ip.decorator';
+import { Core } from 'core-types';
 
 @ApiTags('User')
 @Controller('users')
@@ -121,8 +123,27 @@ export class UserController {
     summary: 'Step 1: Forgotten password recovery',
     description: fs.readFileSync('docs/users/forgot_password.md').toString(),
   })
-  async forgotPassword(@Body() userData: UserForgotPasswordDto) {
-    return userData;
+  async forgotPassword(
+    @IpAddress() ip: Core.Geo.Location,
+    @Body() userData: UserForgotPasswordDto,
+  ) {
+    console.log({ ...userData, ...ip });
+    const userResponse = await firstValueFrom(
+      this.userServiceClient.send('password:forgot', { ...userData, ...ip }),
+    );
+
+    if (userResponse.statusCode !== HttpStatus.OK) {
+      throw new HttpException(
+        {
+          statusCode: userResponse.statusCode,
+          message: userResponse.message,
+          errors: userResponse.errors,
+        },
+        userResponse.statusCode,
+      );
+    }
+    this.logger.log(cyan(JSON.stringify(userResponse)));
+    return userResponse;
   }
 
   @Get('/password/forgot/verify')
@@ -144,17 +165,34 @@ export class UserController {
     return userData;
   }
 
-  @Patch('/password/change')
-  @ApiBearerAuth()
+  @Patch('/change/password')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles('Customer')
+  @ApiBearerAuth()
   @ApiOperation({
     summary: 'Change password',
     description: fs.readFileSync('docs/users/change_password.md').toString(),
   })
   @ApiResponse({ type: UserChangePasswordDto, status: HttpStatus.OK })
-  async changePassword(@Body() userData: UserChangePasswordDto) {
-    return userData;
+  async changePassword(
+    @Body() userData: UserChangePasswordDto,
+    @Req() req: any,
+  ) {
+    const changeData = Object.assign(userData, req.user);
+    const userResponse = await firstValueFrom(
+      this.userServiceClient.send('password:change', changeData),
+    );
+    if (userResponse.statusCode !== HttpStatus.CREATED) {
+      throw new HttpException(
+        {
+          statusCode: userResponse.statusCode,
+          message: userResponse.message,
+          errors: userResponse.errors,
+        },
+        userResponse.statusCode,
+      );
+    }
+    this.logger.log(cyan(userResponse));
+    return userResponse;
   }
 
   @Post('/create')

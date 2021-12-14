@@ -950,7 +950,7 @@ at-least-node@^1.0.0:
   resolved "https://registry.yarnpkg.com/at-least-node/-/at-least-node-1.0.0.tgz#602cd4b46e844ad4effc92a8011a3c46e0238dc2"
   integrity sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==
 
-axios@0.24.0:
+axios@0.24.0, axios@^0.24.0:
   version "0.24.0"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.24.0.tgz#804e6fa1e4b9c5288501dd9dff56a7a0940d20d6"
   integrity sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==
@@ -1300,7 +1300,7 @@ cookiejar@^2.1.2:
 
 "core-types@https://github.com/cleverdeus/core-types.git":
   version "1.0.0"
-  resolved "https://github.com/cleverdeus/core-types.git#4336faf8ee9ccc5b56aa568d61125f0c8f2453ea"
+  resolved "https://github.com/cleverdeus/core-types.git#44f5fa4037e672bcfc3394c21b924dac15aea7ac"
   dependencies:
     mongodb "^4.2.1"
     mongoose "^6.1.0"

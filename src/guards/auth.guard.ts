@@ -2,6 +2,7 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -23,13 +24,12 @@ export class AuthGuard implements CanActivate {
       }
       let dataInsert;
       const user = this.jwtService.verify(token);
-      if (dataInsert.access) {
-        req.user = Object.assign(user, dataInsert);
-        req.userID = dataInsert.id;
-        return true;
-      } else {
-        throw new UnauthorizedException('Требуется авторизация в системе');
-      }
+      req.user = {
+        email: user.email,
+        access: token,
+      };
+      console.log(user);
+      return true;
     } catch (e) {
       throw new UnauthorizedException('Требуется авторизация в системе');
     }

@@ -69,7 +69,7 @@ export class UserChangePasswordDto {
   @ApiProperty({ format: 'string', minLength: 5, maxLength: 16 })
   @IsString()
   @IsNotEmpty()
-  password_confirmation: string;
+  password_confirm: string;
 }
 
 export class UserForgotVerifyLinkDto {
