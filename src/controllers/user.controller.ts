@@ -142,6 +142,31 @@ export class UserController {
         userResponse.statusCode,
       );
     }
+    console.log(userResponse);
+    this.logger.log(cyan(JSON.stringify(userResponse)));
+    return userResponse;
+  }
+
+  @Patch('/password/refresh/verify')
+  @ApiOperation({
+    summary: 'Refresh request link for reset password',
+    description: fs.readFileSync('docs/users/refresh_verify.md').toString(),
+  })
+  async refreshVerify(@Body() userData: UserForgotPasswordDto) {
+    const userResponse = await firstValueFrom(
+      this.userServiceClient.send('password:refreshverify', userData),
+    );
+    if (userResponse.statusCode !== HttpStatus.OK) {
+      throw new HttpException(
+        {
+          statusCode: userResponse.statusCode,
+          message: userResponse.message,
+          errors: userResponse.errors,
+        },
+        userResponse.statusCode,
+      );
+    }
+    console.log(userResponse);
     this.logger.log(cyan(JSON.stringify(userResponse)));
     return userResponse;
   }
