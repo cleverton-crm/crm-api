@@ -30,12 +30,14 @@ import {
   UserForgotVerifyLinkDto,
   UserChangePasswordDto,
   UserResponseTokensDto,
+  UserResetPasswordDto,
 } from '../dto/user.dto';
 import { AuthGuard } from '../guards/auth.guard';
 import { RolesGuard } from '../guards/roles.guard';
 import * as fs from 'fs';
 import { IpAddress } from '../decorators/ip.decorator';
 import { Core } from 'core-types';
+import { UserResponseDataToServer } from '../helpers/global';
 
 @ApiTags('User')
 @Controller('users')
@@ -53,21 +55,13 @@ export class UserController {
     description: fs.readFileSync('docs/users/register.md').toString(),
   })
   async registration(@Body() userData: UserDto): Promise<any> {
-    const userResponse = await firstValueFrom(
-      this.userServiceClient.send('user:register', userData),
+    const response = UserResponseDataToServer(
+      this.userServiceClient,
+      'user:register',
+      userData,
     );
-    if (userResponse.statusCode !== HttpStatus.CREATED) {
-      throw new HttpException(
-        {
-          statusCode: userResponse.statusCode,
-          message: userResponse.message,
-          errors: userResponse.errors,
-        },
-        userResponse.statusCode,
-      );
-    }
-    this.logger.log(cyan(`Registered user ${userResponse}`));
-    return userResponse;
+    this.logger.log(cyan(`Registered user ${response}`));
+    return response;
   }
 
   @Post('/login')
@@ -77,21 +71,14 @@ export class UserController {
   })
   async login(@Body() userData: UserDto): Promise<UserResponseTokensDto> {
     userData['type'] = 'users';
-    const userResponse = await firstValueFrom(
-      this.userServiceClient.send('user:login', userData),
+    const response = UserResponseDataToServer(
+      this.userServiceClient,
+      'user:login',
+      userData,
     );
-    if (userResponse.statusCode !== HttpStatus.OK) {
-      throw new HttpException(
-        {
-          statusCode: userResponse.statusCode,
-          message: userResponse.message,
-          errors: userResponse.errors,
-        },
-        userResponse.statusCode,
-      );
-    }
-    this.logger.log(cyan(JSON.stringify(userResponse)));
-    return userResponse;
+
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
   }
 
   @Get('/verify')
@@ -100,22 +87,13 @@ export class UserController {
     description: fs.readFileSync('docs/users/verify.md').toString(),
   })
   async verificationUser(@Query('secretKey') secretKey: string) {
-    console.log({ key: secretKey });
-    const userResponse = await firstValueFrom(
-      this.userServiceClient.send('user:verify', secretKey),
+    const response = UserResponseDataToServer(
+      this.userServiceClient,
+      'user:verify',
+      secretKey,
     );
-    if (userResponse.statusCode !== HttpStatus.OK) {
-      throw new HttpException(
-        {
-          statusCode: userResponse.statusCode,
-          message: userResponse.message,
-          errors: userResponse.errors,
-        },
-        userResponse.statusCode,
-      );
-    }
-    this.logger.log(cyan(JSON.stringify(userResponse)));
-    return userResponse;
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
   }
 
   @Patch('/password/forgot')
@@ -127,24 +105,13 @@ export class UserController {
     @IpAddress() ip: Core.Geo.Location,
     @Body() userData: UserForgotPasswordDto,
   ) {
-    console.log({ ...userData, ...ip });
-    const userResponse = await firstValueFrom(
-      this.userServiceClient.send('password:forgot', { ...userData, ...ip }),
+    const response = UserResponseDataToServer(
+      this.userServiceClient,
+      'password:forgot',
+      { ...userData, ...ip },
     );
-
-    if (userResponse.statusCode !== HttpStatus.OK) {
-      throw new HttpException(
-        {
-          statusCode: userResponse.statusCode,
-          message: userResponse.message,
-          errors: userResponse.errors,
-        },
-        userResponse.statusCode,
-      );
-    }
-    console.log(userResponse);
-    this.logger.log(cyan(JSON.stringify(userResponse)));
-    return userResponse;
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
   }
 
   @Patch('/password/refresh/verify')
@@ -153,22 +120,13 @@ export class UserController {
     description: fs.readFileSync('docs/users/refresh_verify.md').toString(),
   })
   async refreshVerify(@Body() userData: UserForgotPasswordDto) {
-    const userResponse = await firstValueFrom(
-      this.userServiceClient.send('password:refreshverify', userData),
+    const response = UserResponseDataToServer(
+      this.userServiceClient,
+      'password:refreshverify',
+      userData,
     );
-    if (userResponse.statusCode !== HttpStatus.OK) {
-      throw new HttpException(
-        {
-          statusCode: userResponse.statusCode,
-          message: userResponse.message,
-          errors: userResponse.errors,
-        },
-        userResponse.statusCode,
-      );
-    }
-    console.log(userResponse);
-    this.logger.log(cyan(JSON.stringify(userResponse)));
-    return userResponse;
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
   }
 
   @Get('/password/forgot/verify')
@@ -177,7 +135,13 @@ export class UserController {
     description: fs.readFileSync('docs/users/forgot_verify.md').toString(),
   })
   async forgotVerify(@Query('userData') userData: UserForgotVerifyLinkDto) {
-    return userData;
+    const response = UserResponseDataToServer(
+      this.userServiceClient,
+      'password:forgotverify',
+      userData,
+    );
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
   }
 
   @Patch('/password/reset')
@@ -185,8 +149,8 @@ export class UserController {
     summary: 'Step 3: User reset password. ',
     description: fs.readFileSync('docs/users/password_reset.md').toString(),
   })
-  @ApiResponse({ type: UserForgotPasswordDto, status: HttpStatus.OK })
-  async resetPassword(@Body() userData: UserForgotPasswordDto) {
+  @ApiResponse({ type: UserResetPasswordDto, status: HttpStatus.OK })
+  async resetPassword(@Body() userData: UserResetPasswordDto) {
     return userData;
   }
 
@@ -203,21 +167,13 @@ export class UserController {
     @Req() req: any,
   ) {
     const changeData = Object.assign(userData, req.user);
-    const userResponse = await firstValueFrom(
-      this.userServiceClient.send('password:change', changeData),
+    const response = UserResponseDataToServer(
+      this.userServiceClient,
+      'password:change',
+      changeData,
     );
-    if (userResponse.statusCode !== HttpStatus.CREATED) {
-      throw new HttpException(
-        {
-          statusCode: userResponse.statusCode,
-          message: userResponse.message,
-          errors: userResponse.errors,
-        },
-        userResponse.statusCode,
-      );
-    }
-    this.logger.log(cyan(userResponse));
-    return userResponse;
+    this.logger.log(cyan(response));
+    return response;
   }
 
   @Post('/create')
@@ -229,21 +185,13 @@ export class UserController {
     description: fs.readFileSync('docs/users/password_reset.md').toString(),
   })
   async createUser(@Body() userData: UserDto): Promise<UserDto> {
-    const userResponse = await firstValueFrom(
-      this.userServiceClient.send('user:create', userData),
+    const response = UserResponseDataToServer(
+      this.userServiceClient,
+      'user:create',
+      userData,
     );
-    if (userResponse.statusCode !== HttpStatus.CREATED) {
-      throw new HttpException(
-        {
-          statusCode: userResponse.statusCode,
-          message: userResponse.message,
-          errors: userResponse.errors,
-        },
-        userResponse.statusCode,
-      );
-    }
-    this.logger.log(cyan(userResponse));
-    return userResponse;
+    this.logger.log(cyan(response));
+    return response;
   }
 
   @Patch('/:id')

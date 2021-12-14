@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, OmitType } from '@nestjs/swagger';
 import {
   IsEmail,
   IsNotEmpty,
@@ -71,6 +71,10 @@ export class UserChangePasswordDto {
   @IsNotEmpty()
   password_confirm: string;
 }
+
+export class UserResetPasswordDto extends OmitType(UserChangePasswordDto, [
+  'password',
+] as const) {}
 
 export class UserForgotVerifyLinkDto {
   @ApiProperty()
