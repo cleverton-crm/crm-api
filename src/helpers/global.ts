@@ -9,7 +9,7 @@ export const ResponseSuccessData = (message: string) => {
     status: true,
   };
 };
-export const UserResponseDataToServer = async (
+export const SendAndResponseData = async (
   client: ClientProxy,
   pattern: string,
   data: any,

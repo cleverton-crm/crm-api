@@ -37,7 +37,7 @@ import { RolesGuard } from '../guards/roles.guard';
 import * as fs from 'fs';
 import { IpAddress } from '../decorators/ip.decorator';
 import { Core } from 'core-types';
-import { UserResponseDataToServer } from '../helpers/global';
+import { SendAndResponseData } from '../helpers/global';
 
 @ApiTags('User')
 @Controller('users')
@@ -55,7 +55,7 @@ export class UserController {
     description: fs.readFileSync('docs/users/register.md').toString(),
   })
   async registration(@Body() userData: UserDto): Promise<any> {
-    const response = UserResponseDataToServer(
+    const response = SendAndResponseData(
       this.userServiceClient,
       'user:register',
       userData,
@@ -71,7 +71,7 @@ export class UserController {
   })
   async login(@Body() userData: UserDto): Promise<UserResponseTokensDto> {
     userData['type'] = 'users';
-    const response = UserResponseDataToServer(
+    const response = SendAndResponseData(
       this.userServiceClient,
       'user:login',
       userData,
@@ -87,7 +87,7 @@ export class UserController {
     description: fs.readFileSync('docs/users/verify.md').toString(),
   })
   async verificationUser(@Query('secretKey') secretKey: string) {
-    const response = UserResponseDataToServer(
+    const response = SendAndResponseData(
       this.userServiceClient,
       'user:verify',
       secretKey,
@@ -105,7 +105,7 @@ export class UserController {
     @IpAddress() ip: Core.Geo.Location,
     @Body() userData: UserForgotPasswordDto,
   ) {
-    const response = UserResponseDataToServer(
+    const response = SendAndResponseData(
       this.userServiceClient,
       'password:forgot',
       { ...userData, ...ip },
@@ -120,7 +120,7 @@ export class UserController {
     description: fs.readFileSync('docs/users/refresh_verify.md').toString(),
   })
   async refreshVerify(@Body() userData: UserForgotPasswordDto) {
-    const response = UserResponseDataToServer(
+    const response = SendAndResponseData(
       this.userServiceClient,
       'password:refreshverify',
       userData,
@@ -135,7 +135,7 @@ export class UserController {
     description: fs.readFileSync('docs/users/forgot_verify.md').toString(),
   })
   async forgotVerify(@Query('userData') userData: UserForgotVerifyLinkDto) {
-    const response = UserResponseDataToServer(
+    const response = SendAndResponseData(
       this.userServiceClient,
       'password:forgotverify',
       userData,
@@ -167,7 +167,7 @@ export class UserController {
     @Req() req: any,
   ) {
     const changeData = Object.assign(userData, req.user);
-    const response = UserResponseDataToServer(
+    const response = SendAndResponseData(
       this.userServiceClient,
       'password:change',
       changeData,
@@ -185,7 +185,7 @@ export class UserController {
     description: fs.readFileSync('docs/users/password_reset.md').toString(),
   })
   async createUser(@Body() userData: UserDto): Promise<UserDto> {
-    const response = UserResponseDataToServer(
+    const response = SendAndResponseData(
       this.userServiceClient,
       'user:create',
       userData,
