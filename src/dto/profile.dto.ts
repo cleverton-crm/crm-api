@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Profiles } from '../../../micro-profile/types/profiles';
 
 export class ProfileDto {
   @ApiProperty()
@@ -22,14 +21,13 @@ export class ProfilePersonaDto {
   @ApiProperty()
   about: string | null;
   @ApiProperty()
-  gender: string | Profiles.Gender;
+  gender: string;
   @ApiProperty()
-  relationship: string | Profiles.Relationship;
+  relationship: string;
   @ApiProperty()
   language: string | null;
   @ApiProperty()
-  address: Map<string, any> | Profiles.Address;
-  @ApiProperty()
+  address: Map<string, any>;
   birthDate: Date;
   @ApiProperty()
   customer: string;
