@@ -42,7 +42,6 @@ import { IpAddress } from '../decorators/ip.decorator';
 import { Core } from 'core-types';
 import { SendAndResponseData } from '../helpers/global';
 import { Roles } from '../decorators/roles.decorator';
-import { type } from 'os';
 
 @ApiTags('User')
 @Controller('users')
@@ -60,7 +59,7 @@ export class UserController {
     description: fs.readFileSync('docs/users/register.md').toString(),
   })
   async registration(@Body() userData: UserDto): Promise<any> {
-    const response = SendAndResponseData(
+    const response = await SendAndResponseData(
       this.userServiceClient,
       'user:register',
       userData,
@@ -76,7 +75,7 @@ export class UserController {
   })
   async login(@Body() userData: UserDto): Promise<UserResponseTokensDto> {
     userData['type'] = 'users';
-    const response = SendAndResponseData(
+    const response = await SendAndResponseData(
       this.userServiceClient,
       'user:login',
       userData,
@@ -92,7 +91,7 @@ export class UserController {
     description: fs.readFileSync('docs/users/verify.md').toString(),
   })
   async verificationUser(@Query('secretKey') secretKey: string) {
-    const response = SendAndResponseData(
+    const response = await SendAndResponseData(
       this.userServiceClient,
       'user:verify',
       secretKey,
@@ -110,7 +109,7 @@ export class UserController {
     @IpAddress() ip: Core.Geo.Location,
     @Body() userData: UserForgotPasswordDto,
   ) {
-    const response = SendAndResponseData(
+    const response = await SendAndResponseData(
       this.userServiceClient,
       'password:forgot',
       { ...userData, ...ip },
@@ -125,7 +124,7 @@ export class UserController {
     description: fs.readFileSync('docs/users/refresh_verify.md').toString(),
   })
   async refreshVerify(@Body() userData: UserForgotPasswordDto) {
-    const response = SendAndResponseData(
+    const response = await SendAndResponseData(
       this.userServiceClient,
       'password:refreshverify',
       userData,
@@ -134,14 +133,14 @@ export class UserController {
     return response;
   }
 
-  @Get('/password/forgot/verify')
+  @Patch('/password/forgot/verify')
   @ApiOperation({
     summary: 'Step 2: User verification using a link to email. ',
     description: fs.readFileSync('docs/users/forgot_verify.md').toString(),
   })
   @ApiQuery({ type: String, name: 'verification', required: true })
   async forgotVerify(@Query('verification') userData: string) {
-    const response = SendAndResponseData(
+    const response = await SendAndResponseData(
       this.userServiceClient,
       'password:forgotverify',
       { verification: userData },
@@ -157,7 +156,7 @@ export class UserController {
   })
   @ApiResponse({ type: UserResetPasswordDto, status: HttpStatus.OK })
   async resetPassword(@Body() userData: UserResetPasswordDto) {
-    const response = SendAndResponseData(
+    const response = await SendAndResponseData(
       this.userServiceClient,
       'password:reset',
       userData,
@@ -179,12 +178,12 @@ export class UserController {
     @Req() req: any,
   ) {
     const changeData = Object.assign(userData, req.user);
-    const response = SendAndResponseData(
+    const response = await SendAndResponseData(
       this.userServiceClient,
       'password:change',
       changeData,
     );
-    this.logger.log(cyan(response));
+    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -194,16 +193,16 @@ export class UserController {
   @Roles('Admin')
   @ApiResponse({ type: UserDto, status: HttpStatus.OK })
   @ApiOperation({
-    summary: 'User verification using a link to email',
-    description: fs.readFileSync('docs/users/password_reset.md').toString(),
+    summary: 'User creation',
+    description: fs.readFileSync('docs/users/create.md').toString(),
   })
   async createUser(@Body() userData: UserDto): Promise<UserDto> {
-    const response = SendAndResponseData(
+    const response = await SendAndResponseData(
       this.userServiceClient,
       'user:create',
       userData,
     );
-    this.logger.log(cyan(response));
+    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -218,26 +217,32 @@ export class UserController {
       userId: id,
       data: userData,
     };
-    const userResponse = await firstValueFrom(
-      this.userServiceClient.send('user:update', sendData),
+    const response = await SendAndResponseData(
+      this.userServiceClient,
+      'user:update',
+      sendData,
     );
-    return userResponse;
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
   }
 
   @Get('/')
   @ApiBearerAuth()
   @UseGuards(AuthGuard, RolesGuard)
   async findAllUsers(): Promise<UsersListDto> {
-    const usersResponse = await firstValueFrom(
-      this.userServiceClient.send('user:list', true),
+    const response = await SendAndResponseData(
+      this.userServiceClient,
+      'user:list',
+      true,
     );
-    return usersResponse;
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
   }
 
   @Delete('/:id')
-  // @ApiBearerAuth()
-  // @UseGuards(AuthGuard, RolesGuard)
-  // @Roles('Admin')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('Admin')
   @ApiParam({ name: 'id', type: 'string' })
   @ApiQuery({ name: 'active', type: 'boolean', enum: ['true', 'false'] })
   async archiveUser(
@@ -246,13 +251,17 @@ export class UserController {
     @Query('active') active: boolean,
   ): Promise<Core.Response.Success> {
     const sendData = {
-      userId: id,
-      request: req,
+      id: id,
+      request: req?.user,
       active: active,
     };
-    const userResponse = await firstValueFrom(
-      this.userServiceClient.send('user:update', sendData),
+    console.log(sendData);
+    const response = await SendAndResponseData(
+      this.userServiceClient,
+      'user:archive',
+      sendData,
     );
-    return userResponse;
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
   }
 }
