@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
@@ -19,6 +20,7 @@ import { cyan } from 'cli-color';
 import {
   ApiBearerAuth,
   ApiOperation,
+  ApiParam,
   ApiQuery,
   ApiResponse,
   ApiTags,
@@ -39,6 +41,8 @@ import * as fs from 'fs';
 import { IpAddress } from '../decorators/ip.decorator';
 import { Core } from 'core-types';
 import { SendAndResponseData } from '../helpers/global';
+import { Roles } from '../decorators/roles.decorator';
+import { type } from 'os';
 
 @ApiTags('User')
 @Controller('users')
@@ -187,6 +191,7 @@ export class UserController {
   @Post('/create')
   @ApiBearerAuth()
   @UseGuards(AuthGuard, RolesGuard)
+  @Roles('Admin')
   @ApiResponse({ type: UserDto, status: HttpStatus.OK })
   @ApiOperation({
     summary: 'User verification using a link to email',
@@ -227,5 +232,27 @@ export class UserController {
       this.userServiceClient.send('user:list', true),
     );
     return usersResponse;
+  }
+
+  @Delete('/:id')
+  // @ApiBearerAuth()
+  // @UseGuards(AuthGuard, RolesGuard)
+  // @Roles('Admin')
+  @ApiParam({ name: 'id', type: 'string' })
+  @ApiQuery({ name: 'active', type: 'boolean', enum: ['true', 'false'] })
+  async archiveUser(
+    @Param('id') id: string,
+    @Req() req: any,
+    @Query('active') active: boolean,
+  ): Promise<Core.Response.Success> {
+    const sendData = {
+      userId: id,
+      request: req,
+      active: active,
+    };
+    const userResponse = await firstValueFrom(
+      this.userServiceClient.send('user:update', sendData),
+    );
+    return userResponse;
   }
 }
