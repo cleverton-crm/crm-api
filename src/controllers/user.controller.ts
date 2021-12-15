@@ -19,6 +19,7 @@ import { cyan } from 'cli-color';
 import {
   ApiBearerAuth,
   ApiOperation,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -134,11 +135,12 @@ export class UserController {
     summary: 'Step 2: User verification using a link to email. ',
     description: fs.readFileSync('docs/users/forgot_verify.md').toString(),
   })
-  async forgotVerify(@Query('userData') userData: UserForgotVerifyLinkDto) {
+  @ApiQuery({ type: String, name: 'verification', required: true })
+  async forgotVerify(@Query('verification') userData: string) {
     const response = SendAndResponseData(
       this.userServiceClient,
       'password:forgotverify',
-      userData,
+      { verification: userData },
     );
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
@@ -151,7 +153,13 @@ export class UserController {
   })
   @ApiResponse({ type: UserResetPasswordDto, status: HttpStatus.OK })
   async resetPassword(@Body() userData: UserResetPasswordDto) {
-    return userData;
+    const response = SendAndResponseData(
+      this.userServiceClient,
+      'password:reset',
+      userData,
+    );
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
   }
 
   @Patch('/change/password')

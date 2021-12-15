@@ -74,7 +74,12 @@ export class UserChangePasswordDto {
 
 export class UserResetPasswordDto extends OmitType(UserChangePasswordDto, [
   'password',
-] as const) {}
+] as const) {
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  verificationKey: string;
+}
 
 export class UserForgotVerifyLinkDto {
   @ApiProperty()
