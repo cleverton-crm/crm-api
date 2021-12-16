@@ -13,6 +13,7 @@ import * as fs from 'fs';
 import { cyan } from 'cli-color';
 import { firstValueFrom } from 'rxjs';
 import { ProfileDto } from '../dto/profile.dto';
+import { SendAndResponseData } from '../helpers/global';
 
 @ApiTags('Profile')
 @Controller('profile')
@@ -31,22 +32,13 @@ export class ProfileController {
     summary: 'Создание профиля пользователя',
     description: fs.readFileSync('docs/profile/create.md').toString(),
   })
-  async createProfile(@Body() profileData: ProfileDto) {
-    console.log(profileData);
-    const profileResponse = await firstValueFrom(
-      this.profileServiceClient.send('profile:create', profileData),
+  async createPersona(@Body() profileData: ProfileDto) {
+    const response = SendAndResponseData(
+      this.profileServiceClient,
+      'profile:persona',
+      profileData,
     );
-    if (profileResponse.statusCode !== HttpStatus.OK) {
-      throw new HttpException(
-        {
-          statusCode: profileResponse.statusCode,
-          message: profileResponse.message,
-          errors: profileResponse.errors,
-        },
-        profileResponse.statusCode,
-      );
-    }
-    this.logger.log(cyan(`Registered user ${profileResponse}`));
-    return profileResponse;
+    this.logger.log(cyan(response));
+    return response;
   }
 }
