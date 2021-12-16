@@ -28,13 +28,10 @@ export class ProfilePersonaDto {
   language: string | null;
   @ApiProperty()
   address: Map<string, any>;
-  birthDate: Date;
   @ApiProperty()
-  customer: string;
+  birthDate: Date;
   @ApiProperty()
   speakLanguage: Array<string>;
   @ApiProperty()
   socials: Map<string, any>;
-  @ApiProperty()
-  type: string;
 }
