@@ -6,6 +6,7 @@ import * as fs from 'fs';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from './services/config.service';
 import { cyan } from 'cli-color';
+import { HttpExceptionFilter } from './filters/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -14,6 +15,7 @@ async function bootstrap() {
   app.enableCors();
 
   app.useGlobalPipes(new ValidationPipe());
+  //app.useGlobalFilters(new HttpExceptionFilter());
   const logger = new Logger('NestApplication');
   const configService = new ConfigService();
   const config = new DocumentBuilder()

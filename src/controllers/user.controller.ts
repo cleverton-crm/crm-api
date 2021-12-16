@@ -206,30 +206,6 @@ export class UserController {
     return response;
   }
 
-  @Patch('/:id')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard, RolesGuard)
-  @ApiOperation({
-    summary: "Update user's data",
-    description: fs.readFileSync('docs/users/update.md').toString(),
-  })
-  async updateUser(
-    @Param('id') id: string,
-    @Body() userData: UserUpdateDto,
-  ): Promise<UserUpdateDto> {
-    const sendData = {
-      userId: id,
-      data: userData,
-    };
-    const response = await SendAndResponseData(
-      this.userServiceClient,
-      'user:update',
-      sendData,
-    );
-    this.logger.log(cyan(JSON.stringify(response)));
-    return response;
-  }
-
   @Get('/')
   @ApiBearerAuth()
   @UseGuards(AuthGuard, RolesGuard)
