@@ -209,6 +209,10 @@ export class UserController {
   @Patch('/:id')
   @ApiBearerAuth()
   @UseGuards(AuthGuard, RolesGuard)
+  @ApiOperation({
+    summary: "Update user's data",
+    description: fs.readFileSync('docs/users/update.md').toString(),
+  })
   async updateUser(
     @Param('id') id: string,
     @Body() userData: UserUpdateDto,
@@ -229,6 +233,10 @@ export class UserController {
   @Get('/')
   @ApiBearerAuth()
   @UseGuards(AuthGuard, RolesGuard)
+  @ApiOperation({
+    summary: 'List of all users',
+    description: fs.readFileSync('docs/users/find_all.md').toString(),
+  })
   async findAllUsers(): Promise<UsersListDto> {
     const response = await SendAndResponseData(
       this.userServiceClient,
@@ -245,6 +253,10 @@ export class UserController {
   @Roles('Admin')
   @ApiParam({ name: 'id', type: 'string' })
   @ApiQuery({ name: 'active', type: 'boolean', enum: ['true', 'false'] })
+  @ApiOperation({
+    summary: 'User archiving',
+    description: fs.readFileSync('docs/users/archive.md').toString(),
+  })
   async archiveUser(
     @Param('id') id: string,
     @Req() req: any,
