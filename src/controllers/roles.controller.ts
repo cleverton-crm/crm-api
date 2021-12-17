@@ -1,17 +1,25 @@
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import {
   Body,
   Controller,
+  Get,
   HttpException,
   HttpStatus,
   Inject,
   Logger,
+  Param,
+  Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { RolesDto } from '../dto/roles.dto';
-import { firstValueFrom } from 'rxjs';
+import { ListRolesDto, RolesDto, UpdateRolesDto } from '../dto/roles.dto';
 import * as fs from 'fs';
+import { SendAndResponseData } from 'src/helpers/global';
+import { cyan } from 'cli-color';
+import { Roles } from '../decorators/roles.decorator';
+import { RolesGuard } from '../guards/roles.guard';
+import { AuthGuard } from '../guards/auth.guard';
 
 @ApiTags('Roles')
 @Controller('roles')
@@ -29,19 +37,59 @@ export class RolesController {
     description: fs.readFileSync('docs/roles/create.md').toString(),
   })
   async create(@Body() rolesData: RolesDto) {
-    const rolesResponse = await firstValueFrom(
-      this.rolesServiceClient.send('roles:create', rolesData),
+    const response = await SendAndResponseData(
+      this.rolesServiceClient,
+      'roles:create',
+      rolesData,
     );
-    if (rolesResponse.statusCode !== HttpStatus.CREATED) {
+    if (response.statusCode !== HttpStatus.CREATED) {
       throw new HttpException(
         {
-          statusCode: rolesResponse.statusCode,
-          message: rolesResponse.message,
-          errors: rolesResponse.errors,
+          statusCode: response.statusCode,
+          message: response.message,
+          errors: response.errors,
         },
-        rolesResponse.statusCode,
+        response.statusCode,
       );
     }
-    return rolesResponse;
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+
+  @Patch('/:id')
+  @ApiOperation({
+    summary: 'Updating role',
+    description: fs.readFileSync('docs/roles/update.md').toString(),
+  })
+  async update(@Param('id') id: string, @Body() rolesData: UpdateRolesDto) {
+    const sendData = {
+      id: id,
+      ...rolesData,
+    };
+    const response = await SendAndResponseData(
+      this.rolesServiceClient,
+      'roles:update',
+      sendData,
+    );
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+
+  @Get('/list')
+  @UseGuards(RolesGuard, AuthGuard)
+  @ApiBearerAuth()
+  @Roles('Admin')
+  @ApiOperation({
+    summary: 'Get list of all roles',
+    description: fs.readFileSync('docs/roles/list.md').toString(),
+  })
+  async findAllRoles(): Promise<ListRolesDto[]> {
+    const response = await SendAndResponseData(
+      this.rolesServiceClient,
+      'roles:list',
+      true,
+    );
+    this.logger.debug(cyan(JSON.stringify(response)));
+    return response;
   }
 }

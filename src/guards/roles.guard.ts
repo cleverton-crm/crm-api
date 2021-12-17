@@ -58,7 +58,8 @@ export class RolesGuard implements CanActivate {
       req.user = user;
       return user.roles.some((role) => requiredRoles.includes(role.name));
     } catch (e) {
-      const messageError = 'Forbidden path';
+      const messageError =
+        'Access denied. Пожалуйста обратитесь в службу поддержки';
       this.logger.error(messageError + e.message);
       throw new ForbiddenException(messageError);
     }
