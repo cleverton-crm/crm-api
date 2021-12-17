@@ -15,17 +15,19 @@ import { cyan } from 'cli-color';
 import { ProfilePersonaDto } from '../dto/profile.dto';
 import { SendAndResponseData } from '../helpers/global';
 import { ReadmeDescription } from '../helpers/readme';
+import { Core } from 'micro-core';
 
 @ApiTags('Profile')
 @Controller('profile')
 export class ProfileController {
   private logger: Logger;
+
   constructor(
     @Inject('PROFILE_SERVICE')
     private readonly profileServiceClient: ClientProxy,
   ) {
     this.logger = new Logger(ProfileController.name);
-    console.log(this.profileServiceClient);
+    console.log(Core.ResponseSuccess('wswsws'));
   }
 
   /**
@@ -35,10 +37,12 @@ export class ProfileController {
   @Post('/')
   @ApiOperation({
     summary: 'Создание профиля пользователя',
-    description: ReadmeDescription('docs/profile/create.md'),
+    description: Core.OperationReadMe('docs/profile/create.md'),
   })
   @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
-  async createPersona(@Body() profileData: ProfilePersonaDto) {
+  async createPersona(
+    @Body() profileData: ProfilePersonaDto,
+  ): Promise<Core.Response.Answer> {
     const response = await SendAndResponseData(
       this.profileServiceClient,
       'profile:persona',
@@ -51,7 +55,7 @@ export class ProfileController {
   @Patch('/me/update')
   @ApiOperation({
     summary: 'Фото или аватар пользователя',
-    description: ReadmeDescription('docs/profile/update.md'),
+    description: Core.OperationReadMe('docs/profile/update.md'),
   })
   @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
   async updatePersona(@Body() profileData: ProfilePersonaDto) {
@@ -71,7 +75,7 @@ export class ProfileController {
   @Patch('/me/update/location')
   @ApiOperation({
     summary: 'Данные о месте проживания',
-    description: ReadmeDescription('docs/profile/location.md'),
+    description: Core.OperationReadMe('docs/profile/location.md'),
   })
   @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
   async insertOrUpdateAddressPersona(@Body() profileData: ProfilePersonaDto) {
