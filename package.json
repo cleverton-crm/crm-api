@@ -1,6 +1,6 @@
 {
   "name": "cleverdeus-api",
-  "version": "0.0.40",
+  "version": "0.0.41",
   "description": "",
   "author": "",
   "private": true,
@@ -19,7 +19,7 @@
     "start:micro": "env-url https://dev.cleverdeus.com/config/development.json nest start --watch",
     "start:prod": "env-url https://dev.cleverdeus.com/config/production.json node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "types": "yarn add https://github.com/cleverdeus/core-types.git",
+    "types": "yarn add https://github.com/cleverdeus/micro-core.git",
     "prepare": "husky install"
   },
   "dependencies": {
@@ -43,6 +43,7 @@
     "husky": "^7.0.4",
     "json-to-env": "^0.0.10",
     "json-to-env-var": "^1.0.0",
+    "micro-core": "https://github.com/cleverdeus/micro-core.git",
     "nestjs-i18n": "^8.2.1",
     "rate-limiter-flexible": "^2.3.6",
     "reflect-metadata": "^0.1.13",

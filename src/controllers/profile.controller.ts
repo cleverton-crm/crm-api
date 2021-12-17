@@ -10,7 +10,6 @@ import {
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import * as fs from 'fs';
 import { cyan } from 'cli-color';
 import { ProfilePersonaDto } from '../dto/profile.dto';
 import { SendAndResponseData } from '../helpers/global';
