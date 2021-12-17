@@ -26,7 +26,6 @@ export class ProfileController {
     private readonly profileServiceClient: ClientProxy,
   ) {
     this.logger = new Logger(ProfileController.name);
-    console.log(Core.ResponseSuccess('wswsws'));
   }
 
   /**
@@ -42,9 +41,9 @@ export class ProfileController {
   async createPersona(
     @Body() profileData: ProfilePersonaDto,
   ): Promise<Core.Response.Answer> {
-    const response = await SendAndResponseData(
+    const response = await Core.SendAndResponse(
       this.profileServiceClient,
-      'profile:persona',
+      'profile:empty',
       profileData,
     );
     this.logger.log(cyan(JSON.stringify(response)));

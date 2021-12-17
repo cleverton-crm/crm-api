@@ -3272,7 +3272,7 @@ methods@^1.1.2, methods@~1.1.2:
 
 "micro-core@https://github.com/cleverdeus/micro-core.git":
   version "1.0.0"
-  resolved "https://github.com/cleverdeus/micro-core.git#cfe450d980238f12980fb9ae19af64bdb73ebfd4"
+  resolved "https://github.com/cleverdeus/micro-core.git#26ca473b73bd2ca57c1ba332c11c3e89ca6618d9"
   dependencies:
     "@nestjs/common" "^8.2.4"
     "@nestjs/microservices" "^8.2.4"
