@@ -12,8 +12,6 @@ import { ClientProxy } from '@nestjs/microservices';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { cyan } from 'cli-color';
 import { ProfilePersonaDto } from '../dto/profile.dto';
-import { SendAndResponseData } from '../helpers/global';
-import { ReadmeDescription } from '../helpers/readme';
 import { Core } from 'micro-core';
 
 @ApiTags('Profile')
@@ -57,7 +55,7 @@ export class ProfileController {
   })
   @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
   async updatePersona(@Body() profileData: ProfilePersonaDto) {
-    const response = await SendAndResponseData(
+    const response = await Core.SendAndResponse(
       this.profileServiceClient,
       'profile:update',
       profileData,
@@ -77,7 +75,7 @@ export class ProfileController {
   })
   @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
   async insertOrUpdateAddressPersona(@Body() profileData: ProfilePersonaDto) {
-    const response = await SendAndResponseData(
+    const response = await Core.SendAndResponse(
       this.profileServiceClient,
       'profile:address',
       profileData,
@@ -93,11 +91,11 @@ export class ProfileController {
   @Patch('/me/update/avatar')
   @ApiOperation({
     summary: 'Фото или аватар пользователя',
-    description: ReadmeDescription('docs/profile/avatar.md'),
+    description: Core.OperationReadMe('docs/profile/avatar.md'),
   })
   @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
   async updateAvatarPersona(@Body() profileData: ProfilePersonaDto) {
-    const response = await SendAndResponseData(
+    const response = await Core.SendAndResponse(
       this.profileServiceClient,
       'profile:avatar',
       profileData,
@@ -109,11 +107,11 @@ export class ProfileController {
   @Patch('/me/update/socials')
   @ApiOperation({
     summary: 'Социальные сети пользователя',
-    description: ReadmeDescription('docs/profile/social.md'),
+    description: Core.OperationReadMe('docs/profile/social.md'),
   })
   @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
   async updateSocialPersona(@Body() profileData: ProfilePersonaDto) {
-    const response = await SendAndResponseData(
+    const response = await Core.SendAndResponse(
       this.profileServiceClient,
       'profile:address',
       profileData,
@@ -125,11 +123,11 @@ export class ProfileController {
   @Get('/me')
   @ApiOperation({
     summary: 'Данные пользователя',
-    description: ReadmeDescription('docs/profile/profile.md'),
+    description: Core.OperationReadMe('docs/profile/profile.md'),
   })
   @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
   async myDataPersona(@Body() profileData: ProfilePersonaDto) {
-    const response = await SendAndResponseData(
+    const response = await Core.SendAndResponse(
       this.profileServiceClient,
       'profile:address',
       profileData,

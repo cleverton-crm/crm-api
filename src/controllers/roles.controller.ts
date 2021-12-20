@@ -14,12 +14,11 @@ import {
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ListRolesDto, RolesDto, UpdateRolesDto } from '../dto/roles.dto';
-import * as fs from 'fs';
-import { SendAndResponseData } from 'src/helpers/global';
 import { cyan } from 'cli-color';
 import { Roles } from '../decorators/roles.decorator';
 import { RolesGuard } from '../guards/roles.guard';
 import { AuthGuard } from '../guards/auth.guard';
+import { Core } from 'micro-core';
 
 @ApiTags('Roles')
 @Controller('roles')
@@ -34,10 +33,10 @@ export class RolesController {
   @Post('/create')
   @ApiOperation({
     summary: 'Creating role for user',
-    description: fs.readFileSync('docs/roles/create.md').toString(),
+    description: Core.OperationReadMe('docs/roles/create.md'),
   })
   async create(@Body() rolesData: RolesDto) {
-    const response = await SendAndResponseData(
+    const response = await Core.SendAndResponse(
       this.rolesServiceClient,
       'roles:create',
       rolesData,
@@ -59,14 +58,14 @@ export class RolesController {
   @Patch('/:id')
   @ApiOperation({
     summary: 'Updating role',
-    description: fs.readFileSync('docs/roles/update.md').toString(),
+    description: Core.OperationReadMe('docs/roles/update.md'),
   })
   async update(@Param('id') id: string, @Body() rolesData: UpdateRolesDto) {
     const sendData = {
       id: id,
       ...rolesData,
     };
-    const response = await SendAndResponseData(
+    const response = await Core.SendAndResponse(
       this.rolesServiceClient,
       'roles:update',
       sendData,
@@ -81,10 +80,10 @@ export class RolesController {
   @Roles('Admin')
   @ApiOperation({
     summary: 'Get list of all roles',
-    description: fs.readFileSync('docs/roles/list.md').toString(),
+    description: Core.OperationReadMe('docs/roles/list.md'),
   })
   async findAllRoles(): Promise<ListRolesDto[]> {
-    const response = await SendAndResponseData(
+    const response = await Core.SendAndResponse(
       this.rolesServiceClient,
       'roles:list',
       true,

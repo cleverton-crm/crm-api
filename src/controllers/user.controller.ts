@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpException,
   HttpStatus,
   Inject,
   Logger,
@@ -15,7 +14,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
 import { cyan } from 'cli-color';
 import {
   ApiBearerAuth,
@@ -26,21 +24,17 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import {
-  UserUpdateDto,
-  UserDto,
-  UsersListDto,
-  UserForgotPasswordDto,
-  UserForgotVerifyLinkDto,
   UserChangePasswordDto,
-  UserResponseTokensDto,
+  UserDto,
+  UserForgotPasswordDto,
   UserResetPasswordDto,
+  UserResponseTokensDto,
+  UsersListDto,
 } from '../dto/user.dto';
 import { AuthGuard } from '../guards/auth.guard';
 import { RolesGuard } from '../guards/roles.guard';
-import * as fs from 'fs';
 import { IpAddress } from '../decorators/ip.decorator';
-import { Core } from 'core-types';
-import { SendAndResponseData } from '../helpers/global';
+import { Core } from 'micro-core';
 import { Roles } from '../decorators/roles.decorator';
 
 @ApiTags('User')
@@ -56,10 +50,10 @@ export class UserController {
   @Post('/registration')
   @ApiOperation({
     summary: 'Sing up User in to application',
-    description: fs.readFileSync('docs/users/register.md').toString(),
+    description: Core.OperationReadMe('docs/users/register.md'),
   })
   async registration(@Body() userData: UserDto): Promise<any> {
-    const response = await SendAndResponseData(
+    const response = await Core.SendAndResponse(
       this.userServiceClient,
       'user:register',
       userData,
@@ -71,11 +65,11 @@ export class UserController {
   @Post('/login')
   @ApiOperation({
     summary: 'Sing in User in application',
-    description: fs.readFileSync('docs/users/login.md').toString(),
+    description: Core.OperationReadMe('docs/users/login.md'),
   })
   async login(@Body() userData: UserDto): Promise<UserResponseTokensDto> {
     userData['type'] = 'users';
-    const response = await SendAndResponseData(
+    const response = await Core.SendAndResponse(
       this.userServiceClient,
       'user:login',
       userData,
@@ -88,10 +82,10 @@ export class UserController {
   @Get('/verify')
   @ApiOperation({
     summary: 'User verification using a link to email',
-    description: fs.readFileSync('docs/users/verify.md').toString(),
+    description: Core.OperationReadMe('docs/users/verify.md'),
   })
   async verificationUser(@Query('secretKey') secretKey: string) {
-    const response = await SendAndResponseData(
+    const response = await Core.SendAndResponse(
       this.userServiceClient,
       'user:verify',
       secretKey,
@@ -103,13 +97,13 @@ export class UserController {
   @Patch('/password/forgot')
   @ApiOperation({
     summary: 'Step 1: Forgotten password recovery',
-    description: fs.readFileSync('docs/users/forgot_password.md').toString(),
+    description: Core.OperationReadMe('docs/users/forgot_password.md'),
   })
   async forgotPassword(
     @IpAddress() ip: Core.Geo.Location,
     @Body() userData: UserForgotPasswordDto,
   ) {
-    const response = await SendAndResponseData(
+    const response = await Core.SendAndResponse(
       this.userServiceClient,
       'password:forgot',
       { ...userData, ...ip },
@@ -121,10 +115,10 @@ export class UserController {
   @Patch('/password/refresh/verify')
   @ApiOperation({
     summary: 'Refresh request link for reset password',
-    description: fs.readFileSync('docs/users/refresh_verify.md').toString(),
+    description: Core.OperationReadMe('docs/users/refresh_verify.md'),
   })
   async refreshVerify(@Body() userData: UserForgotPasswordDto) {
-    const response = await SendAndResponseData(
+    const response = await Core.SendAndResponse(
       this.userServiceClient,
       'password:refreshverify',
       userData,
@@ -136,11 +130,11 @@ export class UserController {
   @Patch('/password/forgot/verify')
   @ApiOperation({
     summary: 'Step 2: User verification using a link to email. ',
-    description: fs.readFileSync('docs/users/forgot_verify.md').toString(),
+    description: Core.OperationReadMe('docs/users/forgot_verify.md'),
   })
   @ApiQuery({ type: String, name: 'verification', required: true })
   async forgotVerify(@Query('verification') userData: string) {
-    const response = await SendAndResponseData(
+    const response = await Core.SendAndResponse(
       this.userServiceClient,
       'password:forgotverify',
       { verification: userData },
@@ -152,11 +146,11 @@ export class UserController {
   @Patch('/password/reset')
   @ApiOperation({
     summary: 'Step 3: User reset password. ',
-    description: fs.readFileSync('docs/users/password_reset.md').toString(),
+    description: Core.OperationReadMe('docs/users/password_reset.md'),
   })
   @ApiResponse({ type: UserResetPasswordDto, status: HttpStatus.OK })
   async resetPassword(@Body() userData: UserResetPasswordDto) {
-    const response = await SendAndResponseData(
+    const response = await Core.SendAndResponse(
       this.userServiceClient,
       'password:reset',
       userData,
@@ -170,7 +164,7 @@ export class UserController {
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Change password',
-    description: fs.readFileSync('docs/users/change_password.md').toString(),
+    description: Core.OperationReadMe('docs/users/change_password.md'),
   })
   @ApiResponse({ type: UserChangePasswordDto, status: HttpStatus.OK })
   async changePassword(
@@ -178,7 +172,7 @@ export class UserController {
     @Req() req: any,
   ) {
     const changeData = Object.assign(userData, req.user);
-    const response = await SendAndResponseData(
+    const response = await Core.SendAndResponse(
       this.userServiceClient,
       'password:change',
       changeData,
@@ -194,10 +188,10 @@ export class UserController {
   @ApiResponse({ type: UserDto, status: HttpStatus.OK })
   @ApiOperation({
     summary: 'User creation',
-    description: fs.readFileSync('docs/users/create.md').toString(),
+    description: Core.OperationReadMe('docs/users/create.md'),
   })
   async createUser(@Body() userData: UserDto): Promise<UserDto> {
-    const response = await SendAndResponseData(
+    const response = await Core.SendAndResponse(
       this.userServiceClient,
       'user:create',
       userData,
@@ -211,10 +205,10 @@ export class UserController {
   @UseGuards(AuthGuard, RolesGuard)
   @ApiOperation({
     summary: 'List of all users',
-    description: fs.readFileSync('docs/users/find_all.md').toString(),
+    description: Core.OperationReadMe('docs/users/find_all.md'),
   })
   async findAllUsers(): Promise<UsersListDto> {
-    const response = await SendAndResponseData(
+    const response = await Core.SendAndResponse(
       this.userServiceClient,
       'user:list',
       true,
@@ -231,7 +225,7 @@ export class UserController {
   @ApiQuery({ name: 'active', type: 'boolean', enum: ['true', 'false'] })
   @ApiOperation({
     summary: 'User archiving',
-    description: fs.readFileSync('docs/users/archive.md').toString(),
+    description: Core.OperationReadMe('docs/users/archive.md'),
   })
   async archiveUser(
     @Param('id') id: string,
@@ -244,7 +238,7 @@ export class UserController {
       active: active,
     };
     console.log(sendData);
-    const response = await SendAndResponseData(
+    const response = await Core.SendAndResponse(
       this.userServiceClient,
       'user:archive',
       sendData,
