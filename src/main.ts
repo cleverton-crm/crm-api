@@ -19,7 +19,7 @@ async function bootstrap() {
   const logger = new Logger('NestApplication');
   const configService = new ConfigService();
   const config = new DocumentBuilder()
-    .setTitle('Cleverdeus microservices')
+    .setTitle('Logistic CRM')
     .setDescription(fs.readFileSync('./docs/api.md').toString())
     .setVersion('1.0.0')
     .addBearerAuth()
