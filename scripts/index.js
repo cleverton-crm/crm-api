@@ -5,6 +5,7 @@ var pkg = require("../package.json");
 
 var args = process.argv.slice(2);
 
+
 var OPTIONS = {
   version: {
     commands: ["--version", "-V"],
