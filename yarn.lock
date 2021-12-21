@@ -1588,7 +1588,7 @@ create-require@^1.1.0:
 
 "crm-core@https://github.com/cleverton-crm/crm-core.git":
   version "1.0.3"
-  resolved "https://github.com/cleverton-crm/crm-core.git#358714819d2d4c5dd960437f51f0036f20366e17"
+  resolved "https://github.com/cleverton-crm/crm-core.git#9c502f0eb54cd7b599a8760af63b217e314c4c5d"
   dependencies:
     "@nestjs/common" "^8.2.4"
     "@nestjs/microservices" "^8.2.4"
@@ -3244,23 +3244,6 @@ methods@^1.1.2, methods@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/methods/-/methods-1.1.2.tgz#5529a4d67654134edcc5266656835b0f851afcee"
   integrity sha1-VSmk1nZUE07cxSZmVoNbD4Ua/O4=
-
-"micro-core@https://github.com/cleverton-crm/crm-core.git":
-  version "1.0.3"
-  resolved "https://github.com/cleverton-crm/crm-core.git#824abfa53de3de39f16675bafb0fcf8a5c9446b9"
-  dependencies:
-    "@nestjs/common" "^8.2.4"
-    "@nestjs/microservices" "^8.2.4"
-    "@nestjs/swagger" "^5.1.5"
-    amd-loader "^0.0.8"
-    dts-generator "^3.0.0"
-    qs "^6.6.0"
-    reflect-metadata "^0.1.13"
-    rimraf "^3.0.2"
-    rxjs "^7.4.0"
-    standard-version "^9.3.2"
-    tsd "^0.19.0"
-    typedoc "^0.22.10"
 
 micromatch@^4.0.0, micromatch@^4.0.4:
   version "4.0.4"
