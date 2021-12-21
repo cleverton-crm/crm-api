@@ -12,7 +12,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { cyan } from 'cli-color';
 import { ProfilePersonaDto } from '../dto/profile.dto';
-import { Core } from 'micro-core';
+import { Core } from 'crm-core';
 
 @ApiTags('Profile')
 @Controller('profile')

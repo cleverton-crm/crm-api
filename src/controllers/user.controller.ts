@@ -34,7 +34,7 @@ import {
 import { AuthGuard } from '../guards/auth.guard';
 import { RolesGuard } from '../guards/roles.guard';
 import { IpAddress } from '../decorators/ip.decorator';
-import { Core } from 'micro-core';
+import { Core } from 'crm-core';
 import { Roles } from '../decorators/roles.decorator';
 
 @ApiTags('User')

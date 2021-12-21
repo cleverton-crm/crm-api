@@ -18,7 +18,7 @@ import { cyan } from 'cli-color';
 import { Roles } from '../decorators/roles.decorator';
 import { RolesGuard } from '../guards/roles.guard';
 import { AuthGuard } from '../guards/auth.guard';
-import { Core } from 'micro-core';
+import { Core } from 'crm-core';
 
 @ApiTags('Roles')
 @Controller('roles')
