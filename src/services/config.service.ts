@@ -29,6 +29,14 @@ export class ConfigService {
 
       transport: Transport.TCP,
     };
+    this.config.companyService = {
+      options: {
+        port: process.env.COMPANY_SERVICE_PORT,
+        host: process.env.COMPANY_SERVICE_HOST,
+      },
+
+      transport: Transport.TCP,
+    };
 
     this.config.JwtService = {
       options: {
