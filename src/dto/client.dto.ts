@@ -14,7 +14,7 @@ export class ClientCompanySocialVoicesDto implements ClientCompany.SocialVoices{
 }
 
 export class ClientDto  implements ClientCompany.Persona{
-    @ApiProperty()
+
     attachments: Map<string, string>;
     birthDate: Date;
     comments: Map<string, string>;
@@ -34,5 +34,4 @@ export class ClientDto  implements ClientCompany.Persona{
     socials: Map<string, string>;
     voices: ClientCompany.SocialVoices;
     workPhone: string;
-
 }
