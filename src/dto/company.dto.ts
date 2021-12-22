@@ -1,4 +1,5 @@
 import {Company} from 'crm-core'
+import {ApiProperty} from "@nestjs/swagger";
 
 export class CompanyBankDto  implements Company.Bank{
     bank: string;
@@ -94,23 +95,41 @@ export class CompanyRequisitesDto implements Company.Requisites.CompanyName {
 }
 
 export class CompanyDto implements Company.About {
+    @ApiProperty()
     bankData: CompanyBankDto;
+    @ApiProperty()
     client: Array<string>;
+    @ApiProperty()
     companyLocation: string;
+    @ApiProperty()
     employeesCount: number;
+    @ApiProperty()
     factLocation: string;
+    @ApiProperty()
     fax: string;
+    @ApiProperty()
     name: string;
+    @ApiProperty()
     object: "company";
+    @ApiProperty()
     owner: string;
+    @ApiProperty()
     ownership: string | Company.Ownership;
+    @ApiProperty()
     permissions: string;
+    @ApiProperty()
     phoneNumber: string;
+    @ApiProperty()
     phones: Array<string>;
+    @ApiProperty()
     postLocation: string;
+    @ApiProperty()
     requisites: CompanyRequisitesDto;
+    @ApiProperty()
     source: string;
+    @ApiProperty()
     tags: Array<string>;
+    @ApiProperty()
     web: string;
 
 }
