@@ -2,108 +2,205 @@ import {Company} from 'crm-core'
 import {ApiProperty} from "@nestjs/swagger";
 
 export class CompanyBankDto  implements Company.Bank{
+    @ApiProperty()
     bank: string;
+    @ApiProperty()
     bankAddress: string;
+    @ApiProperty()
     bik: string;
+    @ApiProperty()
     correspondent: string;
+    @ApiProperty()
     payment: string;
 
 }
 export class CompanyRequisitesNameDto implements Company.Requisites.Name{
+    @ApiProperty()
     full: string;
+    @ApiProperty()
     full_with_opf: string;
+    @ApiProperty()
     latin: string | null;
+    @ApiProperty()
     short: string;
+    @ApiProperty()
     short_with_opf: string;
 
 }
 export class CompanyRequisitesInfoDto implements Company.Requisites.Info{
+    @ApiProperty()
     area: null;
+    @ApiProperty()
     area_fias_id: null;
+    @ApiProperty()
     area_kladr_id: null;
+    @ApiProperty()
     area_type: null;
+    @ApiProperty()
     area_type_full: null;
+    @ApiProperty()
     area_with_type: null;
+    @ApiProperty()
     beltway_distance: string | null;
+    @ApiProperty()
     beltway_hit: string;
+    @ApiProperty()
     block: string | null;
+    @ApiProperty()
     block_type: string | null;
+    @ApiProperty()
     block_type_full: string | null;
+    @ApiProperty()
     capital_marker: string;
+    @ApiProperty()
     city: string;
+    @ApiProperty()
     city_area: string;
+    @ApiProperty()
     city_district: string;
+    @ApiProperty()
     city_district_fias_id: string | null;
+    @ApiProperty()
     city_district_kladr_id: string | null;
+    @ApiProperty()
     city_district_type: string;
+    @ApiProperty()
     city_district_type_full: string;
+    @ApiProperty()
     city_district_with_type: string;
+    @ApiProperty()
     city_fias_id: string;
+    @ApiProperty()
     city_kladr_id: string;
+    @ApiProperty()
     city_type: string;
+    @ApiProperty()
     city_type_full: string;
+    @ApiProperty()
     city_with_type: string;
+    @ApiProperty()
     country: string;
+    @ApiProperty()
     country_iso_code: string;
+    @ApiProperty()
     entrance: string | null;
+    @ApiProperty()
     federal_district: string;
+    @ApiProperty()
     fias_actuality_state: string;
+    @ApiProperty()
     fias_code: string;
+    @ApiProperty()
     fias_id: string;
+    @ApiProperty()
     fias_level: string;
+    @ApiProperty()
     flat: string | null;
+    @ApiProperty()
     flat_area: string | null;
+    @ApiProperty()
     flat_cadnum: string | null;
+    @ApiProperty()
     flat_fias_id: string | null;
+    @ApiProperty()
     flat_price: string | null;
+    @ApiProperty()
     flat_type: string | null;
+    @ApiProperty()
     flat_type_full: string | null;
+    @ApiProperty()
     floor: string | null;
+    @ApiProperty()
     geo_lat: string;
+    @ApiProperty()
     geo_lon: string;
+    @ApiProperty()
     geoname_id: string;
+    @ApiProperty()
     history_values: string | null;
+    @ApiProperty()
     house: string;
+    @ApiProperty()
     house_cadnum: string | null;
+    @ApiProperty()
     house_fias_id: string;
+    @ApiProperty()
     house_kladr_id: string;
+    @ApiProperty()
     house_type: string;
+    @ApiProperty()
     house_type_full: string;
+    @ApiProperty()
     kladr_id: string;
+    @ApiProperty()
     metro: Array<any>;
+    @ApiProperty()
     okato: string;
+    @ApiProperty()
     oktmo: string;
+    @ApiProperty()
     postal_box: string | null;
+    @ApiProperty()
     postal_code: string;
+    @ApiProperty()
     qc: string;
+    @ApiProperty()
     qc_complete: string | null;
+    @ApiProperty()
     qc_geo: string;
+    @ApiProperty()
     qc_house: string | null;
+    @ApiProperty()
     region: string;
+    @ApiProperty()
     region_fias_id: string;
+    @ApiProperty()
     region_iso_code: string;
+    @ApiProperty()
     region_kladr_id: string;
+    @ApiProperty()
     region_type: string;
+    @ApiProperty()
     region_type_full: string;
+    @ApiProperty()
     region_with_type: string;
+    @ApiProperty()
     settlement: string | null;
+    @ApiProperty()
     settlement_fias_id: string | null;
+    @ApiProperty()
     settlement_kladr_id: string | null;
+    @ApiProperty()
     settlement_type: string | null;
+    @ApiProperty()
     settlement_type_full: string | null;
+    @ApiProperty()
     settlement_with_type: string | null;
+    @ApiProperty()
     source: string;
+    @ApiProperty()
     square_meter_price: string | null;
+    @ApiProperty()
     street: string;
+    @ApiProperty()
     street_fias_id: string;
+    @ApiProperty()
     street_kladr_id: string;
+    @ApiProperty()
     street_type: string;
+    @ApiProperty()
     street_type_full: string;
+    @ApiProperty()
     street_with_type: string;
+    @ApiProperty()
     tax_office: string;
+    @ApiProperty()
     tax_office_legal: string;
+    @ApiProperty()
     timezone: string;
+    @ApiProperty()
     unparsed_parts: string | null;
+
 
 }
 
