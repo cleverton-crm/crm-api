@@ -29,17 +29,17 @@ export class CompanyRequisitesNameDto implements Company.Requisites.Name{
 }
 export class CompanyRequisitesInfoDto implements Company.Requisites.Info{
     @ApiProperty()
-    area: null;
+    area: string | null;
     @ApiProperty()
-    area_fias_id: null;
+    area_fias_id: string | null;
     @ApiProperty()
-    area_kladr_id: null;
+    area_kladr_id:string | null;
     @ApiProperty()
-    area_type: null;
+    area_type: string | null;
     @ApiProperty()
-    area_type_full: null;
+    area_type_full: string | null;
     @ApiProperty()
-    area_with_type: null;
+    area_with_type:string | null;
     @ApiProperty()
     beltway_distance: string | null;
     @ApiProperty()
