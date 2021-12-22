@@ -11,6 +11,7 @@ import { RolesController } from './controllers/roles.controller';
 import * as path from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { ProfileController } from './controllers/profile.controller';
+import {CompanyController} from "./controllers/company.controller";
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { ProfileController } from './controllers/profile.controller';
       useClass: JwtConfigService,
     }),
   ],
-  controllers: [UserController, RolesController, ProfileController],
+  controllers: [UserController, RolesController, ProfileController, CompanyController],
   providers: [
     ConfigService,
     {
@@ -57,6 +58,14 @@ import { ProfileController } from './controllers/profile.controller';
       },
       inject: [ConfigService],
     },
+    {
+      provide: 'COMPANY_SERVICE',
+      useFactory: (configService: ConfigService) => {
+        const companyServiceOptions = configService.get('companyService');
+        return ClientProxyFactory.create(companyServiceOptions);
+      },
+      inject: [ConfigService],
+    }
   ],
 })
 export class AppModule {}
