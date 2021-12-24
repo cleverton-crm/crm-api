@@ -4,17 +4,18 @@ import {ClientProxy} from "@nestjs/microservices";
 import {Core} from "crm-core";
 import { cyan } from 'cli-color';
 import {CompanyDto} from "../dto/company.dto";
+import {SendAndResponseData} from "../helpers/global";
 
 @ApiTags('Clients')
 @Controller('clients')
-export class CompanyController {
+export class ClientController {
     private logger: Logger;
 
     constructor(
         @Inject('COMPANY_SERVICE')
         private readonly companyServiceClient: ClientProxy,
     ) {
-        this.logger = new Logger(CompanyController.name);
+        this.logger = new Logger(ClientController.name);
     }
 
     /**
@@ -30,7 +31,7 @@ export class CompanyController {
     async createPersona(
         @Body() companyData: CompanyDto,
     ): Promise<Core.Response.Answer> {
-        const response = await Core.SendAndResponse(
+        const response = await SendAndResponseData(
             this.companyServiceClient,
             'company:create',
             companyData,

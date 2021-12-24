@@ -19,6 +19,7 @@ import { Roles } from '../decorators/roles.decorator';
 import { RolesGuard } from '../guards/roles.guard';
 import { AuthGuard } from '../guards/auth.guard';
 import { Core } from 'crm-core';
+import {SendAndResponseData} from "../helpers/global";
 
 @ApiTags('Roles')
 @Controller('roles')
@@ -36,7 +37,7 @@ export class RolesController {
     description: Core.OperationReadMe('docs/roles/create.md'),
   })
   async create(@Body() rolesData: RolesDto) {
-    const response = await Core.SendAndResponse(
+    const response = await SendAndResponseData(
       this.rolesServiceClient,
       'roles:create',
       rolesData,
@@ -65,7 +66,7 @@ export class RolesController {
       id: id,
       ...rolesData,
     };
-    const response = await Core.SendAndResponse(
+    const response = await SendAndResponseData(
       this.rolesServiceClient,
       'roles:update',
       sendData,
@@ -83,7 +84,7 @@ export class RolesController {
     description: Core.OperationReadMe('docs/roles/list.md'),
   })
   async findAllRoles(): Promise<ListRolesDto[]> {
-    const response = await Core.SendAndResponse(
+    const response = await SendAndResponseData(
       this.rolesServiceClient,
       'roles:list',
       true,

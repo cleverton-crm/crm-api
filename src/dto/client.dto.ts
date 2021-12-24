@@ -1,7 +1,7 @@
-import {ClientCompany} from "crm-core";
+import {Core} from "crm-core";
 import {ApiProperty} from "@nestjs/swagger";
 
-export class ClientCompanySocialVoicesDto implements ClientCompany.SocialVoices{
+export class ClientCompanySocialVoicesDto implements Core.Client.SocialVoices{
     discord: string | null;
     fb: string | null;
     skype: string | null;
@@ -13,7 +13,7 @@ export class ClientCompanySocialVoicesDto implements ClientCompany.SocialVoices{
 
 }
 
-export class ClientDto  implements ClientCompany.Persona{
+export class ClientDto  implements Core.Client.Schema{
 
     attachments: Map<string, string>;
     birthDate: Date;
@@ -27,11 +27,11 @@ export class ClientDto  implements ClientCompany.Persona{
     middle: string;
     object: "client";
     owner: string;
-    payerType: string | ClientCompany.PayerType;
+    payerType: string | Core.Client.PayerType;
     permissions: Map<string, any>;
     phones: Array<string>;
     roleInCompany: string;
     socials: Map<string, string>;
-    voices: ClientCompany.SocialVoices;
+    voices: Core.Client.SocialVoices;
     workPhone: string;
 }

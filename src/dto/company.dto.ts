@@ -1,7 +1,7 @@
-import {Company} from 'crm-core'
+import {Core} from 'crm-core'
 import {ApiProperty} from "@nestjs/swagger";
 
-export class CompanyBankDto  implements Company.Bank{
+export class CompanyBankDto  implements Core.Company.Bank{
     @ApiProperty()
     bank: string;
     @ApiProperty()
@@ -14,7 +14,7 @@ export class CompanyBankDto  implements Company.Bank{
     payment: string;
 
 }
-export class CompanyRequisitesNameDto implements Company.Requisites.Name{
+export class CompanyRequisitesNameDto implements Core.Company.Requisites.Name{
     @ApiProperty()
     full: string;
     @ApiProperty()
@@ -27,7 +27,7 @@ export class CompanyRequisitesNameDto implements Company.Requisites.Name{
     short_with_opf: string;
 
 }
-export class CompanyRequisitesInfoDto implements Company.Requisites.Info{
+export class CompanyRequisitesInfoDto implements Core.Company.Requisites.Info{
     @ApiProperty()
     area: string | null;
     @ApiProperty()
@@ -204,7 +204,7 @@ export class CompanyRequisitesInfoDto implements Company.Requisites.Info{
 
 }
 
-export class CompanyRequisitesAddressesDto implements  Company.Requisites.Address{
+export class CompanyRequisitesAddressesDto implements  Core.Company.Requisites.Address{
     @ApiProperty()
     data: CompanyRequisitesInfoDto;
     @ApiProperty()
@@ -214,7 +214,7 @@ export class CompanyRequisitesAddressesDto implements  Company.Requisites.Addres
 
 }
 
-export class CompanyManagementDto implements Company.Management{
+export class CompanyManagementDto implements Core.Company.Management{
     @ApiProperty()
     disqualified: string | null;
     @ApiProperty()
@@ -223,7 +223,7 @@ export class CompanyManagementDto implements Company.Management{
     post: string;
 }
 
-export class CompanyRequisitesOPFDto implements Company.Requisites.OPF{
+export class CompanyRequisitesOPFDto implements Core.Company.Requisites.OPF{
     @ApiProperty()
     code: string;
     @ApiProperty()
@@ -234,7 +234,7 @@ export class CompanyRequisitesOPFDto implements Company.Requisites.OPF{
     type: string;
 
 }
-export class CompanyRequisitesStateDto implements Company.Requisites.State{
+export class CompanyRequisitesStateDto implements Core.Company.Requisites.State{
     @ApiProperty()
     actuality_date: number;
     @ApiProperty()
@@ -248,7 +248,7 @@ export class CompanyRequisitesStateDto implements Company.Requisites.State{
 
 }
 
-export class CompanyRequisitesUsDto implements Company.Requisites.CompanyUs{
+export class CompanyRequisitesUsDto implements Core.Company.Requisites.CompanyUs{
     @ApiProperty()
     address: CompanyRequisitesAddressesDto;
     @ApiProperty()
@@ -322,7 +322,7 @@ export class CompanyRequisitesUsDto implements Company.Requisites.CompanyUs{
 
 }
 
-export class CompanyRequisitesDto implements Company.Requisites.CompanyName {
+export class CompanyRequisitesDto implements Core.Company.Requisites.CompanyName {
     @ApiProperty()
     companyId: string;
     @ApiProperty({type: CompanyRequisitesUsDto})
@@ -334,7 +334,8 @@ export class CompanyRequisitesDto implements Company.Requisites.CompanyName {
 
 }
 
-export class CompanyDto implements Company.About {
+export class CompanyDto implements Core.Company.Schema {
+    clients: string[];
     @ApiProperty({type: CompanyBankDto})
     bankData: CompanyBankDto;
     @ApiProperty()
@@ -354,7 +355,7 @@ export class CompanyDto implements Company.About {
     @ApiProperty()
     owner: string;
     @ApiProperty()
-    ownership: string | Company.Ownership;
+    ownership: string | Core.Company.Ownership;
     @ApiProperty()
     permissions: string;
     @ApiProperty()
@@ -371,5 +372,6 @@ export class CompanyDto implements Company.About {
     tags: Array<string>;
     @ApiProperty()
     web: string;
+    active: boolean;
 
 }

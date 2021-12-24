@@ -36,6 +36,7 @@ import { RolesGuard } from '../guards/roles.guard';
 import { IpAddress } from '../decorators/ip.decorator';
 import { Core } from 'crm-core';
 import { Roles } from '../decorators/roles.decorator';
+import {SendAndResponseData} from "../helpers/global";
 
 @ApiTags('User')
 @Controller('users')
@@ -53,7 +54,7 @@ export class UserController {
     description: Core.OperationReadMe('docs/users/register.md'),
   })
   async registration(@Body() userData: UserDto): Promise<any> {
-    const response = await Core.SendAndResponse(
+    const response = await SendAndResponseData(
       this.userServiceClient,
       'user:register',
       userData,
@@ -69,7 +70,7 @@ export class UserController {
   })
   async login(@Body() userData: UserDto): Promise<UserResponseTokensDto> {
     userData['type'] = 'users';
-    const response = await Core.SendAndResponse(
+    const response = await SendAndResponseData(
       this.userServiceClient,
       'user:login',
       userData,
@@ -85,7 +86,7 @@ export class UserController {
     description: Core.OperationReadMe('docs/users/verify.md'),
   })
   async verificationUser(@Query('secretKey') secretKey: string) {
-    const response = await Core.SendAndResponse(
+    const response = await SendAndResponseData(
       this.userServiceClient,
       'user:verify',
       secretKey,
@@ -103,7 +104,7 @@ export class UserController {
     @IpAddress() ip: Core.Geo.Location,
     @Body() userData: UserForgotPasswordDto,
   ) {
-    const response = await Core.SendAndResponse(
+    const response = await SendAndResponseData(
       this.userServiceClient,
       'password:forgot',
       { ...userData, ...ip },
@@ -118,7 +119,7 @@ export class UserController {
     description: Core.OperationReadMe('docs/users/refresh_verify.md'),
   })
   async refreshVerify(@Body() userData: UserForgotPasswordDto) {
-    const response = await Core.SendAndResponse(
+    const response = await SendAndResponseData(
       this.userServiceClient,
       'password:refreshverify',
       userData,
@@ -134,7 +135,7 @@ export class UserController {
   })
   @ApiQuery({ type: String, name: 'verification', required: true })
   async forgotVerify(@Query('verification') userData: string) {
-    const response = await Core.SendAndResponse(
+    const response = await SendAndResponseData(
       this.userServiceClient,
       'password:forgotverify',
       { verification: userData },
@@ -150,7 +151,7 @@ export class UserController {
   })
   @ApiResponse({ type: UserResetPasswordDto, status: HttpStatus.OK })
   async resetPassword(@Body() userData: UserResetPasswordDto) {
-    const response = await Core.SendAndResponse(
+    const response = await SendAndResponseData(
       this.userServiceClient,
       'password:reset',
       userData,
@@ -172,7 +173,7 @@ export class UserController {
     @Req() req: any,
   ) {
     const changeData = Object.assign(userData, req.user);
-    const response = await Core.SendAndResponse(
+    const response = await SendAndResponseData(
       this.userServiceClient,
       'password:change',
       changeData,
@@ -190,8 +191,8 @@ export class UserController {
     summary: 'User creation',
     description: Core.OperationReadMe('docs/users/create.md'),
   })
-  async createUser(@Body() userData: UserDto): Promise<UserDto> {
-    const response = await Core.SendAndResponse(
+  async createUser(@Body() userData: UserDto): Promise<any> {
+    const response = await SendAndResponseData(
       this.userServiceClient,
       'user:create',
       userData,
@@ -208,7 +209,7 @@ export class UserController {
     description: Core.OperationReadMe('docs/users/find_all.md'),
   })
   async findAllUsers(): Promise<UsersListDto> {
-    const response = await Core.SendAndResponse(
+    const response = await SendAndResponseData(
       this.userServiceClient,
       'user:list',
       true,
@@ -238,7 +239,7 @@ export class UserController {
       active: active,
     };
     console.log(sendData);
-    const response = await Core.SendAndResponse(
+    const response = await SendAndResponseData(
       this.userServiceClient,
       'user:archive',
       sendData,

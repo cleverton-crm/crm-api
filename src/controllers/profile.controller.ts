@@ -13,6 +13,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { cyan } from 'cli-color';
 import { ProfilePersonaDto } from '../dto/profile.dto';
 import { Core } from 'crm-core';
+import {SendAndResponseData} from "../helpers/global";
 
 @ApiTags('Profile')
 @Controller('profile')
@@ -39,7 +40,7 @@ export class ProfileController {
   async createPersona(
     @Body() profileData: ProfilePersonaDto,
   ): Promise<Core.Response.Answer> {
-    const response = await Core.SendAndResponse(
+    const response = await SendAndResponseData(
       this.profileServiceClient,
       'profile:empty',
       profileData,
@@ -55,7 +56,7 @@ export class ProfileController {
   })
   @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
   async updatePersona(@Body() profileData: ProfilePersonaDto) {
-    const response = await Core.SendAndResponse(
+    const response = await SendAndResponseData(
       this.profileServiceClient,
       'profile:update',
       profileData,
@@ -75,7 +76,7 @@ export class ProfileController {
   })
   @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
   async insertOrUpdateAddressPersona(@Body() profileData: ProfilePersonaDto) {
-    const response = await Core.SendAndResponse(
+    const response = await SendAndResponseData(
       this.profileServiceClient,
       'profile:address',
       profileData,
@@ -95,7 +96,7 @@ export class ProfileController {
   })
   @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
   async updateAvatarPersona(@Body() profileData: ProfilePersonaDto) {
-    const response = await Core.SendAndResponse(
+    const response = await SendAndResponseData(
       this.profileServiceClient,
       'profile:avatar',
       profileData,
@@ -111,7 +112,7 @@ export class ProfileController {
   })
   @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
   async updateSocialPersona(@Body() profileData: ProfilePersonaDto) {
-    const response = await Core.SendAndResponse(
+    const response = await SendAndResponseData(
       this.profileServiceClient,
       'profile:address',
       profileData,
@@ -127,7 +128,7 @@ export class ProfileController {
   })
   @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
   async myDataPersona(@Body() profileData: ProfilePersonaDto) {
-    const response = await Core.SendAndResponse(
+    const response = await SendAndResponseData(
       this.profileServiceClient,
       'profile:address',
       profileData,

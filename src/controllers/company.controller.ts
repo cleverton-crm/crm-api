@@ -22,6 +22,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { Core } from 'crm-core';
 import { cyan } from 'cli-color';
 import { CompanyDto } from '../dto/company.dto';
+import {SendAndResponseData} from "../helpers/global";
 
 @ApiTags('Companies')
 @Controller('companies')
@@ -48,7 +49,7 @@ export class CompanyController {
   async createCompany(
     @Body() companyData: CompanyDto,
   ): Promise<Core.Response.Answer> {
-    const response = await Core.SendAndResponse(
+    const response = await SendAndResponseData(
       this.companyServiceClient,
       'company:create',
       companyData,
@@ -63,7 +64,7 @@ export class CompanyController {
     description: Core.OperationReadMe('docs/company/list.md'),
   })
   async listCompanies() {
-    const response = await Core.SendAndResponse(
+    const response = await SendAndResponseData(
       this.companyServiceClient,
       'company:list',
       true,
@@ -78,7 +79,7 @@ export class CompanyController {
     description: Core.OperationReadMe('docs/company/find.md'),
   })
   async findCompany(@Param('id') id: string) {
-    const response = await Core.SendAndResponse(
+    const response = await SendAndResponseData(
       this.companyServiceClient,
       'company:find',
       id,
@@ -107,7 +108,7 @@ export class CompanyController {
       id: id,
       active: active,
     };
-    const response = await Core.SendAndResponse(
+    const response = await SendAndResponseData(
       this.companyServiceClient,
       'company:archive',
       sendData,
