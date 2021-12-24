@@ -1,8 +1,15 @@
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpStatus,
   Inject,
   Logger,
@@ -49,17 +56,49 @@ export class CompanyController {
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
+
+  @Get('/')
+  @ApiOperation({
+    summary: 'Список всех компаний',
+    description: Core.OperationReadMe('docs/company/list.md'),
+  })
+  async listCompanies() {
+    const response = await Core.SendAndResponse(
+      this.companyServiceClient,
+      'company:list',
+      true,
+    );
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+
+  @Get('/:id')
+  @ApiOperation({
+    summary: 'Поиск компании по ID',
+    description: Core.OperationReadMe('docs/company/find.md'),
+  })
+  async findCompany(@Param('id') id: string) {
+    const response = await Core.SendAndResponse(
+      this.companyServiceClient,
+      'company:find',
+      id,
+    );
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+
   /**
    * Создание компании
    * @param id
    * @param active
    */
   @Delete('/:id')
+  @ApiParam({ name: 'id', type: 'string' })
+  @ApiQuery({ name: 'active', type: 'boolean', enum: ['true', 'false'] })
   @ApiOperation({
     summary: 'Архивация компании',
     description: Core.OperationReadMe('docs/company/archive.md'),
   })
-  @ApiResponse({ type: CompanyDto, status: HttpStatus.OK })
   async archiveCompany(
     @Param('id') id: string,
     @Query('active') active: boolean,
