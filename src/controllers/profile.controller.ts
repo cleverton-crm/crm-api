@@ -5,15 +5,18 @@ import {
   HttpStatus,
   Inject,
   Logger,
+  Param,
   Patch,
   Post,
+  Req,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { cyan } from 'cli-color';
 import { ProfilePersonaDto } from '../dto/profile.dto';
 import { Core } from 'crm-core';
-import {SendAndResponseData} from "../helpers/global";
+import { SendAndResponseData } from '../helpers/global';
+import { Auth } from '../decorators/auth.decorator';
 
 @ApiTags('Profile')
 @Controller('profile')
@@ -36,6 +39,7 @@ export class ProfileController {
     summary: 'Создание профиля пользователя',
     description: Core.OperationReadMe('docs/profile/create.md'),
   })
+  @Auth('Admin', 'Manager')
   @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
   async createPersona(
     @Body() profileData: ProfilePersonaDto,
@@ -49,13 +53,18 @@ export class ProfileController {
     return response;
   }
 
-  @Patch('/me/update')
+  @Patch('/:id/update')
   @ApiOperation({
     summary: 'Фото или аватар пользователя',
     description: Core.OperationReadMe('docs/profile/update.md'),
   })
+  @Auth('Admin', 'Manager')
   @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
-  async updatePersona(@Body() profileData: ProfilePersonaDto) {
+  async updatePersona(
+    @Param('id') id: string,
+    @Body() profileData: ProfilePersonaDto,
+  ) {
+    profileData.id = id;
     const response = await SendAndResponseData(
       this.profileServiceClient,
       'profile:update',
@@ -69,13 +78,18 @@ export class ProfileController {
    * Обновление или добавление информации о месте проживания
    * @param profileData
    */
-  @Patch('/me/update/location')
+  @Patch('/:id/update/location')
   @ApiOperation({
     summary: 'Данные о месте проживания',
     description: Core.OperationReadMe('docs/profile/location.md'),
   })
+  @Auth('Admin', 'Manager')
   @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
-  async insertOrUpdateAddressPersona(@Body() profileData: ProfilePersonaDto) {
+  async insertOrUpdateAddressPersona(
+    @Param('id') id: string,
+    @Body() profileData: ProfilePersonaDto,
+  ) {
+    profileData.id = id;
     const response = await SendAndResponseData(
       this.profileServiceClient,
       'profile:address',
@@ -89,13 +103,18 @@ export class ProfileController {
    * Обновление или замена фотографии пользователя
    * @param profileData
    */
-  @Patch('/me/update/avatar')
+  @Patch('/:id/update/avatar')
   @ApiOperation({
     summary: 'Фото или аватар пользователя',
     description: Core.OperationReadMe('docs/profile/avatar.md'),
   })
+  @Auth('Admin', 'Manager')
   @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
-  async updateAvatarPersona(@Body() profileData: ProfilePersonaDto) {
+  async updateAvatarPersona(
+    @Param('id') id: string,
+    @Body() profileData: ProfilePersonaDto,
+  ) {
+    profileData.id = id;
     const response = await SendAndResponseData(
       this.profileServiceClient,
       'profile:avatar',
@@ -105,13 +124,18 @@ export class ProfileController {
     return response;
   }
 
-  @Patch('/me/update/socials')
+  @Patch('/:id/update/socials')
   @ApiOperation({
     summary: 'Социальные сети пользователя',
     description: Core.OperationReadMe('docs/profile/social.md'),
   })
   @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
-  async updateSocialPersona(@Body() profileData: ProfilePersonaDto) {
+  @Auth('Admin', 'Manager')
+  async updateSocialPersona(
+    @Param('id') id: string,
+    @Body() profileData: ProfilePersonaDto,
+  ) {
+    profileData.id = id;
     const response = await SendAndResponseData(
       this.profileServiceClient,
       'profile:address',
@@ -126,8 +150,10 @@ export class ProfileController {
     summary: 'Данные пользователя',
     description: Core.OperationReadMe('docs/profile/profile.md'),
   })
+  @Auth('Admin', 'Manager')
   @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
-  async myDataPersona(@Body() profileData: ProfilePersonaDto) {
+  async myDataPersona(@Req() req: any, @Body() profileData: ProfilePersonaDto) {
+    profileData.id = req.user.id;
     const response = await SendAndResponseData(
       this.profileServiceClient,
       'profile:address',

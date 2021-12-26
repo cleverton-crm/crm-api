@@ -21,6 +21,7 @@ import { cyan } from 'cli-color';
 import { CompanyDto } from '../dto/company.dto';
 import { ListSettingsDto, SettingsDto } from '../dto/settings.dto';
 import { SendAndResponseData } from '../helpers/global';
+import { Auth } from '../decorators/auth.decorator';
 
 @ApiTags('Settings')
 @Controller('settings')
@@ -43,6 +44,7 @@ export class SettingController {
     summary: 'Указание настройки',
     description: Core.OperationReadMe('docs/settings/set.md'),
   })
+  @Auth('Admin')
   @ApiResponse({ type: SettingsDto, status: HttpStatus.OK })
   async set(@Body() settingDto: SettingsDto): Promise<Core.Response.Answer> {
     const response = await SendAndResponseData(

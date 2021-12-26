@@ -8,6 +8,7 @@ export class ProfileDto {
 }
 
 export class ProfilePersonaDto {
+  id: string;
   @ApiProperty()
   title: string | null;
   @ApiProperty()
