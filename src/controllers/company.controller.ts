@@ -22,7 +22,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { Core } from 'crm-core';
 import { cyan } from 'cli-color';
 import { CompanyDto } from '../dto/company.dto';
-import {SendAndResponseData} from "../helpers/global";
+import { SendAndResponseData } from '../helpers/global';
 
 @ApiTags('Companies')
 @Controller('companies')
@@ -89,7 +89,7 @@ export class CompanyController {
   }
 
   /**
-   * Создание компании
+   * Архивация компании
    * @param id
    * @param active
    */

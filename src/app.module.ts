@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import {
+  ClientController,
   CompanyController,
   ProfileController,
   RolesController,
@@ -37,6 +38,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
     ProfileController,
     CompanyController,
     SettingController,
+    ClientController,
   ],
   providers: [
     ConfigService,
@@ -73,6 +75,14 @@ import { ServeStaticModule } from '@nestjs/serve-static';
       useFactory: (configService: ConfigService) => {
         const companyServiceOptions = configService.get('companyService');
         return ClientProxyFactory.create(companyServiceOptions);
+      },
+      inject: [ConfigService],
+    },
+    {
+      provide: 'CLIENTS_SERVICE',
+      useFactory: (configService: ConfigService) => {
+        const clientServiceOptions = configService.get('clientService');
+        return ClientProxyFactory.create(clientServiceOptions);
       },
       inject: [ConfigService],
     },
