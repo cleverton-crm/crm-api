@@ -79,14 +79,6 @@ import { ServeStaticModule } from '@nestjs/serve-static';
       inject: [ConfigService],
     },
     {
-      provide: 'CLIENTS_SERVICE',
-      useFactory: (configService: ConfigService) => {
-        const clientServiceOptions = configService.get('clientService');
-        return ClientProxyFactory.create(clientServiceOptions);
-      },
-      inject: [ConfigService],
-    },
-    {
       provide: 'SETTINGS_SERVICE',
       useFactory: (configService: ConfigService) => {
         const settingServiceOptions = configService.get('settingService');

@@ -29,7 +29,7 @@ export class ClientController {
   private logger: Logger;
 
   constructor(
-    @Inject('CLIENTS_SERVICE')
+    @Inject('COMPANY_SERVICE')
     private readonly personaServiceClient: ClientProxy,
   ) {
     this.logger = new Logger(ClientController.name);
