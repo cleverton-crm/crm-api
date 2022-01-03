@@ -123,3 +123,14 @@ export class RefreshAccessTokenDto {
   })
   readonly access: string;
 }
+
+export class ResponseAccessTokenDto {
+  @ApiProperty()
+  statusCode: number;
+  @ApiProperty()
+  message: string;
+  @ApiProperty({
+    description: 'Return access token',
+  })
+  readonly token: ResponseAccessTokenDto;
+}

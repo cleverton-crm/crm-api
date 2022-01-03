@@ -23,10 +23,12 @@ import {
   ApiQuery,
   ApiResponse,
   ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import {
   RefreshAccessTokenDto,
   RefreshTokenDto,
+  ResponseAccessTokenDto,
   UserChangePasswordDto,
   UserDto,
   UserForgotPasswordDto,
@@ -237,10 +239,11 @@ export class UserController {
   @ApiOperation({
     summary: 'Obtaining an access token in the presence of a refresh token',
   })
-  @ApiResponse({ status: HttpStatus.OK, type: RefreshAccessTokenDto })
+  @ApiResponse({ status: HttpStatus.OK, type: ResponseAccessTokenDto })
+  @ApiUnauthorizedResponse({ status: HttpStatus.UNAUTHORIZED })
   async refreshAccessToken(
     @Body() refreshTokenDto: RefreshTokenDto,
-  ): Promise<RefreshAccessTokenDto> {
+  ): Promise<ResponseAccessTokenDto> {
     const response = await SendAndResponseData(
       this.userServiceClient,
       'user:refresh:token',
