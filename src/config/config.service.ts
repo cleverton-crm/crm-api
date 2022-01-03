@@ -37,6 +37,14 @@ export class ConfigService {
 
       transport: Transport.TCP,
     };
+    this.config.clientService = {
+      options: {
+        port: process.env.CLIENT_SERVICE_PORT,
+        host: process.env.CLIENT_SERVICE_HOST,
+      },
+
+      transport: Transport.TCP,
+    };
     this.config.settingService = {
       options: {
         port: process.env.SETTINGS_SERVICE_PORT,

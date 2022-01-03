@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import {
+  ClientController,
   CompanyController,
   ProfileController,
   RolesController,
@@ -37,6 +38,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
     ProfileController,
     CompanyController,
     SettingController,
+    ClientController,
   ],
   providers: [
     ConfigService,
