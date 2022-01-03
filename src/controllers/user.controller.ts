@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   HttpStatus,
   Inject,
   Logger,
@@ -24,6 +25,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import {
+  RefreshAccessTokenDto,
+  RefreshTokenDto,
   UserChangePasswordDto,
   UserDto,
   UserForgotPasswordDto,
@@ -36,7 +39,7 @@ import { RolesGuard } from '../guards/roles.guard';
 import { IpAddress } from '../decorators/ip.decorator';
 import { Core } from 'crm-core';
 import { Roles } from '../decorators/roles.decorator';
-import {SendAndResponseData} from "../helpers/global";
+import { SendAndResponseData } from '../helpers/global';
 
 @ApiTags('User')
 @Controller('users')
@@ -48,6 +51,9 @@ export class UserController {
     this.logger = new Logger(UserController.name);
   }
 
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  /** Registration */
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   @Post('/registration')
   @ApiOperation({
     summary: 'Sing up User in to application',
@@ -63,6 +69,9 @@ export class UserController {
     return response;
   }
 
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  /** Login */
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   @Post('/login')
   @ApiOperation({
     summary: 'Sing in User in application',
@@ -80,6 +89,9 @@ export class UserController {
     return response;
   }
 
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  /** Email verify */
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   @Get('/verify')
   @ApiOperation({
     summary: 'User verification using a link to email',
@@ -95,6 +107,9 @@ export class UserController {
     return response;
   }
 
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  /** Forgot Password */
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   @Patch('/password/forgot')
   @ApiOperation({
     summary: 'Step 1: Forgotten password recovery',
@@ -113,6 +128,9 @@ export class UserController {
     return response;
   }
 
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  /** Password refresh verify */
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   @Patch('/password/refresh/verify')
   @ApiOperation({
     summary: 'Refresh request link for reset password',
@@ -128,6 +146,9 @@ export class UserController {
     return response;
   }
 
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  /** Password forgot verify */
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   @Patch('/password/forgot/verify')
   @ApiOperation({
     summary: 'Step 2: User verification using a link to email. ',
@@ -144,6 +165,9 @@ export class UserController {
     return response;
   }
 
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  /** Password reset */
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   @Patch('/password/reset')
   @ApiOperation({
     summary: 'Step 3: User reset password. ',
@@ -160,6 +184,9 @@ export class UserController {
     return response;
   }
 
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  /** Change password */
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   @Patch('/change/password')
   @UseGuards(AuthGuard, RolesGuard)
   @ApiBearerAuth()
@@ -182,6 +209,9 @@ export class UserController {
     return response;
   }
 
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  /** Create user  */
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   @Post('/create')
   @ApiBearerAuth()
   @UseGuards(AuthGuard, RolesGuard)
@@ -201,6 +231,28 @@ export class UserController {
     return response;
   }
 
+  @Post('/refresh-access-token')
+  @UseGuards(RolesGuard, AuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Obtaining an access token in the presence of a refresh token',
+  })
+  @ApiResponse({ status: HttpStatus.OK, type: RefreshAccessTokenDto })
+  async refreshAccessToken(
+    @Body() refreshTokenDto: RefreshTokenDto,
+  ): Promise<RefreshAccessTokenDto> {
+    const response = await SendAndResponseData(
+      this.userServiceClient,
+      'user:refresh:token',
+      refreshTokenDto,
+    );
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  /** Get all users */
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   @Get('/')
   @ApiBearerAuth()
   @UseGuards(AuthGuard, RolesGuard)
@@ -218,6 +270,9 @@ export class UserController {
     return response;
   }
 
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  /** Get User ID */
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   @Delete('/:id')
   @ApiBearerAuth()
   @UseGuards(AuthGuard, RolesGuard)

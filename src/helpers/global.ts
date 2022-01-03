@@ -17,6 +17,7 @@ export const SendAndResponseData = async (
   const userResponse = await firstValueFrom(client.send(pattern, data));
 
   if (userResponse.statusCode !== HttpStatus.OK) {
+    console.log(userResponse.statusCode);
     if (userResponse.statusCode === undefined) {
       throw new HttpException(
         {

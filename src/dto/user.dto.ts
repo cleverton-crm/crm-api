@@ -104,3 +104,22 @@ export class UsersListDto {
   @ApiProperty()
   roles: string[];
 }
+
+export class RefreshTokenDto {
+  @ApiProperty({
+    description: 'key for refresh token',
+    format: 'string',
+    uniqueItems: true,
+  })
+  @IsNotEmpty()
+  readonly refreshToken: string;
+}
+
+export class RefreshAccessTokenDto {
+  @ApiProperty({
+    description: 'Return access token',
+    format: 'string',
+    uniqueItems: true,
+  })
+  readonly access: string;
+}
