@@ -231,7 +231,7 @@ export class UserController {
     return response;
   }
 
-  @Post('/refresh-access-token')
+  @Post('/refresh/access/token')
   @UseGuards(RolesGuard, AuthGuard)
   @ApiBearerAuth()
   @ApiOperation({
