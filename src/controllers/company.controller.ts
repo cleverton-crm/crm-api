@@ -14,6 +14,7 @@ import {
   Inject,
   Logger,
   Param,
+  Patch,
   Post,
   Query,
   Req,
@@ -53,6 +54,33 @@ export class CompanyController {
       this.companyServiceClient,
       'company:create',
       companyData,
+    );
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+
+  /**
+   * Изменение данных о компании
+   * @param companyData
+   * @param id
+   */
+  @Patch('/:id')
+  @ApiOperation({
+    summary: 'Изменение данных о компании',
+    description: Core.OperationReadMe('docs/company/update.md'),
+  })
+  async updateCompany(
+    @Param('id') id: string,
+    @Body() companyData: CompanyDto,
+  ) {
+    const sendData = {
+      id: id,
+      data: companyData,
+    };
+    const response = await SendAndResponseData(
+      this.companyServiceClient,
+      'company:update',
+      sendData,
     );
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
