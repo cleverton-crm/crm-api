@@ -152,12 +152,12 @@ export class ProfileController {
   })
   @Auth('Admin', 'Manager')
   @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
-  async myDataPersona(@Req() req: any, @Body() profileData: ProfilePersonaDto) {
-    profileData.id = req.user.id;
+  async myDataPersona(@Req() req: any) {
+    const sendData = { id: req.user.userID };
     const response = await SendAndResponseData(
       this.profileServiceClient,
-      'profile:address',
-      profileData,
+      'profile:me',
+      sendData,
     );
     this.logger.log(cyan(response));
     return response;

@@ -25,10 +25,10 @@ export class AuthGuard implements CanActivate {
       let dataInsert;
       const user = this.jwtService.verify(token);
       req.user = {
+        id: user.userID,
         email: user.email,
         access: token,
       };
-      console.log(user);
       return true;
     } catch (e) {
       throw new UnauthorizedException('Требуется авторизация в системе');
