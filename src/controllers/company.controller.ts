@@ -24,6 +24,7 @@ import { Core } from 'crm-core';
 import { cyan } from 'cli-color';
 import { CompanyDto } from '../dto/company.dto';
 import { SendAndResponseData } from '../helpers/global';
+import { Auth } from '../decorators/auth.decorator';
 
 @ApiTags('Companies')
 @Controller('companies')
@@ -39,6 +40,8 @@ export class CompanyController {
 
   /**
    * Создание компании
+   * @param ownerId
+   * @param req
    * @param companyData
    */
   @Post('/')
@@ -46,10 +49,20 @@ export class CompanyController {
     summary: 'Создание компании',
     description: Core.OperationReadMe('docs/company/create.md'),
   })
+  @ApiQuery({ name: 'owner', required: false })
   @ApiResponse({ type: CompanyDto, status: HttpStatus.OK })
+  @Auth('Admin')
   async createCompany(
+    @Query('owner') ownerId: string,
+    @Req() req: any,
     @Body() companyData: CompanyDto,
   ): Promise<Core.Response.Answer> {
+    if (ownerId) {
+      companyData.owner = ownerId;
+    } else {
+      companyData.owner = req.user.userID;
+    }
+    console.log(ownerId);
     const response = await SendAndResponseData(
       this.companyServiceClient,
       'company:create',

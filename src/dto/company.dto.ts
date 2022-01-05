@@ -335,6 +335,7 @@ export class CompanyRequisitesDto
 }
 
 export class CompanyDto implements Core.Company.Schema {
+  owner: string;
   clients: string[];
   @ApiProperty({ type: CompanyBankDto })
   bankData: CompanyBankDto;
@@ -352,8 +353,7 @@ export class CompanyDto implements Core.Company.Schema {
   name: string;
   @ApiProperty()
   object: 'company';
-  @ApiProperty()
-  owner: string;
+
   @ApiProperty({ example: ExampleCompany.data.opf.short })
   ownership: string | Core.Company.Ownership;
   @ApiProperty()
