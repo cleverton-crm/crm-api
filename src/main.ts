@@ -4,7 +4,7 @@ import * as helmet from 'helmet';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as fs from 'fs';
 import { Logger, ValidationPipe } from '@nestjs/common';
-import { ConfigService } from './config/config.service';
+import { ConfigService } from './services/config/config.service';
 import { cyan } from 'cli-color';
 import { HttpExceptionFilter } from './filters/http-exception.filter';
 

@@ -39,7 +39,9 @@ export class CompanyController {
   }
 
   /**
+   * <<<<<<<<<<<<<<<<<<<<
    * Создание компании
+   * <<<<<<<<<<<<<<<<<<<<
    * @param ownerId
    * @param req
    * @param companyData
@@ -73,7 +75,9 @@ export class CompanyController {
   }
 
   /**
+   * <<<<<<<<<<<<<<<<<<<<
    * Изменение данных о компании
+   * <<<<<<<<<<<<<<<<<<<<
    * @param companyData
    * @param id
    */
@@ -99,6 +103,11 @@ export class CompanyController {
     return response;
   }
 
+  /**
+   * <<<<<<<<<<<<<<<<<<<<
+   * Список всех компаний
+   * <<<<<<<<<<<<<<<<<<<<
+   */
   @Get('/')
   @ApiOperation({
     summary: 'Список всех компаний',
@@ -114,6 +123,12 @@ export class CompanyController {
     return response;
   }
 
+  /**
+   * <<<<<<<<<<<<<<<<<<<<
+   * Поиск одной компании
+   * <<<<<<<<<<<<<<<<<<<<
+   * @param id
+   */
   @Get('/:id')
   @ApiOperation({
     summary: 'Поиск компании по ID',

@@ -8,10 +8,10 @@ import {
   UserController,
 } from './controllers';
 import { ClientProxyFactory } from '@nestjs/microservices';
-import { ConfigService } from './config/config.service';
+import { ConfigService } from './services/config/config.service';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { JwtConfigService } from './services/jwt.service';
+import { JwtConfigService } from './services/config/jwt.service';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { HttpExceptionFilter } from './filters/http-exception.filter';
 import * as path from 'path';
