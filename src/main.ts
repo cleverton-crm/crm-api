@@ -7,12 +7,18 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from './services/config/config.service';
 import { cyan } from 'cli-color';
 import { HttpExceptionFilter } from './filters/http-exception.filter';
+import { promises } from 'fs';
+import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.use(helmet());
   app.enableCors();
+
+  const pkg = JSON.parse(
+    await promises.readFile(join('.', 'package.json'), 'utf8'),
+  );
 
   app.useGlobalPipes(new ValidationPipe());
   //app.useGlobalFilters(new HttpExceptionFilter());
@@ -21,7 +27,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Logistic CRM')
     .setDescription(fs.readFileSync('./docs/api.md').toString())
-    .setVersion('1.0.0')
+    .setVersion(pkg.version)
     .addBearerAuth()
     .addTag('REST API')
     .build();
