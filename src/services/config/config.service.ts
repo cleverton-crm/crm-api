@@ -53,6 +53,14 @@ export class ConfigService {
 
       transport: Transport.TCP,
     };
+    this.config.filesService = {
+      options: {
+        port: process.env.FILES_SERVICE_PORT,
+        host: process.env.FILES_SERVICE_HOST,
+      },
+
+      transport: Transport.TCP,
+    };
     this.config.JwtService = {
       options: {
         secret: process.env.JWT_SECRET,

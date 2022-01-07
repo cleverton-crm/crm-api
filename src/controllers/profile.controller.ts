@@ -9,14 +9,24 @@ import {
   Patch,
   Post,
   Req,
+  UploadedFiles,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { cyan } from 'cli-color';
 import { ProfilePersonaDto } from '../dto/profile.dto';
 import { Core } from 'crm-core';
 import { SendAndResponseData } from '../helpers/global';
 import { Auth } from '../decorators/auth.decorator';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { fileImagesOptions } from '../helpers/file-images-options';
 
 @ApiTags('Profile')
 @Controller('profile')
@@ -26,6 +36,8 @@ export class ProfileController {
   constructor(
     @Inject('PROFILE_SERVICE')
     private readonly profileServiceClient: ClientProxy,
+    @Inject('FILES_SERVICE')
+    private readonly filesServiceClient: ClientProxy,
   ) {
     this.logger = new Logger(ProfileController.name);
   }
@@ -43,14 +55,78 @@ export class ProfileController {
   @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
   async createPersona(
     @Body() profileData: ProfilePersonaDto,
+    @Req() req: any,
   ): Promise<Core.Response.Answer> {
+    profileData.id = req.user.userID;
     const response = await SendAndResponseData(
       this.profileServiceClient,
-      'profile:empty',
+      'profile:new',
       profileData,
     );
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
+  }
+
+  @Post('/me/avatar/upload')
+  @Auth('Admin', 'Manager')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @UseInterceptors(FilesInterceptor('file', 10, fileImagesOptions))
+  async upload(@UploadedFiles() file, @Req() req: any): Promise<any> {
+    const response = [];
+    file.forEach((file) => {
+      const fileReponse = {
+        originalname: file.originalname,
+        encoding: file.encoding,
+        mimetype: file.mimetype,
+        id: file.id,
+        filename: file.filename,
+        metadata: file.metadata,
+        bucketName: file.bucketName,
+        chunkSize: file.chunkSize,
+        size: file.size,
+        md5: file.md5,
+        uploadDate: file.uploadDate,
+        contentType: file.contentType,
+      };
+      response.push(file);
+    });
+    const sendData = { userID: req.user.userID, files: response };
+    const responseData = await SendAndResponseData(
+      this.filesServiceClient,
+      'files:avatar',
+      sendData,
+    );
+    this.logger.log(cyan(responseData));
+    return responseData;
+  }
+
+  @Get('/me/avatar')
+  @ApiOperation({
+    summary: 'Фото или аватар пользователя',
+    description: Core.OperationReadMe('docs/profile/update.md'),
+  })
+  @Auth('Admin', 'Manager')
+  @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
+  async showAvatar(@Req() req: any) {
+    const sendData = { id: req.user.userID };
+    const responseData = await SendAndResponseData(
+      this.filesServiceClient,
+      'files:avatar:show',
+      sendData,
+    );
+    this.logger.log(cyan(responseData));
+    return responseData;
   }
 
   @Patch('/:id/update')
@@ -75,7 +151,9 @@ export class ProfileController {
   }
 
   /**
+   * <<<<<<<<<<<<<<<<<<<<
    * Обновление или добавление информации о месте проживания
+   * <<<<<<<<<<<<<<<<<<<<
    * @param profileData
    */
   @Patch('/:id/update/location')
@@ -100,7 +178,9 @@ export class ProfileController {
   }
 
   /**
+   * <<<<<<<<<<<<<<<<<<<<
    * Обновление или замена фотографии пользователя
+   * <<<<<<<<<<<<<<<<<<<<
    * @param profileData
    */
   @Patch('/:id/update/avatar')

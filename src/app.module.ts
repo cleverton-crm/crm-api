@@ -47,6 +47,14 @@ import { ServeStaticModule } from '@nestjs/serve-static';
       useClass: HttpExceptionFilter,
     },
     {
+      provide: 'FILES_SERVICE',
+      useFactory: (configService: ConfigService) => {
+        const filesServiceOptions = configService.get('filesService');
+        return ClientProxyFactory.create(filesServiceOptions);
+      },
+      inject: [ConfigService],
+    },
+    {
       provide: 'USER_SERVICE',
       useFactory: (configService: ConfigService) => {
         const userServiceOptions = configService.get('userService');
