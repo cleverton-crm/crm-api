@@ -1,11 +1,56 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Core } from 'crm-core';
+import { MAX, MaxLength, MinLength } from 'class-validator';
 
 export class ProfileDto {
   @ApiProperty()
   email: string;
   @ApiProperty()
   id: string;
+}
+
+export class DriverLicenseDto implements Core.Profiles.DriverLicense {
+  @ApiProperty({ default: null })
+  dateOfIssue: Date;
+  @ApiProperty({ default: null })
+  endDate: Date;
+  @ApiProperty()
+  number: string;
+}
+
+export class PassportDto implements Core.Profiles.Passport {
+  @ApiProperty({ default: null })
+  dateOfIssue: Date;
+  @ApiProperty()
+  number: string;
+  @ApiProperty()
+  series: string;
+}
+
+export class PersonalDocumentDto implements Core.Profiles.PersonalDocument {
+  driver_license: DriverLicenseDto;
+  passport: PassportDto;
+}
+
+export class ProfilesRequisitesDto implements Core.Profiles.Requisites {
+  @ApiProperty({ example: '41256272839271524357' })
+  @MinLength(20)
+  @MaxLength(20)
+  payment: string;
+  @ApiProperty({ description: 'ХХХ-ХХХ-ХХХ YY', default: '500-400-301 12' })
+  snils: string;
+  @ApiProperty({ example: '4000-0000-0000-0002' })
+  card: string;
+  @ApiProperty({ example: '30101810145250000974' })
+  correspondent: string;
+  @ApiProperty({ example: '77027233727' })
+  inn: string;
+  @ApiProperty({ example: 'АО "ТИНЬКОФФ БАНК"' })
+  bank: string;
+  @ApiProperty({ example: '044525974' })
+  bik: string;
+  @ApiProperty({ example: '7710140679' })
+  innBank: string;
 }
 
 export class ProfilePersonaDto implements Core.Profiles.Update {
@@ -58,8 +103,8 @@ export class ProfilePersonaDto implements Core.Profiles.Update {
   socials: Map<string, any>;
 
   @ApiProperty()
-  passport: Core.Profiles.PersonalDocument;
+  passport: PersonalDocumentDto;
 
-  @ApiProperty({ example: {} })
-  requisites: Map<string, any> | Core.Profiles.Requisites;
+  @ApiProperty()
+  requisites: ProfilesRequisitesDto;
 }
