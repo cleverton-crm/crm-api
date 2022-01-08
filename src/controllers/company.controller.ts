@@ -27,6 +27,7 @@ import { SendAndResponseData } from '../helpers/global';
 import { Auth } from '../decorators/auth.decorator';
 
 @ApiTags('Companies')
+@Auth('Admin', 'Manager')
 @Controller('companies')
 export class CompanyController {
   private logger: Logger;
@@ -53,7 +54,6 @@ export class CompanyController {
   })
   @ApiQuery({ name: 'owner', required: false })
   @ApiResponse({ type: CompanyDto, status: HttpStatus.OK })
-  @Auth('Admin')
   async createCompany(
     @Query('owner') ownerId: string,
     @Req() req: any,
@@ -87,7 +87,6 @@ export class CompanyController {
     summary: 'Изменение данных о компании',
     description: Core.OperationReadMe('docs/company/update.md'),
   })
-  @Auth('Admin')
   @ApiQuery({ name: 'owner', required: false })
   async updateCompany(
     @Param('id') id: string,
@@ -120,7 +119,6 @@ export class CompanyController {
     summary: 'Список всех компаний',
     description: Core.OperationReadMe('docs/company/list.md'),
   })
-  @Auth('Admin')
   async listCompanies() {
     const response = await SendAndResponseData(
       this.companyServiceClient,
@@ -142,7 +140,6 @@ export class CompanyController {
     summary: 'Поиск компании по ID',
     description: Core.OperationReadMe('docs/company/find.md'),
   })
-  @Auth('Admin')
   async findCompany(@Param('id') id: string) {
     const response = await SendAndResponseData(
       this.companyServiceClient,
@@ -165,7 +162,6 @@ export class CompanyController {
     summary: 'Архивация компании',
     description: Core.OperationReadMe('docs/company/archive.md'),
   })
-  @Auth('Admin')
   async archiveCompany(
     @Param('id') id: string,
     @Query('active') active: boolean,
