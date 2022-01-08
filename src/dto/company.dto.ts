@@ -245,6 +245,22 @@ export class CompanyRequisitesStateDto
   @ApiProperty()
   status: string;
 }
+export class CompanyRequisitesFinance
+  implements Core.Company.Requisites.Finance
+{
+  @ApiProperty()
+  tax_system?: string;
+  @ApiProperty()
+  income?: string;
+  @ApiProperty()
+  expense?: string;
+  @ApiProperty()
+  debt?: string;
+  @ApiProperty()
+  penalty?: string;
+  @ApiProperty()
+  year?: string;
+}
 
 export class CompanyRequisitesUsDto
   implements Core.Company.Requisites.CompanyUs
@@ -266,7 +282,7 @@ export class CompanyRequisitesUsDto
   @ApiProperty()
   employee_count: number | string | null;
   @ApiProperty()
-  finance: string | null;
+  finance: CompanyRequisitesFinance;
   @ApiProperty()
   founders: string | null;
   @ApiProperty()
@@ -302,21 +318,21 @@ export class CompanyRequisitesUsDto
   @ApiProperty()
   okved_type: string;
   @ApiProperty()
-  okveds: string | null;
+  okveds: string;
   @ApiProperty({ type: CompanyRequisitesOPFDto })
   opf: CompanyRequisitesOPFDto;
   @ApiProperty()
-  phones: string | null;
+  phones: string;
   @ApiProperty()
-  predecessors: string | null;
+  predecessors: string;
   @ApiProperty()
-  qc: string | null;
+  qc: string;
   @ApiProperty()
-  source: string | null;
+  source: string;
   @ApiProperty({ type: CompanyRequisitesStateDto })
   state: CompanyRequisitesStateDto;
   @ApiProperty()
-  successors: string | null;
+  successors: string;
   @ApiProperty()
   type: string;
 }
