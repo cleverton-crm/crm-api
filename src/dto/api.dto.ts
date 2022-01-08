@@ -8,7 +8,7 @@ export class ResponseSuccessDto {
   @ApiProperty()
   message: string;
   @ApiProperty()
-  data: string;
+  data: string | any[];
 }
 
 export class ResponseNotFoundDto {
