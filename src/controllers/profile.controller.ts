@@ -19,9 +19,14 @@ import {
   ApiOperation,
   ApiResponse,
   ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { cyan } from 'cli-color';
-import { ProfilePersonaDto } from '../dto/profile.dto';
+import {
+  ProfilePersonaDto,
+  ResponseSuccessDto,
+  ResponseUnauthorizedDto,
+} from '../dto';
 import { Core } from 'crm-core';
 import { SendAndResponseData } from '../helpers/global';
 import { Auth } from '../decorators/auth.decorator';
@@ -47,11 +52,11 @@ export class ProfileController {
    * @param profileData
    */
   @Post('/')
+  @Auth('Admin', 'Manager')
   @ApiOperation({
     summary: 'Создание профиля пользователя',
     description: Core.OperationReadMe('docs/profile/create.md'),
   })
-  @Auth('Admin', 'Manager')
   @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
   async createPersona(
     @Body() profileData: ProfilePersonaDto,
@@ -67,6 +72,33 @@ export class ProfileController {
     return response;
   }
 
+  /**
+   * Персональные данные
+   * @param req
+   */
+  @Get('/me')
+  @ApiOperation({
+    summary: 'Данные пользователя',
+    description: Core.OperationReadMe('docs/profile/profile.md'),
+  })
+  @Auth('Admin', 'Manager')
+  @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
+  async myDataPersona(@Req() req: any) {
+    const sendData = { id: req.user.userID };
+    const response = await SendAndResponseData(
+      this.profileServiceClient,
+      'profile:me',
+      sendData,
+    );
+    this.logger.log(cyan(response));
+    return response;
+  }
+
+  /**
+   * Загрузка аватара или фотографии
+   * @param file
+   * @param req
+   */
   @Post('/me/avatar/upload')
   @Auth('Admin', 'Manager')
   @ApiConsumes('multipart/form-data')
@@ -81,6 +113,16 @@ export class ProfileController {
       },
     },
   })
+  @ApiOperation({
+    summary: 'Загрузка фото или аватар пользователя',
+    description: Core.OperationReadMe('docs/profile/avatar.md'),
+  })
+  @ApiUnauthorizedResponse({
+    type: ResponseUnauthorizedDto,
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Требуется авторизация',
+  })
+  @ApiResponse({ type: ResponseSuccessDto, status: HttpStatus.OK })
   @UseInterceptors(FilesInterceptor('file', 10, fileImagesOptions))
   async upload(@UploadedFiles() file, @Req() req: any): Promise<any> {
     const response = [];
@@ -111,14 +153,24 @@ export class ProfileController {
     return responseData;
   }
 
+  /**
+   * Получение аватара по авторизации
+   * @param req
+   */
   @Get('/me/avatar')
   @ApiOperation({
     summary: 'Фото или аватар пользователя',
-    description: Core.OperationReadMe('docs/profile/update.md'),
+    description: Core.OperationReadMe('docs/profile/avatar.md'),
   })
   @Auth('Admin', 'Manager')
-  @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
-  async showAvatar(@Req() req: any) {
+  @ApiResponse({ type: ResponseSuccessDto, status: HttpStatus.OK })
+  @ApiUnauthorizedResponse({
+    type: ResponseUnauthorizedDto,
+    status: HttpStatus.UNAUTHORIZED,
+  })
+  async showAvatar(
+    @Req() req: any,
+  ): Promise<Core.Response.Answer | Core.Response.Error> {
     const sendData = { id: req.user.userID };
     const responseData = await SendAndResponseData(
       this.filesServiceClient,
@@ -129,12 +181,40 @@ export class ProfileController {
     return responseData;
   }
 
-  @Patch('/:id/update')
+  /**
+   * Обновление данных в профиле по ID
+   * @param id
+   * @param profileData
+   */
+  @Patch('/me/update')
   @ApiOperation({
-    summary: 'Фото или аватар пользователя',
+    summary: 'Обновление данных',
     description: Core.OperationReadMe('docs/profile/update.md'),
   })
-  @Auth('Admin', 'Manager')
+  @Auth('Admin')
+  @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
+  async update(@Req() req: any, @Body() profileData: ProfilePersonaDto) {
+    profileData.id = req.user.userID;
+    const response = await SendAndResponseData(
+      this.profileServiceClient,
+      'profile:update',
+      profileData,
+    );
+    this.logger.log(cyan(response));
+    return response;
+  }
+
+  /**
+   * Обновление данных в профиле по ID
+   * @param id
+   * @param profileData
+   */
+  @Patch('/:id/update')
+  @ApiOperation({
+    summary: 'Обновление данных',
+    description: Core.OperationReadMe('docs/profile/update.md'),
+  })
+  @Auth('Admin')
   @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
   async updatePersona(
     @Param('id') id: string,
@@ -154,6 +234,7 @@ export class ProfileController {
    * <<<<<<<<<<<<<<<<<<<<
    * Обновление или добавление информации о месте проживания
    * <<<<<<<<<<<<<<<<<<<<
+   * @param id
    * @param profileData
    */
   @Patch('/:id/update/location')
@@ -220,24 +301,6 @@ export class ProfileController {
       this.profileServiceClient,
       'profile:address',
       profileData,
-    );
-    this.logger.log(cyan(response));
-    return response;
-  }
-
-  @Get('/me')
-  @ApiOperation({
-    summary: 'Данные пользователя',
-    description: Core.OperationReadMe('docs/profile/profile.md'),
-  })
-  @Auth('Admin', 'Manager')
-  @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
-  async myDataPersona(@Req() req: any) {
-    const sendData = { id: req.user.userID };
-    const response = await SendAndResponseData(
-      this.profileServiceClient,
-      'profile:me',
-      sendData,
     );
     this.logger.log(cyan(response));
     return response;
