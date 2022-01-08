@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UploadedFiles,
   UseInterceptors,
@@ -18,6 +19,7 @@ import {
   ApiConsumes,
   ApiNotFoundResponse,
   ApiOperation,
+  ApiQuery,
   ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
@@ -182,6 +184,29 @@ export class ProfileController {
       this.profileServiceClient,
       'profile:update',
       profileData,
+    );
+    this.logger.log(cyan(response));
+    return response;
+  }
+
+  /**
+   *  по ID
+   * @param status
+   */
+  @Patch('/:id/status')
+  @ApiOperation({
+    summary: 'Активирование, архивирование и блокировка профиля',
+    description: Core.OperationReadMe('docs/profile/update.md'),
+  })
+  @ApiQuery({ name: 'status', enum: ['active', 'inactive', 'banned'] })
+  @Auth('Admin')
+  @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
+  async blockProfile(@Query('status') status: string, @Param('id') id: string) {
+    const sendData = { id: id, status: status };
+    const response = await SendAndResponseData(
+      this.profileServiceClient,
+      'profile:status',
+      sendData,
     );
     this.logger.log(cyan(response));
     return response;
