@@ -53,7 +53,7 @@ export class ProfileController {
    * Создание профиля пользователя
    * @param profileData
    */
-  @Post('/')
+  @Post('/create')
   @Auth('Admin', 'Manager')
   @ApiOperation({
     summary: 'Создание профиля пользователя',
@@ -106,11 +106,11 @@ export class ProfileController {
   }
 
   /**
-   * Обновление данных в профиле по ID
+   * Обновление данных в профили
    */
-  @Get('/')
+  @Get('/list/active')
   @ApiOperation({
-    summary: 'Получить все профили',
+    summary: 'Получить все активные профили',
     description: Core.OperationReadMe('docs/profile/update.md'),
   })
   @Auth('Admin')
@@ -128,6 +128,60 @@ export class ProfileController {
       this.profileServiceClient,
       'profile:get:all',
       {},
+    );
+    this.logger.log(cyan(response));
+    return response;
+  }
+
+  /**
+   * Обновление данных в профили
+   */
+  @Get('/list/archive')
+  @ApiOperation({
+    summary: 'Получить профили из архива',
+    description: Core.OperationReadMe('docs/profile/update.md'),
+  })
+  @Auth('Admin')
+  @ApiResponse({ type: ResponseSuccessDto, status: HttpStatus.OK })
+  @ApiUnauthorizedResponse({
+    type: ResponseUnauthorizedDto,
+    status: HttpStatus.UNAUTHORIZED,
+  })
+  @ApiNotFoundResponse({
+    type: ResponseNotFoundDto,
+    status: HttpStatus.NOT_FOUND,
+  })
+  async getProfilesArchive() {
+    const response = await SendAndResponseData(
+      this.profileServiceClient,
+      'profile:get:archive',
+      {},
+    );
+    this.logger.log(cyan(response));
+    return response;
+  }
+
+  /**
+   * Обновление данных в профиле по ID
+   * @param req
+   * @param profileData
+   */
+  @Patch('/:id/update')
+  @ApiOperation({
+    summary: 'Обновление данных профиля',
+    description: Core.OperationReadMe('docs/profile/update.md'),
+  })
+  @Auth('Admin')
+  @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
+  async update(
+    @Param('id') id: string,
+    @Body() profileData: ProfilePersonaDto,
+  ) {
+    profileData.id = id;
+    const response = await SendAndResponseData(
+      this.profileServiceClient,
+      'profile:update',
+      profileData,
     );
     this.logger.log(cyan(response));
     return response;

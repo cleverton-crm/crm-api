@@ -57,7 +57,7 @@ export class ProfileControllerMe {
    * Персональные данные
    * @param req
    */
-  @Get('/me')
+  @Get('/me/data')
   @ApiOperation({
     summary: 'Данные пользователя',
     description: Core.OperationReadMe('docs/profile/profile.md'),
@@ -71,6 +71,7 @@ export class ProfileControllerMe {
       'profile:me',
       sendData,
     );
+    console.log(sendData);
     this.logger.log(cyan(response));
     return response;
   }
