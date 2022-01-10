@@ -10,13 +10,9 @@ import {
   Post,
   Query,
   Req,
-  UploadedFiles,
-  UseInterceptors,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
-  ApiBody,
-  ApiConsumes,
   ApiNotFoundResponse,
   ApiOperation,
   ApiQuery,
@@ -34,8 +30,6 @@ import {
 import { Core } from 'crm-core';
 import { SendAndResponseData } from '../helpers/global';
 import { Auth } from '../decorators/auth.decorator';
-import { FilesInterceptor } from '@nestjs/platform-express';
-import { fileImagesOptions } from '../helpers/file-images-options';
 
 @ApiTags('Profile')
 @Controller('profile')

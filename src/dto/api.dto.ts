@@ -32,7 +32,7 @@ export class ResponseBadRequestDto {
 export class ResponseUnauthorizedDto {
   @ApiProperty({ default: HttpStatus.UNAUTHORIZED })
   statusCode: number;
-  @ApiProperty()
+  @ApiProperty({ default: 'Требуется авторизация' })
   message: string | string[];
   @ApiProperty({ default: 'Unauthorized' })
   error: string;

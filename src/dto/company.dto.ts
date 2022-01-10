@@ -144,11 +144,11 @@ export class CompanyRequisitesInfoDto implements Core.Company.Requisites.Info {
   @ApiProperty()
   qc: string;
   @ApiProperty()
-  qc_complete: string | null;
+  qc_complete: string;
   @ApiProperty()
   qc_geo: string;
   @ApiProperty()
-  qc_house: string | null;
+  qc_house: string;
   @ApiProperty()
   region: string;
   @ApiProperty()
@@ -164,21 +164,21 @@ export class CompanyRequisitesInfoDto implements Core.Company.Requisites.Info {
   @ApiProperty()
   region_with_type: string;
   @ApiProperty()
-  settlement: string | null;
+  settlement: string;
   @ApiProperty()
-  settlement_fias_id: string | null;
+  settlement_fias_id: string;
   @ApiProperty()
-  settlement_kladr_id: string | null;
+  settlement_kladr_id: string;
   @ApiProperty()
-  settlement_type: string | null;
+  settlement_type: string;
   @ApiProperty()
-  settlement_type_full: string | null;
+  settlement_type_full: string;
   @ApiProperty()
-  settlement_with_type: string | null;
+  settlement_with_type: string;
   @ApiProperty()
   source: string;
   @ApiProperty()
-  square_meter_price: string | null;
+  square_meter_price: string;
   @ApiProperty()
   street: string;
   @ApiProperty()
@@ -198,7 +198,7 @@ export class CompanyRequisitesInfoDto implements Core.Company.Requisites.Info {
   @ApiProperty()
   timezone: string;
   @ApiProperty()
-  unparsed_parts: string | null;
+  unparsed_parts: string;
 }
 
 export class CompanyRequisitesAddressesDto
@@ -214,7 +214,7 @@ export class CompanyRequisitesAddressesDto
 
 export class CompanyManagementDto implements Core.Company.Management {
   @ApiProperty()
-  disqualified: string | null;
+  disqualified: string;
   @ApiProperty()
   name: string;
   @ApiProperty()
@@ -237,9 +237,9 @@ export class CompanyRequisitesStateDto
   @ApiProperty()
   actuality_date: number;
   @ApiProperty()
-  code: string | number | null;
+  code: string;
   @ApiProperty()
-  liquidation_date: number | Date | null;
+  liquidation_date: number;
   @ApiProperty()
   registration_date: number;
   @ApiProperty()
@@ -268,35 +268,35 @@ export class CompanyRequisitesUsDto
   @ApiProperty()
   address: CompanyRequisitesAddressesDto;
   @ApiProperty()
-  authorities: string | null;
+  authorities: string;
   @ApiProperty()
   branch_count: number;
   @ApiProperty()
   branch_type: string;
   @ApiProperty()
-  capital: string | null;
+  capital: string;
   @ApiProperty()
-  documents: string | null;
+  documents: string;
   @ApiProperty()
-  emails: string | null;
+  emails: string;
   @ApiProperty()
-  employee_count: number | string | null;
+  employee_count: number;
   @ApiProperty()
   finance: CompanyRequisitesFinance;
   @ApiProperty()
-  founders: string | null;
+  founders: string;
   @ApiProperty()
-  hid: string | null;
+  hid: string;
   @ApiProperty()
   inn: string;
   @ApiProperty()
   kpp: string;
   @ApiProperty()
-  licenses: string | null;
+  licenses: string;
   @ApiProperty({ type: CompanyManagementDto })
   management: CompanyManagementDto;
   @ApiProperty()
-  managers: string | null;
+  managers: string;
   @ApiProperty({ type: CompanyRequisitesNameDto })
   name: CompanyRequisitesNameDto;
   @ApiProperty()
