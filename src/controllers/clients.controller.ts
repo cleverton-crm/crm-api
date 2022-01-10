@@ -122,7 +122,7 @@ export class ClientController {
    * @param id
    * @param active
    */
-  @Delete('/:id')
+  @Delete('/:id/status')
   @Auth('Admin', 'Manager')
   @ApiParam({ name: 'id', type: 'string' })
   @ApiQuery({ name: 'active', type: 'boolean', enum: ['true', 'false'] })
