@@ -13,37 +13,33 @@ export class ClientCompanySocialVoicesDto implements Core.Client.SocialVoices {
 }
 
 export class ClientDto implements Core.Client.Schema {
-  @ApiProperty()
+  object: 'client';
   attachments: Map<string, string>;
+  company: string | null;
+  owner: string;
+  comments: Map<string, string>;
+  permissions: Map<string, any>;
+  active: boolean;
+
   @ApiProperty()
   birthDate: Date;
-  @ApiProperty()
-  comments: Map<string, string>;
-  @ApiProperty()
-  company: string | null;
-  @ApiProperty()
+  @ApiProperty({ default: new Date() })
   createData: Date;
-  @ApiProperty()
+  @ApiProperty({ example: 'alex@company.com' })
   email: string;
-  @ApiProperty()
+  @ApiProperty({ example: 'info@company.com' })
   emailCompany: string;
-  @ApiProperty()
+  @ApiProperty({ example: 'Сергей' })
   first: string;
-  @ApiProperty()
+  @ApiProperty({ example: 'Тесткович' })
   last: string;
-  @ApiProperty()
+  @ApiProperty({ example: 'Сергеевич' })
   middle: string;
-  @ApiProperty()
-  object: 'client';
-  @ApiProperty()
-  owner: string;
-  @ApiProperty()
+  @ApiProperty({ example: 'entity' })
   payerType: string | Core.Client.PayerType;
-  @ApiProperty()
-  permissions: Map<string, any>;
-  @ApiProperty()
+  @ApiProperty({ example: ['+79161232345'] })
   phones: Array<string>;
-  @ApiProperty()
+  @ApiProperty({ example: 'Начальник отдела закупок' })
   roleInCompany: string;
   @ApiProperty()
   socials: Map<string, string>;
@@ -51,6 +47,4 @@ export class ClientDto implements Core.Client.Schema {
   voices: Core.Client.SocialVoices;
   @ApiProperty()
   workPhone: string;
-  @ApiProperty()
-  active: boolean;
 }
