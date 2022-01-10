@@ -64,7 +64,6 @@ export class CompanyController {
     } else {
       companyData.owner = req.user.userID;
     }
-    console.log(ownerId);
     const response = await SendAndResponseData(
       this.companyServiceClient,
       'company:create',
