@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   Logger,
@@ -10,7 +11,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Core } from 'crm-core';
 import { CarDto } from '../dto/car.dto';
 import { SendAndResponseData } from '../helpers/global';
@@ -66,6 +67,48 @@ export class CarsController {
       true,
     );
 
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+
+  @Get('/:id/find')
+  @Auth('Admin', 'Manager')
+  @ApiOperation({
+    summary: 'Поиск транспорта по ID',
+    description: Core.OperationReadMe('docs/cars/find.md'),
+  })
+  async findCar(@Param('id') id: string): Promise<Core.Response.Answer> {
+    const response = await SendAndResponseData(
+      this.carsServiceClient,
+      'cars:find',
+      id,
+    );
+
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+
+  @Delete('/:id/status')
+  @Auth('Admin', 'Manager')
+  @ApiParam({ name: 'id', type: 'string' })
+  @ApiQuery({ name: 'active', type: 'boolean', enum: ['true', 'false'] })
+  @ApiOperation({
+    summary: 'Архивация транспорта',
+    description: Core.OperationReadMe('docs/cars/archive.md'),
+  })
+  async archiveCar(
+    @Param('id') id: string,
+    @Query('active') active: boolean,
+  ): Promise<Core.Response.Answer> {
+    const sendData = {
+      id: id,
+      active: active,
+    };
+    const response = await SendAndResponseData(
+      this.carsServiceClient,
+      'cars:archive',
+      sendData,
+    );
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
