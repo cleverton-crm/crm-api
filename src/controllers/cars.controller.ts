@@ -1,0 +1,72 @@
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Logger,
+  Param,
+  Post,
+  Query,
+  Req,
+} from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Core } from 'crm-core';
+import { CarDto } from '../dto/car.dto';
+import { SendAndResponseData } from '../helpers/global';
+import { cyan } from 'cli-color';
+import { Auth } from '../decorators/auth.decorator';
+
+@ApiTags('Cars')
+@Controller('cars')
+export class CarsController {
+  private logger: Logger;
+
+  constructor(
+    @Inject('COMPANY_SERVICE') private readonly carsServiceClient: ClientProxy,
+  ) {
+    this.logger = new Logger(CarsController.name);
+  }
+
+  @Post('/create/:company')
+  @Auth('Admin', 'Manager')
+  @ApiQuery({ name: 'owner', required: false })
+  @ApiOperation({
+    summary: 'Создание транспорта',
+    description: Core.OperationReadMe('docs/cars/create.md'),
+  })
+  async createCar(
+    @Param('company') company: string,
+    @Query('owner') owner: string,
+    @Req() req: any,
+    @Body() carData: CarDto,
+  ): Promise<any> {
+    carData.owner = owner || req.user.userID;
+    carData.company = company;
+    console.log(carData);
+    const response = await SendAndResponseData(
+      this.carsServiceClient,
+      'cars:create',
+      carData,
+    );
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+
+  @Get('/')
+  @Auth('Admin', 'Manager')
+  @ApiOperation({
+    summary: 'Список транспорта',
+    description: Core.OperationReadMe('docs/cars/list.md'),
+  })
+  async listCars(): Promise<Core.Response.Answer> {
+    const response = await SendAndResponseData(
+      this.carsServiceClient,
+      'cars:list',
+      true,
+    );
+
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+}
