@@ -12,6 +12,8 @@ export class CarVehicle implements Core.Cars.VehicleData {
 export class CarDto implements Core.Cars.Schema {
   owner: string;
   company: string;
+  active: boolean;
+
   @ApiProperty({ example: { tractor: 'MAN', semitrailer: 'ATLANT' } })
   model: CarVehicle;
   @ApiProperty({ example: { tractor: 'А151АА', semitrailer: 'С111АС' } })
