@@ -1,6 +1,7 @@
 import {
   ApiBody,
   ApiConsumes,
+  ApiNotFoundResponse,
   ApiOperation,
   ApiParam,
   ApiQuery,
@@ -32,6 +33,7 @@ import { Auth } from '../decorators/auth.decorator';
 import { ResponseSuccessDto, ResponseUnauthorizedDto } from '../dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { fileImagesOptions } from '../helpers/file-images-options';
+import { fileOptions } from '../helpers/file-options';
 
 @ApiTags('Clients')
 @Controller('clients')
@@ -158,45 +160,89 @@ export class ClientController {
           type: 'string',
           format: 'binary',
         },
+        comments: {
+          type: 'string',
+        },
       },
     },
   })
+  @ApiParam({ name: 'id', description: 'Укажите ID клиента' })
   @ApiOperation({
-    summary: 'Загрузка фото или аватар пользователя',
-    description: Core.OperationReadMe('docs/profile/avatar.md'),
+    summary: 'Загрузка документов, файлов клиента',
+    description: Core.OperationReadMe('docs/clients/upload.md'),
   })
-  @UseInterceptors(FilesInterceptor('file', 10))
+  @ApiNotFoundResponse({ description: 'Контакт не найден' })
+  @UseInterceptors(FilesInterceptor('file', 10, fileOptions))
   async upload(
     @UploadedFiles() file,
     @Param('id') id: string,
+    @Body() comment,
     @Req() req: any,
   ): Promise<any> {
     const response = [];
     file.forEach((file) => {
-      const fileReponse = {
-        originalname: file.originalname,
-        encoding: file.encoding,
-        mimetype: file.mimetype,
-        id: file.id,
-        filename: file.filename,
-        metadata: file.metadata,
-        bucketName: file.bucketName,
-        chunkSize: file.chunkSize,
-        size: file.size,
-        md5: file.md5,
-        uploadDate: file.uploadDate,
-        contentType: file.contentType,
-      };
       response.push(file);
     });
     const sendData = {
+      owner: req.user.userID,
       client: id,
       files: response,
       bucketName: 'client_' + id,
+      comments: comment.comments,
     };
     const responseData = await SendAndResponseData(
       this.filesServiceClient,
       'files:clients:upload',
+      sendData,
+    );
+    this.logger.log(cyan(responseData));
+    return responseData;
+  }
+
+  @Get('/:id/attachments/list')
+  @ApiOperation({
+    summary: 'Список всех файлов для клиента',
+    description: Core.OperationReadMe('docs/clients/download.md'),
+  })
+  @Auth('Admin', 'Manager')
+  @ApiResponse({ type: ResponseSuccessDto, status: HttpStatus.OK })
+  @ApiUnauthorizedResponse({
+    type: ResponseUnauthorizedDto,
+    status: HttpStatus.UNAUTHORIZED,
+  })
+  async fileList(
+    @Req() req: any,
+    @Param('id') id: string,
+  ): Promise<Core.Response.Answer | Core.Response.Error> {
+    const sendData = { id: id, owner: req.user.userID };
+    const responseData = await SendAndResponseData(
+      this.filesServiceClient,
+      'files:clients:list',
+      sendData,
+    );
+    this.logger.log(cyan(responseData));
+    return responseData;
+  }
+
+  @Get('/:id/attachments/download')
+  @ApiOperation({
+    summary: 'Скачать файл (документ)',
+    description: Core.OperationReadMe('docs/clients/download.md'),
+  })
+  @Auth('Admin', 'Manager')
+  @ApiResponse({ type: ResponseSuccessDto, status: HttpStatus.OK })
+  @ApiUnauthorizedResponse({
+    type: ResponseUnauthorizedDto,
+    status: HttpStatus.UNAUTHORIZED,
+  })
+  async download(
+    @Req() req: any,
+    @Param('id') id: string,
+  ): Promise<Core.Response.Answer | Core.Response.Error> {
+    const sendData = { id: id, owner: req.user.userID };
+    const responseData = await SendAndResponseData(
+      this.filesServiceClient,
+      'files:clients:download',
       sendData,
     );
     this.logger.log(cyan(responseData));

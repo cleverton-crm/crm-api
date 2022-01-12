@@ -1,4 +1,6 @@
 import {
+  ApiBody,
+  ApiConsumes,
   ApiOperation,
   ApiParam,
   ApiQuery,
@@ -18,6 +20,8 @@ import {
   Post,
   Query,
   Req,
+  UploadedFiles,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { Core } from 'crm-core';
@@ -25,6 +29,8 @@ import { cyan } from 'cli-color';
 import { CompanyDto } from '../dto/company.dto';
 import { SendAndResponseData } from '../helpers/global';
 import { Auth } from '../decorators/auth.decorator';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { fileOptions } from '../helpers/file-options';
 
 @ApiTags('Companies')
 @Auth('Admin', 'Manager')
@@ -35,6 +41,8 @@ export class CompanyController {
   constructor(
     @Inject('COMPANY_SERVICE')
     private readonly companyServiceClient: ClientProxy,
+    @Inject('FILES_SERVICE')
+    private readonly filesServiceClient: ClientProxy,
   ) {
     this.logger = new Logger(CompanyController.name);
   }
@@ -176,5 +184,48 @@ export class CompanyController {
     );
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
+  }
+
+  @Post('/:id/attachments/upload')
+  @Auth('Admin', 'Manager')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @ApiParam({ name: 'id', description: 'Укажите ID компании' })
+  @ApiOperation({
+    summary: 'Загрузка документов, файлов компании',
+    description: Core.OperationReadMe('docs/clients/upload.md'),
+  })
+  @UseInterceptors(FilesInterceptor('file', 10, fileOptions))
+  async upload(
+    @UploadedFiles() file,
+    @Param('id') company: string,
+    @Req() req: any,
+  ): Promise<any> {
+    const response = [];
+    file.forEach((file) => {
+      response.push(file);
+    });
+    const sendData = {
+      client: company,
+      files: response,
+      bucketName: 'company_' + company,
+    };
+    const responseData = await SendAndResponseData(
+      this.filesServiceClient,
+      'files:company:upload',
+      sendData,
+    );
+    this.logger.log(cyan(responseData));
+    return responseData;
   }
 }
