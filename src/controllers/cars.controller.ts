@@ -6,6 +6,7 @@ import {
   Inject,
   Logger,
   Param,
+  Patch,
   Post,
   Query,
   Req,
@@ -107,6 +108,39 @@ export class CarsController {
     const response = await SendAndResponseData(
       this.carsServiceClient,
       'cars:archive',
+      sendData,
+    );
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+
+  @Patch('/:id')
+  @Auth('Admin', 'Manager')
+  @ApiQuery({ name: 'owner', required: false })
+  @ApiQuery({ name: 'company', required: false })
+  @ApiOperation({
+    summary: 'Изменение данных транспорта',
+    description: Core.OperationReadMe('docs/cars/update.md'),
+  })
+  async updateCar(
+    @Param('id') id: string,
+    @Query('company') company: string,
+    @Query('owner') owner: string,
+    @Body() carData: CarDto,
+  ): Promise<Core.Response.Answer> {
+    if (owner) {
+      carData.owner = owner;
+    }
+    if (company) {
+      carData.company = company;
+    }
+    const sendData = {
+      id: id,
+      data: carData,
+    };
+    const response = await SendAndResponseData(
+      this.carsServiceClient,
+      'cars:update',
       sendData,
     );
     this.logger.log(cyan(JSON.stringify(response)));
