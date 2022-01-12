@@ -354,7 +354,7 @@ export class CompanyDto implements Core.Company.Schema {
   owner: string;
   clients: string[];
   @ApiProperty({ type: CompanyBankDto })
-  bankData: CompanyBankDto;
+  bank: CompanyBankDto;
   @ApiProperty()
   client: Array<string>;
   @ApiProperty({ example: ExampleCompany.data.address.value })
