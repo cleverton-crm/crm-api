@@ -1,8 +1,5 @@
 import { extname } from 'path';
-import { existsSync, mkdirSync } from 'fs';
-import { diskStorage } from 'multer';
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { v4 as uuid, v5 as uuidv5 } from 'uuid';
 
 export const fileImagesOptions = {
   limits: {
