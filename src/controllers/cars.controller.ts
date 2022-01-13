@@ -20,6 +20,7 @@ import { cyan } from 'cli-color';
 import { Auth } from '../decorators/auth.decorator';
 
 @ApiTags('Cars')
+@Auth('Admin', 'Manager')
 @Controller('cars')
 export class CarsController {
   private logger: Logger;
@@ -31,7 +32,6 @@ export class CarsController {
   }
 
   @Post('/create/:company')
-  @Auth('Admin', 'Manager')
   @ApiQuery({ name: 'owner', required: false })
   @ApiOperation({
     summary: 'Создание транспорта',
@@ -56,7 +56,6 @@ export class CarsController {
   }
 
   @Get('/')
-  @Auth('Admin', 'Manager')
   @ApiOperation({
     summary: 'Список транспорта',
     description: Core.OperationReadMe('docs/cars/list.md'),
@@ -73,7 +72,6 @@ export class CarsController {
   }
 
   @Get('/:id/find')
-  @Auth('Admin', 'Manager')
   @ApiOperation({
     summary: 'Поиск транспорта по ID',
     description: Core.OperationReadMe('docs/cars/find.md'),
@@ -90,7 +88,6 @@ export class CarsController {
   }
 
   @Delete('/:id/status')
-  @Auth('Admin', 'Manager')
   @ApiParam({ name: 'id', type: 'string' })
   @ApiQuery({ name: 'active', type: 'boolean', enum: ['true', 'false'] })
   @ApiOperation({
@@ -115,7 +112,6 @@ export class CarsController {
   }
 
   @Patch('/:id')
-  @Auth('Admin', 'Manager')
   @ApiQuery({ name: 'owner', required: false })
   @ApiQuery({ name: 'company', required: false })
   @ApiOperation({
