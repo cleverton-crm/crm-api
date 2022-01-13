@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import {
   ClientController,
   CompanyController,
+  DealsController,
   FilesController,
   ProfileController,
   ProfileControllerMe,
@@ -43,6 +44,7 @@ import { CarsController } from './controllers/cars.controller';
     CompanyController,
     ClientController,
     CarsController,
+    DealsController,
     FilesController,
     SettingController,
   ],
