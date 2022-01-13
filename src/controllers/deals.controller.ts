@@ -92,7 +92,7 @@ export class DealsController {
     const sendData = {
       id: id,
       userId: req.user.userID,
-      comments: commentData,
+      comments: commentData.comments,
     };
     const response = await SendAndResponseData(
       this.dealsServiceClient,
