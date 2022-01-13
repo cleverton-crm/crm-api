@@ -15,7 +15,7 @@ import { Auth } from '../decorators/auth.decorator';
 import { ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ClientProxy } from '@nestjs/microservices';
 import { Core } from 'crm-core';
-import { DealDto } from '../dto';
+import { DealDto, DealHistory } from '../dto';
 import { SendAndResponseData } from '../helpers/global';
 import { cyan } from 'cli-color';
 
@@ -73,6 +73,30 @@ export class DealsController {
     const response = await SendAndResponseData(
       this.dealsServiceClient,
       'deals:update',
+      sendData,
+    );
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+
+  @Patch('/:id/comment')
+  @ApiOperation({
+    summary: 'Добавление комментария к сделке',
+    description: Core.OperationReadMe('docs/deals/comment_create.md'),
+  })
+  async commentDeal(
+    @Param('id') id: string,
+    @Req() req: any,
+    @Body() commentData: DealHistory,
+  ): Promise<Core.Response.Answer> {
+    const sendData = {
+      id: id,
+      userId: req.user.userID,
+      comments: commentData,
+    };
+    const response = await SendAndResponseData(
+      this.dealsServiceClient,
+      'deals:comment',
       sendData,
     );
     this.logger.log(cyan(JSON.stringify(response)));

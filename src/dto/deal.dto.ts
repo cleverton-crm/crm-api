@@ -2,10 +2,11 @@ import { Core } from 'crm-core';
 import { ApiProperty } from '@nestjs/swagger';
 import { ExampleCompany } from '../helpers/example-company';
 
-export class DealHistory implements Core.Deals.History {
-  @ApiProperty()
-  comments: Array<any>;
-  whoChange: string;
+export class DealHistory {
+  @ApiProperty({
+    example: 'string',
+  })
+  comments: Map<string, any>;
 }
 
 export class DealDto implements Core.Deals.Schema {
@@ -44,5 +45,5 @@ export class DealDto implements Core.Deals.Schema {
   @ApiProperty({ example: 'Иванов Алексей Владимирович' })
   fullname: string;
 
-  history: DealHistory;
+  history: Map<string, any>;
 }
