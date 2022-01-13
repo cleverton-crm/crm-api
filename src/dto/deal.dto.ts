@@ -3,7 +3,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { ExampleCompany } from '../helpers/example-company';
 
 export class DealHistory implements Core.Deals.History {
-  comments: Array<string>;
+  @ApiProperty()
+  comments: Array<any>;
   whoChange: string;
 }
 

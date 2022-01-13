@@ -6,6 +6,7 @@ import {
   Inject,
   Logger,
   Param,
+  Patch,
   Post,
   Query,
   Req,
@@ -44,6 +45,35 @@ export class DealsController {
       this.dealsServiceClient,
       'deals:create',
       dealData,
+    );
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+
+  @Patch('/:id/update')
+  @ApiQuery({ name: 'owner', required: false })
+  @ApiOperation({
+    summary: 'Изменение сделки',
+    description: Core.OperationReadMe('docs/deals/update.md'),
+  })
+  async updateDeal(
+    @Param('id') id: string,
+    @Query('owner') owner: string,
+    @Req() req: any,
+    @Body() dealData: DealDto,
+  ): Promise<Core.Response.Answer> {
+    if (owner) {
+      dealData.owner = owner;
+    }
+    const sendData = {
+      id: id,
+      userId: req.user.userID,
+      data: dealData,
+    };
+    const response = await SendAndResponseData(
+      this.dealsServiceClient,
+      'deals:update',
+      sendData,
     );
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
