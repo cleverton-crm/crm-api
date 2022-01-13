@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   Logger,
@@ -10,7 +11,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { Auth } from '../decorators/auth.decorator';
-import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ClientProxy } from '@nestjs/microservices';
 import { Core } from 'crm-core';
 import { DealDto } from '../dto';
@@ -74,7 +75,30 @@ export class DealsController {
       'deals:find',
       id,
     );
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
 
+  @Delete('/:id/status')
+  @ApiParam({ name: 'id', type: 'string' })
+  @ApiQuery({ name: 'active', type: 'boolean', enum: ['true', 'false'] })
+  @ApiOperation({
+    summary: 'Архивация сделки',
+    description: Core.OperationReadMe('docs/deals/archive.md'),
+  })
+  async archiveDeal(
+    @Param('id') id: string,
+    @Query('active') active: boolean,
+  ): Promise<Core.Response.Answer> {
+    const sendData = {
+      id: id,
+      active: active,
+    };
+    const response = await SendAndResponseData(
+      this.dealsServiceClient,
+      'deals:archive',
+      sendData,
+    );
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
