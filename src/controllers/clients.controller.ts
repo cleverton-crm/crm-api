@@ -104,16 +104,11 @@ export class ClientController {
     description: Core.OperationReadMe('docs/clients/find.md'),
   })
   @ApiParam({ name: 'id', description: 'ID клиента компании' })
-  @ApiQuery({ name: 'company', required: false, description: 'ID компании' })
-  async findPersona(
-    @Param('id') id: string,
-    @Query('company') companyId: string,
-  ) {
-    const sendData = { id: id, company: companyId };
+  async findPersona(@Param('id') id: string) {
     const response = await SendAndResponseData(
       this.personaServiceClient,
       'client:find',
-      sendData,
+      id,
     );
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
