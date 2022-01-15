@@ -12,6 +12,8 @@ export class DealHistory {
 export class DealDto implements Core.Deals.Schema {
   author: string;
   active: boolean;
+  permissions: string;
+  owner: string;
 
   @ApiProperty({ example: 'Продажа топлива #1' })
   name: string;
@@ -22,13 +24,8 @@ export class DealDto implements Core.Deals.Schema {
   @ApiProperty({ example: 'Дизельное' })
   fuelType: string;
 
-  owner: string;
-
   @ApiProperty({ example: ExampleCompany.data.opf.short })
   ownership: string | Core.Company.Ownership;
-
-  @ApiProperty()
-  permissions: string;
 
   @ApiProperty({ example: 'Звонок' })
   source: string;
