@@ -103,11 +103,11 @@ export class ClientController {
     summary: 'Поиск клиента по ID',
     description: Core.OperationReadMe('docs/clients/find.md'),
   })
-  @ApiQuery({ name: 'company', required: false, description: 'ID компании' })
   @ApiParam({ name: 'id', description: 'ID клиента компании' })
+  @ApiQuery({ name: 'company', required: false, description: 'ID компании' })
   async findPersona(
-    @Query('company') companyId: string,
     @Param('id') id: string,
+    @Query('company') companyId: string,
   ) {
     const sendData = { id: id, company: companyId };
     const response = await SendAndResponseData(
