@@ -37,10 +37,15 @@ export class LeadsController {
     summary: 'Создание лида',
     description: Core.OperationReadMe('docs/leads/create.md'),
   })
+  @ApiQuery({ name: 'owner', required: false })
   async createLead(
     @Req() req: any,
     @Body() leadData: LeadDto,
+    @Query() owner: string,
   ): Promise<Core.Response.Answer> {
+    if (owner) {
+      leadData.owner = owner;
+    }
     const response = await SendAndResponseData(
       this.leadsServiceClient,
       'leads:create',
