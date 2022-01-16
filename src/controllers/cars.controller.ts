@@ -60,11 +60,12 @@ export class CarsController {
     summary: 'Список транспорта',
     description: Core.OperationReadMe('docs/cars/list.md'),
   })
-  async listCars(): Promise<Core.Response.Answer> {
+  @ApiQuery({ name: 'compamy', required: false })
+  async listCars(@Query('company') cid: string): Promise<Core.Response.Answer> {
     const response = await SendAndResponseData(
       this.carsServiceClient,
       'cars:list',
-      true,
+      { company: cid },
     );
 
     this.logger.log(cyan(JSON.stringify(response)));
