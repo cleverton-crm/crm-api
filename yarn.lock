@@ -2883,13 +2883,6 @@ json-stringify-safe@^5.0.1:
   resolved "https://registry.yarnpkg.com/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz#1296a2d58fd45f19a0f6ce01d65701e2c735b6eb"
   integrity sha1-Epai1Y/UXxmg9s4B1lcB4sc1tus=
 
-json-to-env-var@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/json-to-env-var/-/json-to-env-var-1.0.0.tgz#91454f6e5f2967a71b8970147d5b725aa04dbd99"
-  integrity sha512-Z/NPGGxKehrStrPttdT2i07wiKW3TXb4AiYUefB9wi/wYd32vfA4yNN6nyuGrY3jPT/ISgAa/0wBOQPTKLIRTQ==
-  dependencies:
-    lodash "^4.17.21"
-
 json-to-env@^0.0.10:
   version "0.0.10"
   resolved "https://registry.yarnpkg.com/json-to-env/-/json-to-env-0.0.10.tgz#229e79b34bbbfa0ca4a66baf6381e55c904542fe"

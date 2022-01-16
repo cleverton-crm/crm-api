@@ -3,18 +3,25 @@ import { AppModule } from './app.module';
 import * as helmet from 'helmet';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as fs from 'fs';
+import { promises } from 'fs';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from './services/config/config.service';
 import { cyan } from 'cli-color';
-import { HttpExceptionFilter } from './filters/http-exception.filter';
-import { promises } from 'fs';
 import { join } from 'path';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: ['log', 'error', 'warn', 'debug'],
+  });
 
+  // app.use(helmet());
+  // app.enableCors();
+
+  app.enableCors({
+    origin: true,
+    credentials: true,
+  });
   app.use(helmet());
-  app.enableCors();
 
   const pkg = JSON.parse(
     await promises.readFile(join('.', 'package.json'), 'utf8'),
