@@ -43,9 +43,7 @@ export class DealsController {
     @Query('owner') owner: string,
   ): Promise<Core.Response.Answer> {
     dealData.author = req.user.userID;
-    if (owner) {
-      dealData.owner = owner;
-    }
+    dealData.owner = owner || req.user.userID;
     const response = await SendAndResponseData(
       this.dealsServiceClient,
       'deals:create',

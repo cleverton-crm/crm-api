@@ -18,6 +18,7 @@ import {
   Inject,
   Logger,
   Param,
+  Patch,
   Post,
   Query,
   Req,
@@ -32,10 +33,10 @@ import { ClientDto } from '../dto/client.dto';
 import { Auth } from '../decorators/auth.decorator';
 import { ResponseSuccessDto, ResponseUnauthorizedDto } from '../dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { fileImagesOptions } from '../helpers/file-images-options';
 import { fileOptions } from '../helpers/file-options';
 
 @ApiTags('Clients')
+@Auth('Admin', 'Manager')
 @Controller('clients')
 export class ClientController {
   private logger: Logger;
@@ -57,7 +58,6 @@ export class ClientController {
    * @param clientData
    */
   @Post('/:company/:owner/add')
-  @Auth('Admin', 'Manager')
   @ApiOperation({
     summary: 'Создание клиента компании',
     description: Core.OperationReadMe('docs/clients/create.md'),
@@ -82,7 +82,6 @@ export class ClientController {
   }
 
   @Get('/')
-  @Auth('Admin', 'Manager')
   @ApiOperation({
     summary: 'Список всех клиентов',
     description: Core.OperationReadMe('docs/clients/list.md'),
@@ -98,7 +97,6 @@ export class ClientController {
   }
 
   @Get('/:id/find')
-  @Auth('Admin', 'Manager')
   @ApiOperation({
     summary: 'Поиск клиента по ID',
     description: Core.OperationReadMe('docs/clients/find.md'),
@@ -114,13 +112,31 @@ export class ClientController {
     return response;
   }
 
+  @Patch('/:id/update')
+  @ApiOperation({
+    summary: 'Изменение данных клиента',
+    description: Core.OperationReadMe('docs/clients/update.md'),
+  })
+  async updatePersona(@Param('id') id: string, @Body() updateData: ClientDto) {
+    const sendData = {
+      id: id,
+      data: updateData,
+    };
+    const response = await SendAndResponseData(
+      this.personaServiceClient,
+      'client:update',
+      sendData,
+    );
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+
   /**
    * Архивация клиента
    * @param id
    * @param active
    */
   @Delete('/:id/status')
-  @Auth('Admin', 'Manager')
   @ApiParam({ name: 'id', type: 'string' })
   @ApiQuery({ name: 'active', type: 'boolean', enum: ['true', 'false'] })
   @ApiOperation({
@@ -145,7 +161,6 @@ export class ClientController {
   }
 
   @Post('/:id/attachments/upload')
-  @Auth('Admin', 'Manager')
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -199,7 +214,6 @@ export class ClientController {
     summary: 'Список всех файлов для клиента',
     description: Core.OperationReadMe('docs/clients/download.md'),
   })
-  @Auth('Admin', 'Manager')
   @ApiResponse({ type: ResponseSuccessDto, status: HttpStatus.OK })
   @ApiUnauthorizedResponse({
     type: ResponseUnauthorizedDto,
@@ -224,7 +238,6 @@ export class ClientController {
     summary: 'Скачать файл (документ)',
     description: Core.OperationReadMe('docs/clients/download.md'),
   })
-  @Auth('Admin', 'Manager')
   @ApiResponse({ type: ResponseSuccessDto, status: HttpStatus.OK })
   @ApiUnauthorizedResponse({
     type: ResponseUnauthorizedDto,

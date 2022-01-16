@@ -1,6 +1,7 @@
 import { Core } from 'crm-core';
 import { ApiProperty } from '@nestjs/swagger';
 import { DriverLicenseDto, PassportDto } from './profile.dto';
+import { LeadLicensesDto } from './lead.dto';
 
 export class ClientCompanySocialVoicesDto implements Core.Client.SocialVoices {
   discord: string | null;
@@ -51,5 +52,5 @@ export class ClientDto implements Core.Client.Schema {
   @ApiProperty()
   passport: PassportDto;
   @ApiProperty()
-  licenses: DriverLicenseDto;
+  licenses: LeadLicensesDto;
 }

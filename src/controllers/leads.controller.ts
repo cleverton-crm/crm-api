@@ -56,20 +56,15 @@ export class LeadsController {
   }
 
   @Patch('/:id/update')
-  @ApiQuery({ name: 'owner', required: false })
   @ApiOperation({
     summary: 'Изменение лида',
     description: Core.OperationReadMe('docs/leads/update.md'),
   })
   async updateDeal(
     @Param('id') id: string,
-    @Query('owner') owner: string,
     @Req() req: any,
     @Body() leadData: LeadDto,
   ): Promise<Core.Response.Answer> {
-    if (owner) {
-      leadData.owner = owner;
-    }
     const sendData = {
       id: id,
       data: leadData,
