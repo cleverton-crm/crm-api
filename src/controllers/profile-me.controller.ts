@@ -71,7 +71,6 @@ export class ProfileControllerMe {
       'profile:me',
       sendData,
     );
-    console.log(sendData);
     this.logger.log(cyan(response));
     return response;
   }
@@ -165,10 +164,10 @@ export class ProfileControllerMe {
 
   /**
    * Обновление данных в профиле по ID
-   * @param id
+   * @param req
    * @param profileData
    */
-  @Patch('/me/update')
+  @Patch('/me/change')
   @ApiOperation({
     summary: 'Обновление данных',
     description: Core.OperationReadMe('docs/profile/update.md'),
@@ -182,7 +181,7 @@ export class ProfileControllerMe {
       'profile:update',
       profileData,
     );
-    this.logger.log(cyan(response));
+    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 }
