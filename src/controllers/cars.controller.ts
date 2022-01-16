@@ -112,7 +112,7 @@ export class CarsController {
     return response;
   }
 
-  @Patch('/:id')
+  @Patch('/:id/update')
   @ApiQuery({ name: 'owner', required: false })
   @ApiQuery({ name: 'company', required: false })
   @ApiOperation({
