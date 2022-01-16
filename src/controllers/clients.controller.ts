@@ -57,21 +57,22 @@ export class ClientController {
    * @param cid
    * @param clientData
    */
-  @Post('/:company/:owner/add')
+  @Post('/add')
   @ApiOperation({
     summary: 'Создание клиента компании',
     description: Core.OperationReadMe('docs/clients/create.md'),
   })
   @ApiParam({ name: 'owner', required: false })
+  @ApiQuery({ name: 'company', required: false })
   @ApiResponse({ type: ClientDto, status: HttpStatus.OK })
   async createPersona(
     @Req() req: any,
-    @Param('owner') owner: string,
-    @Param('company') cid: string,
+    @Query('owner') owner: string,
+    @Query('company') cid: string,
     @Body() clientData: ClientDto,
   ): Promise<Core.Response.Answer> {
     clientData.owner = owner || req.user.userID;
-    clientData.company = cid;
+    clientData.company = cid || null;
     const response = await SendAndResponseData(
       this.personaServiceClient,
       'client:create',
