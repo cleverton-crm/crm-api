@@ -48,6 +48,7 @@ export class ProfileController {
   /**
    * Создание профиля пользователя
    * @param profileData
+   * @param req
    */
   @Post('/create')
   @Auth('Admin', 'Manager')

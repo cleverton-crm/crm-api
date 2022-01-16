@@ -25,6 +25,8 @@ export class PassportDto implements Core.Profiles.Passport {
   number: string;
   @ApiProperty()
   series: string;
+  @ApiProperty()
+  issuedBy: string;
 }
 
 export class PersonalDocumentDto implements Core.Profiles.PersonalDocument {
