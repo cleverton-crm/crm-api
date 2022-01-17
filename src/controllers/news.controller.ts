@@ -1,15 +1,19 @@
 import {
   ApiBody,
+  ApiConsumes,
   ApiOperation,
   ApiParam,
   ApiQuery,
+  ApiResponse,
   ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import {
   Body,
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Inject,
   Logger,
   Param,
@@ -17,6 +21,8 @@ import {
   Post,
   Query,
   Req,
+  UploadedFiles,
+  UseInterceptors,
 } from '@nestjs/common';
 import { Auth } from '../decorators/auth.decorator';
 import { ClientProxy } from '@nestjs/microservices';
@@ -24,7 +30,13 @@ import { NewsCommentDto, NewsDto, NewsUpdateDto } from '../dto/news.dto';
 import { Core } from 'crm-core';
 import { SendAndResponseData } from '../helpers/global';
 import { cyan } from 'cli-color';
-import { DealHistory } from '../dto';
+import {
+  DealHistory,
+  ResponseSuccessDto,
+  ResponseUnauthorizedDto,
+} from '../dto';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { fileImagesOptions } from '../helpers/file-images-options';
 
 @ApiTags('News')
 @Auth('Admin', 'Manager')
@@ -34,6 +46,8 @@ export class NewsController {
 
   constructor(
     @Inject('NEWS_SERVICE') private readonly newsServiceClient: ClientProxy,
+    @Inject('FILES_SERVICE')
+    private readonly filesServiceClient: ClientProxy,
   ) {
     this.logger = new Logger(NewsController.name);
   }
@@ -131,6 +145,77 @@ export class NewsController {
     );
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
+  }
+
+  /**
+   * Загрузка фото для новости
+   * @param id
+   * @param file
+   * @param req
+   */
+  @Post('/picture/:id/upload')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @ApiOperation({
+    summary: 'Загрузка фото для новости',
+    description: Core.OperationReadMe('docs/news/picture_upload.md'),
+  })
+  @ApiResponse({ type: ResponseSuccessDto, status: HttpStatus.OK })
+  @UseInterceptors(FilesInterceptor('file', 10, fileImagesOptions))
+  async uploadNewsPicture(
+    @Param('id') id: string,
+    @UploadedFiles() file,
+    @Req() req: any,
+  ): Promise<any> {
+    const response = [];
+    file.forEach((file) => {
+      response.push(file);
+    });
+    const sendData = { newsID: id, files: response };
+    const responseData = await SendAndResponseData(
+      this.filesServiceClient,
+      'files:news:picture:upload',
+      sendData,
+    );
+    this.logger.log(cyan(responseData));
+    return responseData;
+  }
+
+  /**
+   * Получение аватара по авторизации
+   * @param id
+   */
+  @Get('/picture/:id/show')
+  @ApiOperation({
+    summary: 'Фото новости',
+    description: Core.OperationReadMe('docs/news/picture.md'),
+  })
+  @ApiResponse({ type: ResponseSuccessDto, status: HttpStatus.OK })
+  @ApiUnauthorizedResponse({
+    type: ResponseUnauthorizedDto,
+    status: HttpStatus.UNAUTHORIZED,
+  })
+  async showAvatar(
+    @Param('id') id: string,
+  ): Promise<Core.Response.Answer | Core.Response.Error> {
+    const sendData = { id: id };
+    const responseData = await SendAndResponseData(
+      this.filesServiceClient,
+      'files:news:picture:show',
+      sendData,
+    );
+    this.logger.log(cyan(responseData));
+    return responseData;
   }
 
   @Delete('/:id/status')
