@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { Auth } from '../decorators/auth.decorator';
 import { ClientProxy } from '@nestjs/microservices';
-import { NewsDto } from '../dto/news.dto';
+import { NewsDto, NewsUpdateDto } from '../dto/news.dto';
 import { Core } from 'crm-core';
 import { SendAndResponseData } from '../helpers/global';
 import { cyan } from 'cli-color';
@@ -57,7 +57,7 @@ export class NewsController {
   })
   async updateNews(
     @Param('id') id: string,
-    @Body() newsData: NewsDto,
+    @Body() newsData: NewsUpdateDto,
   ): Promise<Core.Response.Answer> {
     const sendData = {
       id: id,
