@@ -40,7 +40,7 @@ export class LeadsController {
   async createLead(
     @Req() req: any,
     @Body() leadData: LeadDto,
-    @Query() owner: string,
+    @Query('owner') owner: string,
   ): Promise<Core.Response.Answer> {
     if (owner) {
       leadData.owner = owner;
