@@ -21,12 +21,14 @@ export class NewsUpdateDto {
   active: boolean;
   author: string;
 
-  @ApiProperty()
-  comments: Map<string, any>;
-
   @ApiProperty({ example: 'Новостной контент' })
   content: string;
 
   @ApiProperty({ example: 'Новость' })
   name: string;
+}
+
+export class NewsCommentDto {
+  @ApiProperty({ example: 'Комментарий 1' })
+  comments: Map<string, any>;
 }

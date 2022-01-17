@@ -1,4 +1,10 @@
-import { ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import {
   Body,
   Controller,
@@ -14,10 +20,11 @@ import {
 } from '@nestjs/common';
 import { Auth } from '../decorators/auth.decorator';
 import { ClientProxy } from '@nestjs/microservices';
-import { NewsDto, NewsUpdateDto } from '../dto/news.dto';
+import { NewsCommentDto, NewsDto, NewsUpdateDto } from '../dto/news.dto';
 import { Core } from 'crm-core';
 import { SendAndResponseData } from '../helpers/global';
 import { cyan } from 'cli-color';
+import { DealHistory } from '../dto';
 
 @ApiTags('News')
 @Auth('Admin', 'Manager')
@@ -66,6 +73,30 @@ export class NewsController {
     const response = await SendAndResponseData(
       this.newsServiceClient,
       'news:update',
+      sendData,
+    );
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+
+  @Patch('/:id/comment')
+  @ApiOperation({
+    summary: 'Добавление комментария к новости',
+    description: Core.OperationReadMe('docs/news/comment_create.md'),
+  })
+  async commentNews(
+    @Param('id') id: string,
+    @Req() req: any,
+    @Body() commentData: NewsCommentDto,
+  ): Promise<Core.Response.Answer> {
+    const sendData = {
+      id: id,
+      userId: req.user.userID,
+      comments: commentData.comments,
+    };
+    const response = await SendAndResponseData(
+      this.newsServiceClient,
+      'news:comment',
       sendData,
     );
     this.logger.log(cyan(JSON.stringify(response)));
