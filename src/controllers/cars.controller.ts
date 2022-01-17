@@ -60,13 +60,21 @@ export class CarsController {
     summary: 'Список транспорта',
     description: Core.OperationReadMe('docs/cars/list.md'),
   })
-  async listCars(): Promise<Core.Response.Answer> {
-    const response = await SendAndResponseData(
+  @ApiQuery({ name: 'company', required: false })
+  async listCars(
+    @Query('company') company: string,
+  ): Promise<Core.Response.Answer> {
+    let response;
+    let sendData = {};
+    console.log(company);
+    if (company !== undefined) {
+      sendData = Object.assign(sendData, { company: company });
+    }
+    response = await SendAndResponseData(
       this.carsServiceClient,
       'cars:list',
-      true,
+      sendData,
     );
-
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
