@@ -12,7 +12,7 @@ export class DealHistory {
 export class DealDto implements Core.Deals.Schema {
   author: string;
   active: boolean;
-  permissions: string;
+  permissions: Map<string, any>;
   owner: string;
 
   @ApiProperty({ example: 'Продажа топлива #1' })

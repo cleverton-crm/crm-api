@@ -373,7 +373,7 @@ export class CompanyDto implements Core.Company.Schema {
   @ApiProperty({ example: ExampleCompany.data.opf.short })
   ownership: string | Core.Company.Ownership;
   @ApiProperty()
-  permissions: string;
+  permissions: Map<string, any>;
   @ApiProperty()
   phoneNumber: string;
   @ApiProperty()

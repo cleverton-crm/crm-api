@@ -23,7 +23,7 @@ export class LeadLicensesDto implements Core.Leads.Licenses {
 export class LeadDto implements Core.Leads.Schema {
   active: boolean;
   owner: string;
-  permissions: string;
+  permissions: Map<string, any>;
 
   @ApiProperty({ example: 'Лид №1' })
   name: string;

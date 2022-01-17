@@ -5,22 +5,28 @@ export class NewsDto implements Core.News.Schema {
   active: boolean;
   author: string;
 
-  @ApiProperty()
-  comments: Map<string, any>;
   @ApiProperty({ example: 'Новостной контент' })
   content: string;
+
   @ApiProperty({ example: 'Новость' })
   name: string;
+
+  @ApiProperty()
+  comments: Map<string, any>;
+
   @ApiProperty()
   picture?: Map<string, any>;
 }
 export class NewsUpdateDto {
   active: boolean;
   author: string;
+
   @ApiProperty()
   comments: Map<string, any>;
+
   @ApiProperty({ example: 'Новостной контент' })
   content: string;
+
   @ApiProperty({ example: 'Новость' })
   name: string;
 }
