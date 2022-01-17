@@ -14,41 +14,37 @@ import {
 } from '@nestjs/common';
 import { Auth } from '../decorators/auth.decorator';
 import { ClientProxy } from '@nestjs/microservices';
+import { NewsDto } from '../dto/news.dto';
 import { Core } from 'crm-core';
-import { LeadDto } from '../dto/lead.dto';
 import { SendAndResponseData } from '../helpers/global';
 import { cyan } from 'cli-color';
 
-@ApiTags('Leads')
+@ApiTags('News')
 @Auth('Admin', 'Manager')
-@Controller('leads')
-export class LeadsController {
+@Controller('news')
+export class NewsController {
   private logger: Logger;
 
   constructor(
-    @Inject('COMPANY_SERVICE') private readonly leadsServiceClient: ClientProxy,
+    @Inject('NEWS_SERVICE') private readonly newsServiceClient: ClientProxy,
   ) {
-    this.logger = new Logger(LeadsController.name);
+    this.logger = new Logger(NewsController.name);
   }
 
   @Post('/create')
   @ApiOperation({
-    summary: 'Создание лида',
-    description: Core.OperationReadMe('docs/leads/create.md'),
+    summary: 'Создание новости',
+    description: Core.OperationReadMe('docs/news/create.md'),
   })
-  @ApiQuery({ name: 'owner', required: false })
-  async createLead(
+  async createNews(
     @Req() req: any,
-    @Body() leadData: LeadDto,
-    @Query() owner: string,
+    @Body() newsData: NewsDto,
   ): Promise<Core.Response.Answer> {
-    if (owner) {
-      leadData.owner = owner;
-    }
+    newsData.author = req.user.userID;
     const response = await SendAndResponseData(
-      this.leadsServiceClient,
-      'leads:create',
-      leadData,
+      this.newsServiceClient,
+      'news:create',
+      newsData,
     );
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
@@ -56,21 +52,20 @@ export class LeadsController {
 
   @Patch('/:id/update')
   @ApiOperation({
-    summary: 'Изменение лида',
-    description: Core.OperationReadMe('docs/leads/update.md'),
+    summary: 'Редактирование новости',
+    description: Core.OperationReadMe('docs/news/update.md'),
   })
-  async updateLead(
+  async updateNews(
     @Param('id') id: string,
-    @Req() req: any,
-    @Body() leadData: LeadDto,
+    @Body() newsData: NewsDto,
   ): Promise<Core.Response.Answer> {
     const sendData = {
       id: id,
-      data: leadData,
+      data: newsData,
     };
     const response = await SendAndResponseData(
-      this.leadsServiceClient,
-      'leads:update',
+      this.newsServiceClient,
+      'news:update',
       sendData,
     );
     this.logger.log(cyan(JSON.stringify(response)));
@@ -79,13 +74,13 @@ export class LeadsController {
 
   @Get('/')
   @ApiOperation({
-    summary: 'Список лидов',
-    description: Core.OperationReadMe('docs/leads/list.md'),
+    summary: 'Список новостей',
+    description: Core.OperationReadMe('docs/news/list.md'),
   })
-  async listLead(): Promise<Core.Response.Answer> {
+  async listNews(): Promise<Core.Response.Answer> {
     const response = await SendAndResponseData(
-      this.leadsServiceClient,
-      'leads:list',
+      this.newsServiceClient,
+      'news:list',
       true,
     );
     this.logger.log(cyan(JSON.stringify(response)));
@@ -94,13 +89,13 @@ export class LeadsController {
 
   @Get('/:id/find')
   @ApiOperation({
-    summary: 'Поиск лида',
-    description: Core.OperationReadMe('docs/leads/find.md'),
+    summary: 'Поиск новости',
+    description: Core.OperationReadMe('docs/news/find.md'),
   })
-  async findLead(@Param('id') id: string): Promise<Core.Response.Answer> {
+  async findNews(@Param('id') id: string): Promise<Core.Response.Answer> {
     const response = await SendAndResponseData(
-      this.leadsServiceClient,
-      'leads:find',
+      this.newsServiceClient,
+      'news:find',
       id,
     );
     this.logger.log(cyan(JSON.stringify(response)));
@@ -111,10 +106,10 @@ export class LeadsController {
   @ApiParam({ name: 'id', type: 'string' })
   @ApiQuery({ name: 'active', type: 'boolean', enum: ['true', 'false'] })
   @ApiOperation({
-    summary: 'Архивация лида',
-    description: Core.OperationReadMe('docs/leads/archive.md'),
+    summary: 'Архивация новости',
+    description: Core.OperationReadMe('docs/news/archive.md'),
   })
-  async archiveLead(
+  async archiveNews(
     @Param('id') id: string,
     @Query('active') active: boolean,
   ): Promise<Core.Response.Answer> {
@@ -123,8 +118,8 @@ export class LeadsController {
       active: active,
     };
     const response = await SendAndResponseData(
-      this.leadsServiceClient,
-      'leads:archive',
+      this.newsServiceClient,
+      'news:archive',
       sendData,
     );
     this.logger.log(cyan(JSON.stringify(response)));

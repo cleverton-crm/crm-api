@@ -21,6 +21,7 @@ import { HttpExceptionFilter } from './filters/http-exception.filter';
 import * as path from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { CarsController } from './controllers/cars.controller';
+import { NewsController } from './controllers/news.controller';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { CarsController } from './controllers/cars.controller';
     CarsController,
     DealsController,
     LeadsController,
+    NewsController,
     FilesController,
     SettingController,
   ],
@@ -93,6 +95,14 @@ import { CarsController } from './controllers/cars.controller';
       useFactory: (configService: ConfigService) => {
         const companyServiceOptions = configService.get('companyService');
         return ClientProxyFactory.create(companyServiceOptions);
+      },
+      inject: [ConfigService],
+    },
+    {
+      provide: 'NEWS_SERVICE',
+      useFactory: (configService: ConfigService) => {
+        const newsServiceOptions = configService.get('newsService');
+        return ClientProxyFactory.create(newsServiceOptions);
       },
       inject: [ConfigService],
     },
