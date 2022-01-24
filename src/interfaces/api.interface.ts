@@ -20,3 +20,26 @@ namespace ApiCore {
     }
   }
 }
+
+export declare function isEmpty(object: Record<string, unknown>): boolean;
+
+export declare interface IResponseOptionsRecords {
+  totalPages: number;
+  perPage: number;
+  pageCount: number;
+  currentPage: number;
+  slNo: number;
+  hasPrevPage: boolean;
+  hasNextPage: boolean;
+  prev: number | null;
+  next: number | null;
+}
+
+export declare interface IResponseDataRecords {
+  data: [];
+  records: IResponseOptionsRecords;
+}
+
+export declare interface DataTypeRoles {
+  [key: string]: string;
+}

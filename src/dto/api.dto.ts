@@ -1,5 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { HttpStatus } from '@nestjs/common';
+import {
+  IResponseDataRecords,
+  IResponseOptionsRecords,
+} from '../interfaces/api.interface';
 
 /** Положительный ответ сервера с данными */
 export class ResponseSuccessDto {
@@ -45,4 +49,40 @@ export class ResponseForbiddenDto {
   message: string | string[];
   @ApiProperty({ default: 'Forbidden' })
   error: string;
+}
+
+export class ResponseOptionsDto implements IResponseOptionsRecords {
+  @ApiProperty({ description: 'Текущая страница' })
+  currentPage: number;
+  @ApiProperty({ description: 'Можно ли смотреть следующую страницу' })
+  hasNextPage: boolean;
+  @ApiProperty({ description: 'Можно ли смотреть предыдущую страницу' })
+  hasPrevPage: boolean;
+  @ApiProperty({ description: 'Следующая страница - номер' })
+  next: number | null;
+  @ApiProperty({ description: 'Предыдущая страница - номер' })
+  prev: number | null;
+  @ApiProperty({ description: 'Всего страниц' })
+  pageCount: number;
+  @ApiProperty({ description: 'Пред' })
+  perPage: number;
+  @ApiProperty({ description: 'Следующая' })
+  slNo: number;
+  @ApiProperty({ description: 'Всего записей' })
+  totalPages: number;
+}
+
+export class ResponseRecordsDataDto implements IResponseDataRecords {
+  @ApiProperty({ description: 'Стутус страницы' })
+  statusCode: number;
+  @ApiProperty({ description: 'Описание страницы' })
+  message: string;
+  @ApiProperty({ description: 'Параметры страниц' })
+  records: ResponseOptionsDto;
+  @ApiProperty({
+    description:
+      'Массив данных, для каждой колекции свои. ' + 'Смотрите схему коллекции',
+    example: [{}, '...'],
+  })
+  data: [];
 }
