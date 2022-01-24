@@ -31,9 +31,18 @@ import { cyan } from 'cli-color';
 import { SendAndResponseData } from '../helpers/global';
 import { ClientDto } from '../dto/client.dto';
 import { Auth } from '../decorators/auth.decorator';
-import { ResponseSuccessDto, ResponseUnauthorizedDto } from '../dto';
+import {
+  ResponseRecordsDataDto,
+  ResponseSuccessDto,
+  ResponseUnauthorizedDto,
+} from '../dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { fileOptions } from '../helpers/file-options';
+import {
+  MongoPagination,
+  MongoPaginationDecorator,
+} from '../decorators/mongo.pagination.decorator';
+import { ApiPagination } from '../decorators/pagination.decorator';
 
 @ApiTags('Clients')
 @Auth('Admin', 'Manager')
@@ -87,10 +96,14 @@ export class ClientController {
     summary: 'Список всех клиентов',
     description: Core.OperationReadMe('docs/clients/list.md'),
   })
+  @ApiPagination()
   @ApiQuery({ name: 'company', required: false })
-  async listPersona(@Query('company') company: string) {
+  async listPersona(
+    @MongoPaginationDecorator() pagination: MongoPagination,
+    @Query('company') company: string,
+  ): Promise<ResponseRecordsDataDto> {
     let response;
-    let sendData = {};
+    let sendData = { pagination: pagination };
     if (company !== undefined) {
       sendData = Object.assign(sendData, { company: company });
     }

@@ -26,11 +26,16 @@ import {
 import { ClientProxy } from '@nestjs/microservices';
 import { Core } from 'crm-core';
 import { cyan } from 'cli-color';
-import { CompanyDto } from '../dto/company.dto';
+import { CompanyDto, ResponseRecordsDataDto } from '../dto';
 import { SendAndResponseData } from '../helpers/global';
 import { Auth } from '../decorators/auth.decorator';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { fileOptions } from '../helpers/file-options';
+import { ApiPagination } from '../decorators/pagination.decorator';
+import {
+  MongoPagination,
+  MongoPaginationDecorator,
+} from '../decorators/mongo.pagination.decorator';
 
 @ApiTags('Companies')
 @Auth('Admin', 'Manager')
@@ -126,11 +131,14 @@ export class CompanyController {
     summary: 'Список всех компаний',
     description: Core.OperationReadMe('docs/company/list.md'),
   })
-  async listCompanies() {
+  @ApiPagination()
+  async listCompanies(
+    @MongoPaginationDecorator() pagination: MongoPagination,
+  ): Promise<ResponseRecordsDataDto> {
     const response = await SendAndResponseData(
       this.companyServiceClient,
       'company:list',
-      true,
+      { pagination: pagination },
     );
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
