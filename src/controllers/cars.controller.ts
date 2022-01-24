@@ -66,7 +66,6 @@ export class CarsController {
   ): Promise<Core.Response.Answer> {
     let response;
     let sendData = {};
-    console.log(company);
     if (company !== undefined) {
       sendData = Object.assign(sendData, { company: company });
     }

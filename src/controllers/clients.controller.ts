@@ -87,11 +87,17 @@ export class ClientController {
     summary: 'Список всех клиентов',
     description: Core.OperationReadMe('docs/clients/list.md'),
   })
-  async listPersona() {
-    const response = await SendAndResponseData(
+  @ApiQuery({ name: 'company', required: false })
+  async listPersona(@Query('company') company: string) {
+    let response;
+    let sendData = {};
+    if (company !== undefined) {
+      sendData = Object.assign(sendData, { company: company });
+    }
+    response = await SendAndResponseData(
       this.personaServiceClient,
       'client:list',
-      true,
+      sendData,
     );
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
