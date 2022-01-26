@@ -133,7 +133,7 @@ export class CompanyController {
   })
   @ApiPagination()
   async listCompanies(
-    @MongoPaginationDecorator() pagination: MongoPagination,
+    @MongoPaginationDecorator() pagination: Core.MongoPagination,
   ): Promise<ResponseRecordsDataDto> {
     const response = await SendAndResponseData(
       this.companyServiceClient,
