@@ -150,7 +150,7 @@ export class CompanyController {
    * <<<<<<<<<<<<<<<<<<<<
    * @param id
    */
-  @Get('/:id')
+  @Get('/:id/find')
   @ApiOperation({
     summary: 'Поиск компании по ID',
     description: Core.OperationReadMe('docs/company/find.md'),
@@ -160,6 +160,21 @@ export class CompanyController {
       this.companyServiceClient,
       'company:find',
       id,
+    );
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+  @Get('/:inn/checkout')
+  @ApiOperation({
+    summary: 'Проверка ИНН компании',
+    description: Core.OperationReadMe('docs/company/checkout.md'),
+  })
+  async checkoutCompany(@Param('inn') inn: string) {
+    console.log(inn);
+    const response = await SendAndResponseData(
+      this.companyServiceClient,
+      'company:checkout',
+      inn,
     );
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
