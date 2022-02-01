@@ -1,6 +1,6 @@
 import { Core } from 'crm-core';
-import { ApiProperty, getSchemaPath } from '@nestjs/swagger';
-import { ClientContactArray, ClientContactDto, ClientDto } from './client.dto';
+import { ApiProperty } from '@nestjs/swagger';
+import { ClientContactDto } from './client.dto';
 import { CompanyDto } from './company.dto';
 import { ExampleCompany } from 'src/helpers/example-company';
 import { ExampleClient } from '../helpers/example-client';
