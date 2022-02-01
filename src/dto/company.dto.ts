@@ -367,7 +367,6 @@ export class CompanyDto implements Core.Company.Schema {
   fax: string;
   @ApiProperty({ example: ExampleCompany.value })
   name: string;
-  @ApiProperty()
   inn: string;
   @ApiProperty()
   object: 'company';
