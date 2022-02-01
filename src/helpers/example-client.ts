@@ -1,0 +1,26 @@
+export const ExampleClient = {
+    birthDate: '2022-02-01T11:50:59.066Z',
+    createData: '2022-02-01T11:25:17.519Z',
+    email: 'alex@company.com',
+    emailCompany: 'info@company.com',
+    first: 'Сергей',
+    last: 'Тесткович',
+    middle: 'Сергеевич',
+    payerType: 'entity',
+    phones: ['+79161232345'],
+    roleInCompany: 'Начальник отдела закупок',
+    socials: {},
+    voices: {},
+    workPhone: 'string',
+    passport: {
+        dateOfIssue: null,
+        number: 'string',
+        series: 'string',
+        issuedBy: 'string',
+    },
+    licenses: {
+        adr: 'string',
+        categories: ['string'],
+        validity: '2022-02-01T11:50:59.066Z',
+    },
+};

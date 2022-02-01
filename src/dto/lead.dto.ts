@@ -3,6 +3,7 @@ import { ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import { ClientContactArray, ClientContactDto, ClientDto } from './client.dto';
 import { CompanyDto } from './company.dto';
 import { ExampleCompany } from 'src/helpers/example-company';
+import { ExampleClient } from '../helpers/example-client';
 
 export class LeadDto implements Core.Leads.Schema {
     active: boolean;
@@ -24,7 +25,7 @@ export class LeadDto implements Core.Leads.Schema {
     @ApiProperty({ example: 'Новый лид' })
     tags: Array<string>;
 
-    @ApiProperty({ example: 'Новый лид' })
+    @ApiProperty()
     attachments: Map<string, any>;
     @ApiProperty({ example: 10000 })
     price: number;
@@ -41,7 +42,7 @@ export class LeadDto implements Core.Leads.Schema {
     @ApiProperty()
     client: string;
     @ApiProperty({
-        example: [{ object: 'client', firstname: 'Test' }, ExampleCompany],
+        example: [ExampleClient, ExampleCompany],
         format: 'array',
     })
     contacts: [ClientContactDto, CompanyDto];
