@@ -148,7 +148,7 @@ export class ClientController {
         return response;
     }
 
-    /** UPLOAD FILES */
+    /** UPLOAD FILES ALL */
 
     @Post('/attachments/upload/:id')
     @ApiConsumes('multipart/form-data')
