@@ -2,7 +2,7 @@ import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from
 import * as Sentry from '@sentry/node';
 
 Sentry.init({
-    dsn: 'http://20e9a4157b594d8d863d246450fc8658@log.cleverton.ru:9000//2',
+    dsn: 'http://4a76f9f4b1244722ad719a4dd78e754a@log.cleverton.ru:9000/2',
 });
 
 @Catch()
