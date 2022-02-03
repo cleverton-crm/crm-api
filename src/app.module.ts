@@ -22,6 +22,7 @@ import * as path from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { CarsController } from './controllers/cars.controller';
 import { NewsController } from './controllers/news.controller';
+import { StatusDealsController } from './controllers/status-deals.controller';
 
 @Module({
   imports: [
@@ -46,8 +47,9 @@ import { NewsController } from './controllers/news.controller';
     CompanyController,
     ClientController,
     CarsController,
-    DealsController,
+    StatusDealsController,
     LeadsController,
+    DealsController,
     NewsController,
     FilesController,
     SettingController,

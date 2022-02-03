@@ -1,17 +1,5 @@
 import { ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Inject,
-  Logger,
-  Param,
-  Patch,
-  Post,
-  Query,
-  Req,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Logger, Param, Patch, Post, Query, Req } from '@nestjs/common';
 import { Auth } from '../decorators/auth.decorator';
 import { ClientProxy } from '@nestjs/microservices';
 import { Core } from 'crm-core';
@@ -25,11 +13,11 @@ import { cyan } from 'cli-color';
 export class LeadsController {
   private logger: Logger;
 
-  constructor(
-    @Inject('COMPANY_SERVICE') private readonly leadsServiceClient: ClientProxy,
-  ) {
+  constructor(@Inject('COMPANY_SERVICE') private readonly leadsServiceClient: ClientProxy) {
     this.logger = new Logger(LeadsController.name);
   }
+
+  /** CREATE LEAD */
 
   @Post('/create')
   @ApiOperation({
@@ -45,52 +33,42 @@ export class LeadsController {
     if (owner) {
       leadData.owner = owner;
     }
-    const response = await SendAndResponseData(
-      this.leadsServiceClient,
-      'leads:create',
-      leadData,
-    );
+    const response = await SendAndResponseData(this.leadsServiceClient, 'leads:create', leadData);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
+
+  /** UPDATE LEAD */
 
   @Patch('/:id/update')
   @ApiOperation({
     summary: 'Изменение лида',
     description: Core.OperationReadMe('docs/leads/update.md'),
   })
-  async updateLead(
-    @Param('id') id: string,
-    @Req() req: any,
-    @Body() leadData: LeadDto,
-  ): Promise<Core.Response.Answer> {
+  async updateLead(@Param('id') id: string, @Req() req: any, @Body() leadData: LeadDto): Promise<Core.Response.Answer> {
     const sendData = {
       id: id,
       data: leadData,
     };
-    const response = await SendAndResponseData(
-      this.leadsServiceClient,
-      'leads:update',
-      sendData,
-    );
+    const response = await SendAndResponseData(this.leadsServiceClient, 'leads:update', sendData);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
-  @Get('/')
+  /** LIST OF LEADS */
+
+  @Get('/list')
   @ApiOperation({
     summary: 'Список лидов',
     description: Core.OperationReadMe('docs/leads/list.md'),
   })
   async listLead(): Promise<Core.Response.Answer> {
-    const response = await SendAndResponseData(
-      this.leadsServiceClient,
-      'leads:list',
-      true,
-    );
+    const response = await SendAndResponseData(this.leadsServiceClient, 'leads:list', true);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
+
+  /** FIND LEAD */
 
   @Get('/:id/find')
   @ApiOperation({
@@ -98,11 +76,7 @@ export class LeadsController {
     description: Core.OperationReadMe('docs/leads/find.md'),
   })
   async findLead(@Param('id') id: string): Promise<Core.Response.Answer> {
-    const response = await SendAndResponseData(
-      this.leadsServiceClient,
-      'leads:find',
-      id,
-    );
+    const response = await SendAndResponseData(this.leadsServiceClient, 'leads:find', id);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
@@ -114,19 +88,12 @@ export class LeadsController {
     summary: 'Архивация лида',
     description: Core.OperationReadMe('docs/leads/archive.md'),
   })
-  async archiveLead(
-    @Param('id') id: string,
-    @Query('active') active: boolean,
-  ): Promise<Core.Response.Answer> {
+  async archiveLead(@Param('id') id: string, @Query('active') active: boolean): Promise<Core.Response.Answer> {
     const sendData = {
       id: id,
       active: active,
     };
-    const response = await SendAndResponseData(
-      this.leadsServiceClient,
-      'leads:archive',
-      sendData,
-    );
+    const response = await SendAndResponseData(this.leadsServiceClient, 'leads:archive', sendData);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }

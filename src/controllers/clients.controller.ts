@@ -178,8 +178,6 @@ export class ClientController {
         file.forEach((file) => {
             response.push(file);
         });
-        console.log(file);
-
         const sendData = {
             owner: req.user.userID,
             client: id,
