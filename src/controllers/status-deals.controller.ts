@@ -24,7 +24,7 @@ export class StatusDealsController {
   })
   async createStatus(@Req() req: any, @Body() statusData: StatusDealsDto): Promise<Core.Response.Answer> {
     statusData.owner = req.user.userID;
-    const response = await SendAndResponseData(this.statusDealsServiceClient, 'status:deals:create', statusData);
+    const response = await SendAndResponseData(this.statusDealsServiceClient, 'status:create', statusData);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
