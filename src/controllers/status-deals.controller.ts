@@ -55,6 +55,17 @@ export class StatusDealsController {
     return response;
   }
 
+  @Patch('/change/:id/:priority')
+  async changePriority(@Param('id') id: string, @Param('priority') priority: number) {
+    const sendData = {
+      id: id,
+      priority: priority,
+    };
+    const response = await SendAndResponseData(this.statusDealsServiceClient, 'status:change:priority', sendData);
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+
   /** LIST STATUS */
 
   @Get('/list')

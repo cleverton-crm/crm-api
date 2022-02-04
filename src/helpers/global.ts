@@ -9,15 +9,10 @@ export const ResponseSuccessData = (message: string) => {
     status: true,
   };
 };
-export const SendAndResponseData = async (
-  client: ClientProxy,
-  pattern: string,
-  data: any,
-) => {
+export const SendAndResponseData = async (client: ClientProxy, pattern: string, data: any) => {
   const userResponse = await firstValueFrom(client.send(pattern, data));
 
   if (userResponse.statusCode !== HttpStatus.OK) {
-    console.log(userResponse);
     if (userResponse.statusCode === undefined) {
       throw new HttpException(
         {
