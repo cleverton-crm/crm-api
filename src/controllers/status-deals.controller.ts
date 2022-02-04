@@ -17,17 +17,24 @@ export class StatusDealsController {
     this.logger = new Logger(StatusDealsController.name);
   }
 
+  /** CREATE STATUS */
+
   @Post('/create')
   @ApiOperation({
     summary: 'Создание статуса',
     description: Core.OperationReadMe('docs/status/create.md'),
   })
   async createStatus(@Req() req: any, @Body() statusData: StatusDealsDto): Promise<Core.Response.Answer> {
-    statusData.owner = req.user.userID;
-    const response = await SendAndResponseData(this.statusDealsServiceClient, 'status:create', statusData);
+    const sendData = {
+      data: statusData,
+      owner: req.user,
+    };
+    const response = await SendAndResponseData(this.statusDealsServiceClient, 'status:create', sendData);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
+
+  /** UPDATE STATUS */
 
   @Patch('/:id/update')
   @ApiOperation({
@@ -48,6 +55,8 @@ export class StatusDealsController {
     return response;
   }
 
+  /** LIST STATUS */
+
   @Get('/list')
   @ApiOperation({
     summary: 'Список статусов',
@@ -59,6 +68,8 @@ export class StatusDealsController {
     return response;
   }
 
+  /** FIND STATUS */
+
   @Get('/:id/find')
   @ApiOperation({
     summary: 'Поиск статуса',
@@ -69,6 +80,8 @@ export class StatusDealsController {
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
+
+  /** ARCHIVE STATUS */
 
   @Delete('/:id/archive')
   @ApiParam({ name: 'id', type: 'string' })

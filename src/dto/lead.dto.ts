@@ -4,6 +4,11 @@ import { ClientContactDto } from './client.dto';
 import { CompanyDto } from './company.dto';
 import { ExampleCompany } from 'src/helpers/example-company';
 import { ExampleClient } from '../helpers/example-client';
+import { StatusDealsDto } from './status-deals.dto';
+
+export class ObjectData {
+  [key: string]: string;
+}
 
 export class DealHistory {
   @ApiProperty({
@@ -27,8 +32,7 @@ export class LeadDto implements Core.Leads.Schema {
   name: string;
   @ApiProperty({ example: 'Небольшое описание лида' })
   description: string;
-  @ApiProperty({ example: 'Новый запрос' })
-  status: string | Core.Leads.LeadStatus;
+  status: StatusDealsDto;
   @ApiProperty({ example: 'Новый лид' })
   tags: Array<string>;
 

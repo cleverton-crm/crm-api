@@ -5,16 +5,14 @@ export class StatusDealsDto {
   locked: boolean;
   public: boolean;
   owner: string;
+  priority: number;
 
   @ApiProperty({ example: 'Новая сделка' })
   name: string;
 
-  @ApiProperty({ example: 1 })
-  priority: number;
-
   @ApiProperty({ example: 'Описание статуса' })
   description: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: '#F0B13A' })
   color: string;
 }
