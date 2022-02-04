@@ -2,13 +2,6 @@ import { Core } from 'crm-core';
 import { ApiProperty } from '@nestjs/swagger';
 import { ExampleCompany } from '../helpers/example-company';
 
-export class DealHistory {
-  @ApiProperty({
-    example: 'string',
-  })
-  comments: Map<string, any>;
-}
-
 export class DealDto implements Core.Deals.Schema {
   author: string;
   active: boolean;
