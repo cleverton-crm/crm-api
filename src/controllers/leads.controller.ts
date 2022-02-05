@@ -90,7 +90,6 @@ export class LeadsController {
   }
 
   /** LIST OF LEADS */
-
   @Get('/list')
   @ApiOperation({
     summary: 'Список лидов',
@@ -134,7 +133,7 @@ export class LeadsController {
 
   @Delete('/false/:id')
   @ApiOperation({
-    summary: 'Лид отменет',
+    summary: 'Лид отменен',
     description: Core.OperationReadMe('docs/leads/update.md'),
   })
   async leadFailure(@Param('id') id: string, @Req() req: any) {
