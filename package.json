@@ -1,6 +1,6 @@
 {
   "name": "crm-api",
-  "version": "1.0.144",
+  "version": "1.0.145",
   "description": "",
   "author": "",
   "private": true,
@@ -25,7 +25,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "types": "yarn add https://github.com/cleverton-crm/crm-core.git",
+    "types": "yarn add https://github.com/cleverton-crm/crm-core.git#master",
     "prepare": "husky install"
   },
   "dependencies": {
