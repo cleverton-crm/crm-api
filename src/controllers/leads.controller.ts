@@ -65,7 +65,7 @@ export class LeadsController {
   async changeOwner(@Param('id') id: string, @Param('oid') oid: string, @Req() req: any) {
     const sendData = {
       id: id,
-      sid: oid,
+      oid: oid,
       owner: req.user,
     };
     const response = await SendAndResponseData(this.leadsServiceClient, 'leads:change:owner', sendData);
