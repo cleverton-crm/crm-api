@@ -26,16 +26,12 @@ export class LeadsController {
     summary: 'Создание лида',
     description: Core.OperationReadMe('docs/leads/create.md'),
   })
-  @ApiQuery({ name: 'owner', required: false })
-  async createLead(
-    @Req() req: any,
-    @Body() leadData: LeadDto,
-    @Query('owner') owner: string,
-  ): Promise<Core.Response.Answer> {
-    if (owner) {
-      leadData.owner = owner;
-    }
-    const response = await SendAndResponseData(this.leadsServiceClient, 'leads:create', leadData);
+  async createLead(@Req() req: any, @Body() leadData: LeadDto): Promise<Core.Response.Answer> {
+    const sendData = {
+      data: leadData,
+      owner: req.user,
+    };
+    const response = await SendAndResponseData(this.leadsServiceClient, 'leads:create', sendData);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
@@ -82,6 +78,7 @@ export class LeadsController {
   async updateLead(@Param('id') id: string, @Req() req: any, @Body() leadData: LeadDto): Promise<Core.Response.Answer> {
     const sendData = {
       id: id,
+      owner: req.user,
       data: leadData,
     };
     const response = await SendAndResponseData(this.leadsServiceClient, 'leads:update', sendData);
