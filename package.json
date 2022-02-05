@@ -1,6 +1,6 @@
 {
   "name": "crm-api",
-  "version": "1.0.145",
+  "version": "1.0.146",
   "description": "",
   "author": "",
   "private": true,
@@ -42,7 +42,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "cli-color": "^2.0.1",
-    "crm-core": "https://github.com/cleverton-crm/crm-core.git",
+    "crm-core": "https://github.com/cleverton-crm/crm-core.git#master",
     "cross-env": "^7.0.3",
     "env-url": "^0.0.3",
     "helmet": "^4.6.0",

@@ -19,6 +19,7 @@ export class DealHistory {
 export class LeadDto implements Core.Deals.Schema {
   owner: string;
   type: string;
+  activity: Map<string, any>;
 
   @ApiProperty({ example: 'Новый лид' })
   name: string;
@@ -31,6 +32,12 @@ export class LeadDto implements Core.Deals.Schema {
 
   @ApiProperty({ example: 10000 })
   price?: number;
+
+  @ApiProperty({ example: 'Дизельное' })
+  fuelType: string;
+
+  @ApiProperty({ example: 10 })
+  amountFuel: number;
 
   @ApiProperty({ example: '₽' })
   currency?: string;
