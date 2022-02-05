@@ -10,6 +10,9 @@ export class CarVehicle implements Core.Cars.VehicleData {
 }
 
 export class CarDto implements Core.Cars.Schema {
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
   owner: string;
   company: string;
   active: boolean;

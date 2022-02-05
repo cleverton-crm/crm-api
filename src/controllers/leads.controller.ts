@@ -6,6 +6,8 @@ import { Core } from 'crm-core';
 import { LeadDto } from '../dto/lead.dto';
 import { SendAndResponseData } from '../helpers/global';
 import { cyan } from 'cli-color';
+import { ApiPagination } from '../decorators/pagination.decorator';
+import { MongoPagination, MongoPaginationDecorator } from '../decorators/mongo.pagination.decorator';
 
 @ApiTags('Leads')
 @Auth('Admin', 'Manager')
@@ -38,9 +40,41 @@ export class LeadsController {
     return response;
   }
 
-  /** UPDATE LEAD */
+  @Patch('/change/:id/status/:sid')
+  @ApiOperation({
+    summary: 'Смена статуса',
+    description: Core.OperationReadMe('docs/leads/update.md'),
+  })
+  async changeLeadStatus(@Param('id') id: string, @Param('sid') sid: string, @Req() req: any) {
+    const sendData = {
+      id: id,
+      sid: sid,
+      owner: req.user,
+    };
+    const response = await SendAndResponseData(this.leadsServiceClient, 'leads:change:status', sendData);
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
 
-  @Patch('/:id/update')
+  @Patch('/change/:id/owner/:oid')
+  @ApiOperation({
+    summary: 'Смена отвественного менеджера / Передача лида',
+    description: Core.OperationReadMe('docs/leads/update.md'),
+  })
+  @Auth('Admin')
+  async changeOwner(@Param('id') id: string, @Param('oid') oid: string, @Req() req: any) {
+    const sendData = {
+      id: id,
+      sid: oid,
+      owner: req.user,
+    };
+    const response = await SendAndResponseData(this.leadsServiceClient, 'leads:change:owner', sendData);
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+
+  /** UPDATE LEAD */
+  @Patch('/update/:id')
   @ApiOperation({
     summary: 'Изменение лида',
     description: Core.OperationReadMe('docs/leads/update.md'),
@@ -62,15 +96,17 @@ export class LeadsController {
     summary: 'Список лидов',
     description: Core.OperationReadMe('docs/leads/list.md'),
   })
-  async listLead(): Promise<Core.Response.Answer> {
-    const response = await SendAndResponseData(this.leadsServiceClient, 'leads:list', true);
+  @ApiPagination()
+  async listLead(@MongoPaginationDecorator() pagination: MongoPagination): Promise<Core.Response.Answer> {
+    const sendData = { pagination: pagination };
+    const response = await SendAndResponseData(this.leadsServiceClient, 'leads:list', sendData);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
   /** FIND LEAD */
 
-  @Get('/:id/find')
+  @Get('/find/:id')
   @ApiOperation({
     summary: 'Поиск лида',
     description: Core.OperationReadMe('docs/leads/find.md'),
@@ -81,7 +117,37 @@ export class LeadsController {
     return response;
   }
 
-  @Delete('/:id/status')
+  @Patch('/done/:id')
+  @ApiOperation({
+    summary: 'Лид переходит в завершенную сделку / Конвертируется в Сделку',
+    description: Core.OperationReadMe('docs/leads/update.md'),
+  })
+  async leadDone(@Param('id') id: string, @Req() req: any) {
+    const sendData = {
+      id: id,
+      owner: req.user,
+    };
+    const response = await SendAndResponseData(this.leadsServiceClient, 'leads:done', sendData);
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+
+  @Delete('/false/:id')
+  @ApiOperation({
+    summary: 'Лид отменет',
+    description: Core.OperationReadMe('docs/leads/update.md'),
+  })
+  async leadFailure(@Param('id') id: string, @Req() req: any) {
+    const sendData = {
+      id: id,
+      owner: req.user,
+    };
+    const response = await SendAndResponseData(this.leadsServiceClient, 'leads:failure', sendData);
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+
+  @Delete('/archive/:id')
   @ApiParam({ name: 'id', type: 'string' })
   @ApiQuery({ name: 'active', type: 'boolean', enum: ['true', 'false'] })
   @ApiOperation({

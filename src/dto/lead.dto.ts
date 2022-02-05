@@ -4,7 +4,6 @@ import { ClientContactDto } from './client.dto';
 import { CompanyDto } from './company.dto';
 import { ExampleCompany } from 'src/helpers/example-company';
 import { ExampleClient } from '../helpers/example-client';
-import { StatusDealsDto } from './status-deals.dto';
 
 export class ObjectData {
   [key: string]: string;
@@ -17,44 +16,40 @@ export class DealHistory {
   comments: Map<string, any>;
 }
 
-export class LeadDto implements Core.Leads.Schema {
-  active: boolean;
+export class LeadDto implements Core.Deals.Schema {
   owner: string;
-  author: string;
-  permissions: Map<string, any>;
-  activity: Map<string, any>;
-  object: 'task';
-  type: 'lead' | 'deal';
-
-  company: string;
+  type: string;
 
   @ApiProperty({ example: 'Новый лид' })
   name: string;
+
   @ApiProperty({ example: 'Небольшое описание лида' })
-  description: string;
-  status: StatusDealsDto;
+  description?: string;
+
   @ApiProperty({ example: 'Новый лид' })
-  tags: Array<string>;
+  tags?: Array<string>;
+
+  @ApiProperty({ example: 10000 })
+  price?: number;
+
+  @ApiProperty({ example: '₽' })
+  currency?: string;
 
   @ApiProperty()
-  attachments: Map<string, any>;
-  @ApiProperty({ example: 10000 })
-  price: number;
-  @ApiProperty({ example: '₽' })
-  currency: string;
+  startDate?: Date;
+
   @ApiProperty()
-  startDate: Date;
+  endDate?: Date;
+
   @ApiProperty()
-  endDate: Date;
-  @ApiProperty()
-  information: Map<string, any>;
-  @ApiProperty()
-  source: string;
-  @ApiProperty()
-  client: string;
+  information?: Map<string, any>;
+
+  @ApiProperty({ example: 'Холодный звонок' })
+  source?: string;
+
   @ApiProperty({
     example: [ExampleClient, ExampleCompany],
     format: 'array',
   })
-  contacts: [ClientContactDto, CompanyDto];
+  contacts?: [ClientContactDto, CompanyDto];
 }

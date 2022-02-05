@@ -201,9 +201,7 @@ export class CompanyRequisitesInfoDto implements Core.Company.Requisites.Info {
   unparsed_parts: string;
 }
 
-export class CompanyRequisitesAddressesDto
-  implements Core.Company.Requisites.Address
-{
+export class CompanyRequisitesAddressesDto implements Core.Company.Requisites.Address {
   @ApiProperty()
   data: CompanyRequisitesInfoDto;
   @ApiProperty()
@@ -231,9 +229,7 @@ export class CompanyRequisitesOPFDto implements Core.Company.Requisites.OPF {
   @ApiProperty()
   type: string;
 }
-export class CompanyRequisitesStateDto
-  implements Core.Company.Requisites.State
-{
+export class CompanyRequisitesStateDto implements Core.Company.Requisites.State {
   @ApiProperty()
   actuality_date: number;
   @ApiProperty()
@@ -245,9 +241,7 @@ export class CompanyRequisitesStateDto
   @ApiProperty()
   status: string;
 }
-export class CompanyRequisitesFinance
-  implements Core.Company.Requisites.Finance
-{
+export class CompanyRequisitesFinance implements Core.Company.Requisites.Finance {
   @ApiProperty()
   tax_system?: string;
   @ApiProperty()
@@ -262,9 +256,7 @@ export class CompanyRequisitesFinance
   year?: string;
 }
 
-export class CompanyRequisitesUsDto
-  implements Core.Company.Requisites.CompanyUs
-{
+export class CompanyRequisitesUsDto implements Core.Company.Requisites.CompanyUs {
   @ApiProperty()
   address: CompanyRequisitesAddressesDto;
   @ApiProperty()
@@ -337,9 +329,7 @@ export class CompanyRequisitesUsDto
   type: string;
 }
 
-export class CompanyRequisitesDto
-  implements Core.Company.Requisites.CompanyName
-{
+export class CompanyRequisitesDto implements Core.Company.Requisites.CompanyName {
   @ApiProperty()
   companyId: string;
   @ApiProperty({ type: CompanyRequisitesUsDto })
@@ -351,6 +341,9 @@ export class CompanyRequisitesDto
 }
 
 export class CompanyDto implements Core.Company.Schema {
+  partner: Record<string, any>;
+  park: Record<string, any>;
+  holding: Record<string, any>;
   owner: string;
   clients: string[];
   @ApiProperty({ type: CompanyBankDto })
