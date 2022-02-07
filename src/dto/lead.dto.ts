@@ -19,7 +19,6 @@ export class DealHistory {
 export class LeadDto implements Core.Deals.Schema {
   owner: string;
   type: string;
-  activity: Map<string, any>;
 
   @ApiProperty({ example: 'Новый лид' })
   name: string;

@@ -128,7 +128,7 @@ export class LeadsController {
     return response;
   }
 
-  @Delete('/false/:id')
+  @Delete('/failure/:id')
   @ApiOperation({
     summary: 'Лид отменен',
     description: Core.OperationReadMe('docs/leads/update.md'),
