@@ -20,13 +20,13 @@ export class LeadDto implements Core.Deals.Schema {
   owner: string;
   type: string;
 
-  @ApiProperty({ example: 'Новый лид' })
+  @ApiProperty({ example: 'Новый' })
   name: string;
 
-  @ApiProperty({ example: 'Небольшое описание лида' })
+  @ApiProperty({ example: 'Небольшое описание' })
   description?: string;
 
-  @ApiProperty({ example: ['Новый лид'] })
+  @ApiProperty({ example: ['новый'] })
   tags?: Array<string>;
 
   @ApiProperty({ example: 10000 })

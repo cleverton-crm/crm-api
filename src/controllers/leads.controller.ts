@@ -39,7 +39,7 @@ export class LeadsController {
   @Patch('/change/:id/status/:sid')
   @ApiOperation({
     summary: 'Смена статуса',
-    description: Core.OperationReadMe('docs/leads/update.md'),
+    description: Core.OperationReadMe('docs/leads/change_status.md'),
   })
   async changeLeadStatus(@Param('id') id: string, @Param('sid') sid: string, @Req() req: any) {
     const sendData = {
@@ -55,7 +55,7 @@ export class LeadsController {
   @Patch('/change/:id/owner/:oid')
   @ApiOperation({
     summary: 'Смена отвественного менеджера / Передача лида',
-    description: Core.OperationReadMe('docs/leads/update.md'),
+    description: Core.OperationReadMe('docs/leads/change_owner.md'),
   })
   @Auth('Admin')
   async changeOwner(@Param('id') id: string, @Param('oid') oid: string, @Req() req: any) {

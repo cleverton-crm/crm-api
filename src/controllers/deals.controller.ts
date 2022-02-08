@@ -6,6 +6,7 @@ import { Core } from 'crm-core';
 import { SendAndResponseData } from '../helpers/global';
 import { cyan } from 'cli-color';
 import { DealHistory, LeadDto } from '../dto/lead.dto';
+import { MongoPagination, MongoPaginationDecorator } from '../decorators/mongo.pagination.decorator';
 
 @ApiTags('Deals')
 @Controller('deals')
@@ -22,40 +23,63 @@ export class DealsController {
     summary: 'Создание сделки',
     description: Core.OperationReadMe('docs/deals/create.md'),
   })
-  @ApiQuery({ name: 'owner', required: false })
-  async createDeal(
-    @Req() req: any,
-    @Body() dealData: LeadDto,
-    @Query('owner') owner: string,
-  ): Promise<Core.Response.Answer> {
-    dealData.owner = owner || req.user.userID;
-    dealData.type = 'deal';
-    const response = await SendAndResponseData(this.dealsServiceClient, 'deals:create', dealData);
+  async createDeal(@Req() req: any, @Body() dealData: LeadDto): Promise<Core.Response.Answer> {
+    // dealData.owner = owner || req.user.userID;
+    // dealData.type = 'deal';
+    const sendData = {
+      data: dealData,
+      owner: req.user,
+    };
+    const response = await SendAndResponseData(this.dealsServiceClient, 'deals:create', sendData);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
   @Patch('/:id/update')
-  @ApiQuery({ name: 'owner', required: false })
   @ApiOperation({
     summary: 'Изменение сделки',
     description: Core.OperationReadMe('docs/deals/update.md'),
   })
-  async updateDeal(
-    @Param('id') id: string,
-    @Query('owner') owner: string,
-    @Req() req: any,
-    @Body() dealData: LeadDto,
-  ): Promise<Core.Response.Answer> {
-    if (owner) {
-      dealData.owner = owner;
-    }
+  async updateDeal(@Param('id') id: string, @Req() req: any, @Body() dealData: LeadDto): Promise<Core.Response.Answer> {
     const sendData = {
       id: id,
       userId: req.user.userID,
       data: dealData,
     };
     const response = await SendAndResponseData(this.dealsServiceClient, 'deals:update', sendData);
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+
+  @Patch('/change/:id/status/:sid')
+  @ApiOperation({
+    summary: 'Смена статуса',
+    description: Core.OperationReadMe('docs/deals/change_status.md'),
+  })
+  async changeDealStatus(@Param('id') id: string, @Param('sid') sid: string, @Req() req: any) {
+    const sendData = {
+      id: id,
+      sid: sid,
+      owner: req.user,
+    };
+    const response = await SendAndResponseData(this.dealsServiceClient, 'deals:change:status', sendData);
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+
+  @Patch('/change/:id/owner/:oid')
+  @ApiOperation({
+    summary: 'Смена отвественного менеджера / Передача сделки',
+    description: Core.OperationReadMe('docs/deals/change_owner.md'),
+  })
+  @Auth('Admin')
+  async changeOwner(@Param('id') id: string, @Param('oid') oid: string, @Req() req: any) {
+    const sendData = {
+      id: id,
+      oid: oid,
+      owner: req.user,
+    };
+    const response = await SendAndResponseData(this.dealsServiceClient, 'deals:change:owner', sendData);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
@@ -85,8 +109,9 @@ export class DealsController {
     summary: 'Список сделок',
     description: Core.OperationReadMe('docs/deals/list.md'),
   })
-  async listDeals(): Promise<Core.Response.Answer> {
-    const response = await SendAndResponseData(this.dealsServiceClient, 'deals:list', true);
+  async listDeals(@MongoPaginationDecorator() pagination: MongoPagination): Promise<Core.Response.Answer> {
+    const sendData = { pagination: pagination };
+    const response = await SendAndResponseData(this.dealsServiceClient, 'deals:list', sendData);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
