@@ -177,3 +177,28 @@ export const ExampleCompany = {
     employee_count: null,
   },
 };
+export const ExampleFullCompany = {
+  bank: {
+    bank: 'string',
+    bankAddress: 'string',
+    bik: 'string',
+    correspondent: 'string',
+    payment: 'string',
+  },
+  object: 'company',
+  client: ['string'],
+  companyLocation:
+    '192019, ГОРОД САНКТ-ПЕТЕРБУРГ, УЛ. ПРОФЕССОРА КАЧАЛОВА, Д. 7, ЛИТЕР А, ПОМЕЩ. 11-Н ЧАСТЬ ПОМ. 6 (ОФИС 218)',
+  employeesCount: 0,
+  factLocation:
+    '192019, ГОРОД САНКТ-ПЕТЕРБУРГ, УЛ. ПРОФЕССОРА КАЧАЛОВА, Д. 7, ЛИТЕР А, ПОМЕЩ. 11-Н ЧАСТЬ ПОМ. 6 (ОФИС 218)',
+  fax: 'string',
+  name: 'ООО "ЛУК-ОИЛ37"',
+  ownership: 'ООО',
+  permissions: {},
+  phoneNumber: 'string',
+  phones: ['string'],
+  postLocation:
+    '192019, ГОРОД САНКТ-ПЕТЕРБУРГ, УЛ. ПРОФЕССОРА КАЧАЛОВА, Д. 7, ЛИТЕР А, ПОМЕЩ. 11-Н ЧАСТЬ ПОМ. 6 (ОФИС 218)',
+  requisites: ExampleCompany,
+};

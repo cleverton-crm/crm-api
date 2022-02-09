@@ -2,7 +2,7 @@ import { Core } from 'crm-core';
 import { ApiProperty } from '@nestjs/swagger';
 import { ClientContactDto } from './client.dto';
 import { CompanyDto } from './company.dto';
-import { ExampleCompany } from 'src/helpers/example-company';
+import { ExampleCompany, ExampleFullCompany } from 'src/helpers/example-company';
 import { ExampleClient } from '../helpers/example-client';
 
 export class ObjectData {
@@ -56,7 +56,7 @@ export class LeadDto implements Core.Deals.Schema {
   source?: string;
 
   @ApiProperty({
-    example: [ExampleClient, ExampleCompany],
+    example: [ExampleClient, ExampleFullCompany],
     format: 'array',
   })
   contacts?: [ClientContactDto, CompanyDto];
