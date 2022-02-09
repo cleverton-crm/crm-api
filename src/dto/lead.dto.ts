@@ -9,16 +9,18 @@ export class ObjectData {
   [key: string]: string;
 }
 
-export class DealHistory {
+export class DealComment {
   @ApiProperty({
     example: 'string',
   })
-  comments: Map<string, any>;
+  comments: string;
 }
 
 export class LeadDto implements Core.Deals.Schema {
   owner: string;
   type: string;
+
+  comments: DealComment;
 
   @ApiProperty({ example: 'Новый' })
   name: string;

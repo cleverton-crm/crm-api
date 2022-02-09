@@ -3,7 +3,7 @@ import { Body, Controller, Delete, Get, Inject, Logger, Param, Patch, Post, Quer
 import { Auth } from '../decorators/auth.decorator';
 import { ClientProxy } from '@nestjs/microservices';
 import { Core } from 'crm-core';
-import { LeadDto } from '../dto/lead.dto';
+import { DealComment, LeadDto } from '../dto/lead.dto';
 import { SendAndResponseData } from '../helpers/global';
 import { cyan } from 'cli-color';
 import { ApiPagination } from '../decorators/pagination.decorator';
@@ -124,6 +124,26 @@ export class LeadsController {
       owner: req.user,
     };
     const response = await SendAndResponseData(this.leadsServiceClient, 'leads:done', sendData);
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+
+  @Patch('/:id/comment')
+  @ApiOperation({
+    summary: 'Добавление комментария к сделке',
+    description: Core.OperationReadMe('docs/deals/comment_create.md'),
+  })
+  async commentLead(
+    @Param('id') id: string,
+    @Req() req: any,
+    @Body() commentData: DealComment,
+  ): Promise<Core.Response.Answer> {
+    const sendData = {
+      id: id,
+      userId: req.user.userID,
+      comments: commentData,
+    };
+    const response = await SendAndResponseData(this.leadsServiceClient, 'leads:comment', sendData);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }

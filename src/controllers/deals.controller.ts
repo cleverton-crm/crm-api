@@ -5,7 +5,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { Core } from 'crm-core';
 import { SendAndResponseData } from '../helpers/global';
 import { cyan } from 'cli-color';
-import { DealHistory, LeadDto } from '../dto/lead.dto';
+import { DealComment, LeadDto } from '../dto/lead.dto';
 import { MongoPagination, MongoPaginationDecorator } from '../decorators/mongo.pagination.decorator';
 
 @ApiTags('Deals')
@@ -24,8 +24,6 @@ export class DealsController {
     description: Core.OperationReadMe('docs/deals/create.md'),
   })
   async createDeal(@Req() req: any, @Body() dealData: LeadDto): Promise<Core.Response.Answer> {
-    // dealData.owner = owner || req.user.userID;
-    // dealData.type = 'deal';
     const sendData = {
       data: dealData,
       owner: req.user,
@@ -92,7 +90,7 @@ export class DealsController {
   async commentDeal(
     @Param('id') id: string,
     @Req() req: any,
-    @Body() commentData: DealHistory,
+    @Body() commentData: DealComment,
   ): Promise<Core.Response.Answer> {
     const sendData = {
       id: id,
