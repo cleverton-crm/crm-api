@@ -36,6 +36,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { fileOptions } from '../helpers/file-options';
 import { MongoPagination, MongoPaginationDecorator } from '../decorators/mongo.pagination.decorator';
 import { ApiPagination } from '../decorators/pagination.decorator';
+import { fileImagesOptions } from '../helpers/file-images-options';
 
 @ApiTags('Clients')
 @Auth('Admin', 'Manager')
@@ -232,6 +233,74 @@ export class ClientController {
       owner: req.user,
     };
     const responseData = await SendAndResponseData(this.filesServiceClient, 'files:clients:download', sendData);
+    this.logger.log(cyan(responseData));
+    return responseData;
+  }
+
+  @Get('/avatar/:id')
+  @ApiOperation({
+    summary: 'Фото или аватар клиента',
+    description: Core.OperationReadMe('docs/profile/avatar.md'),
+  })
+  @Auth('Admin', 'Manager')
+  @ApiResponse({ type: ResponseSuccessDto, status: HttpStatus.OK })
+  @ApiUnauthorizedResponse({
+    type: ResponseUnauthorizedDto,
+    status: HttpStatus.UNAUTHORIZED,
+  })
+  async showAvatar(@Req() req: any, @Param('id') id: string): Promise<Core.Response.Answer | Core.Response.Error> {
+    const sendData = { owner: req.user, id: id };
+    const responseData = await SendAndResponseData(this.filesServiceClient, 'files:client:avatar:show', sendData);
+    this.logger.log(cyan(responseData));
+    return responseData;
+  }
+
+  @Post('/avatar/:id/upload')
+  @Auth('Admin', 'Manager')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @ApiOperation({
+    summary: 'Загрузка фото или аватар клиента',
+    description: Core.OperationReadMe('docs/profile/avatar.md'),
+  })
+  @ApiUnauthorizedResponse({
+    type: ResponseUnauthorizedDto,
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Требуется авторизация',
+  })
+  @ApiResponse({ type: ResponseSuccessDto, status: HttpStatus.OK })
+  @UseInterceptors(FilesInterceptor('file', 10, fileImagesOptions))
+  async uploadAvatar(@UploadedFiles() file, @Req() req: any, @Param('id') id: string): Promise<any> {
+    const response = [];
+    file.forEach((file) => {
+      const fileReponse = {
+        originalname: file.originalname,
+        encoding: file.encoding,
+        mimetype: file.mimetype,
+        id: file.id,
+        filename: file.filename,
+        metadata: file.metadata,
+        bucketName: file.bucketName,
+        chunkSize: file.chunkSize,
+        size: file.size,
+        md5: file.md5,
+        uploadDate: file.uploadDate,
+        contentType: file.contentType,
+      };
+      response.push(file);
+    });
+    const sendData = { owner: req.user.userID, files: response, id: id };
+    const responseData = await SendAndResponseData(this.filesServiceClient, 'files:client:avatar:upload', sendData);
     this.logger.log(cyan(responseData));
     return responseData;
   }
