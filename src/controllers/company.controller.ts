@@ -1,11 +1,13 @@
 import {
   ApiBody,
   ApiConsumes,
+  ApiNotFoundResponse,
   ApiOperation,
   ApiParam,
   ApiQuery,
   ApiResponse,
   ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import {
   Body,
@@ -26,16 +28,14 @@ import {
 import { ClientProxy } from '@nestjs/microservices';
 import { Core } from 'crm-core';
 import { cyan } from 'cli-color';
-import { CompanyDto, ResponseRecordsDataDto } from '../dto';
+import { CompanyDto, ResponseRecordsDataDto, ResponseSuccessDto, ResponseUnauthorizedDto } from '../dto';
 import { SendAndResponseData } from '../helpers/global';
 import { Auth } from '../decorators/auth.decorator';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { fileOptions } from '../helpers/file-options';
 import { ApiPagination } from '../decorators/pagination.decorator';
-import {
-  MongoPagination,
-  MongoPaginationDecorator,
-} from '../decorators/mongo.pagination.decorator';
+import { MongoPagination, MongoPaginationDecorator } from '../decorators/mongo.pagination.decorator';
+import { fileImagesOptions } from '../helpers/file-images-options';
 
 @ApiTags('Companies')
 @Auth('Admin', 'Manager')
@@ -77,11 +77,7 @@ export class CompanyController {
     } else {
       companyData.owner = req.user.userID;
     }
-    const response = await SendAndResponseData(
-      this.companyServiceClient,
-      'company:create',
-      companyData,
-    );
+    const response = await SendAndResponseData(this.companyServiceClient, 'company:create', companyData);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
@@ -94,17 +90,13 @@ export class CompanyController {
    * @param companyData
    * @param id
    */
-  @Patch('/:id')
+  @Patch('/:id/update')
   @ApiOperation({
     summary: 'Изменение данных о компании',
     description: Core.OperationReadMe('docs/company/update.md'),
   })
   @ApiQuery({ name: 'owner', required: false })
-  async updateCompany(
-    @Param('id') id: string,
-    @Query('owner') ownerId: string,
-    @Body() companyData: CompanyDto,
-  ) {
+  async updateCompany(@Param('id') id: string, @Query('owner') ownerId: string, @Body() companyData: CompanyDto) {
     if (ownerId) {
       companyData.owner = ownerId;
     }
@@ -112,11 +104,7 @@ export class CompanyController {
       id: id,
       data: companyData,
     };
-    const response = await SendAndResponseData(
-      this.companyServiceClient,
-      'company:update',
-      sendData,
-    );
+    const response = await SendAndResponseData(this.companyServiceClient, 'company:update', sendData);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
@@ -132,14 +120,8 @@ export class CompanyController {
     description: Core.OperationReadMe('docs/company/list.md'),
   })
   @ApiPagination()
-  async listCompanies(
-    @MongoPaginationDecorator() pagination: Core.MongoPagination,
-  ): Promise<ResponseRecordsDataDto> {
-    const response = await SendAndResponseData(
-      this.companyServiceClient,
-      'company:list',
-      { pagination: pagination },
-    );
+  async listCompanies(@MongoPaginationDecorator() pagination: Core.MongoPagination): Promise<ResponseRecordsDataDto> {
+    const response = await SendAndResponseData(this.companyServiceClient, 'company:list', { pagination: pagination });
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
@@ -156,11 +138,7 @@ export class CompanyController {
     description: Core.OperationReadMe('docs/company/find.md'),
   })
   async findCompany(@Param('id') id: string) {
-    const response = await SendAndResponseData(
-      this.companyServiceClient,
-      'company:find',
-      id,
-    );
+    const response = await SendAndResponseData(this.companyServiceClient, 'company:find', id);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
@@ -171,11 +149,7 @@ export class CompanyController {
   })
   async checkoutCompany(@Param('inn') inn: string) {
     console.log(inn);
-    const response = await SendAndResponseData(
-      this.companyServiceClient,
-      'company:checkout',
-      inn,
-    );
+    const response = await SendAndResponseData(this.companyServiceClient, 'company:checkout', inn);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
@@ -185,31 +159,159 @@ export class CompanyController {
    * @param id
    * @param active
    */
-  @Delete('/:id')
+  @Delete('/:id/archive')
   @ApiParam({ name: 'id', type: 'string' })
   @ApiQuery({ name: 'active', type: 'boolean', enum: ['true', 'false'] })
   @ApiOperation({
     summary: 'Архивация компании',
     description: Core.OperationReadMe('docs/company/archive.md'),
   })
-  async archiveCompany(
-    @Param('id') id: string,
-    @Query('active') active: boolean,
-  ): Promise<Core.Response.Answer> {
+  async archiveCompany(@Param('id') id: string, @Query('active') active: boolean): Promise<Core.Response.Answer> {
     const sendData = {
       id: id,
       active: active,
     };
-    const response = await SendAndResponseData(
-      this.companyServiceClient,
-      'company:archive',
-      sendData,
-    );
+    const response = await SendAndResponseData(this.companyServiceClient, 'company:archive', sendData);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
-  @Post('/:id/attachments/upload')
+  /** UPLOAD FILES ALL */
+
+  @Post('/attachments/:id/upload/')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+        comments: {
+          type: 'string',
+        },
+      },
+    },
+  })
+  @ApiParam({ name: 'id', description: 'Укажите ID клиента' })
+  @ApiOperation({
+    summary: 'Загрузка документов',
+    description: Core.OperationReadMe('docs/files/upload.md'),
+  })
+  @ApiNotFoundResponse({ description: 'Контакт не найден' })
+  @UseInterceptors(FilesInterceptor('file', 10, fileOptions))
+  async upload(@UploadedFiles() file, @Param('id') id: string, @Body() comment, @Req() req: any): Promise<any> {
+    const response = [];
+    file.forEach((file) => {
+      response.push(file);
+    });
+    const sendData = {
+      owner: req.user.userID,
+      client: id,
+      files: response,
+      bucketName: 'client_' + id,
+      comments: comment.comments,
+    };
+    const responseData = await SendAndResponseData(this.filesServiceClient, 'files:company:upload', sendData);
+    this.logger.log(cyan(responseData));
+    return responseData;
+  }
+
+  /** GET LIST FILES */
+
+  @Get('/attachments/:id/list')
+  @ApiOperation({
+    summary: 'Список всех файлов',
+    description: Core.OperationReadMe('docs/files/download.md'),
+  })
+  @ApiResponse({ type: ResponseSuccessDto, status: HttpStatus.OK })
+  @ApiUnauthorizedResponse({
+    type: ResponseUnauthorizedDto,
+    status: HttpStatus.UNAUTHORIZED,
+  })
+  async fileList(@Req() req: any, @Param('id') id: string): Promise<Core.Response.Answer | Core.Response.Error> {
+    const sendData = { id: id, owner: req.user.userID };
+    const responseData = await SendAndResponseData(this.filesServiceClient, 'files:company:list', sendData);
+    this.logger.log(cyan(responseData));
+    return responseData;
+  }
+
+  /** GET FILES BY ID */
+
+  @Get('/attachments/:id/download/:fileID')
+  @ApiOperation({
+    summary: 'Скачать файл (документ)',
+    description: Core.OperationReadMe('docs/files/download.md'),
+  })
+  @ApiResponse({ type: ResponseSuccessDto, status: HttpStatus.OK })
+  @ApiUnauthorizedResponse({
+    type: ResponseUnauthorizedDto,
+    status: HttpStatus.UNAUTHORIZED,
+  })
+  async download(
+    @Req() req: any,
+    @Param('id') id: string,
+    @Param('fileID') file: string,
+  ): Promise<Core.Response.Answer | Core.Response.Error> {
+    const sendData = {
+      id: id,
+      file: file,
+      owner: req.user,
+    };
+    const responseData = await SendAndResponseData(this.filesServiceClient, 'files:company:download', sendData);
+    this.logger.log(cyan(responseData));
+    return responseData;
+  }
+
+  /** DELETE ATTACHMENT FILE  */
+
+  @Delete('/attachments/:id/delete/:fileID')
+  @ApiOperation({
+    summary: 'Удалить файл (документ)',
+    description: Core.OperationReadMe('docs/files/download.md'),
+  })
+  @ApiResponse({ type: ResponseSuccessDto, status: HttpStatus.OK })
+  @ApiUnauthorizedResponse({
+    type: ResponseUnauthorizedDto,
+    status: HttpStatus.UNAUTHORIZED,
+  })
+  async deleteFile(
+    @Req() req: any,
+    @Param('id') id: string,
+    @Param('fileID') file: string,
+  ): Promise<Core.Response.Answer | Core.Response.Error> {
+    const sendData = {
+      id: id,
+      file: file,
+      owner: req.user,
+    };
+    const responseData = await SendAndResponseData(this.filesServiceClient, 'files:company:delete', sendData);
+    this.logger.log(cyan(responseData));
+    return responseData;
+  }
+
+  /** GET AVATAR BY ID */
+
+  @Get('/avatar/:id')
+  @ApiOperation({
+    summary: 'Фото или аватар',
+    description: Core.OperationReadMe('docs/files/avatar.md'),
+  })
+  @Auth('Admin', 'Manager')
+  @ApiResponse({ type: ResponseSuccessDto, status: HttpStatus.OK })
+  @ApiUnauthorizedResponse({
+    type: ResponseUnauthorizedDto,
+    status: HttpStatus.UNAUTHORIZED,
+  })
+  async showAvatar(@Req() req: any, @Param('id') id: string): Promise<Core.Response.Answer | Core.Response.Error> {
+    const sendData = { owner: req.user, id: id };
+    const responseData = await SendAndResponseData(this.filesServiceClient, 'files:company:avatar:show', sendData);
+    this.logger.log(cyan(responseData));
+    return responseData;
+  }
+
+  @Post('/avatar/:id/upload')
   @Auth('Admin', 'Manager')
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -223,31 +325,38 @@ export class CompanyController {
       },
     },
   })
-  @ApiParam({ name: 'id', description: 'Укажите ID компании' })
   @ApiOperation({
-    summary: 'Загрузка документов, файлов компании',
-    description: Core.OperationReadMe('docs/clients/upload.md'),
+    summary: 'Загрузка фото или аватар компании',
+    description: Core.OperationReadMe('docs/files/avatar.md'),
   })
-  @UseInterceptors(FilesInterceptor('file', 10, fileOptions))
-  async upload(
-    @UploadedFiles() file,
-    @Param('id') company: string,
-    @Req() req: any,
-  ): Promise<any> {
+  @ApiUnauthorizedResponse({
+    type: ResponseUnauthorizedDto,
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Требуется авторизация',
+  })
+  @ApiResponse({ type: ResponseSuccessDto, status: HttpStatus.OK })
+  @UseInterceptors(FilesInterceptor('file', 10, fileImagesOptions))
+  async uploadAvatar(@UploadedFiles() file, @Req() req: any, @Param('id') id: string): Promise<any> {
     const response = [];
     file.forEach((file) => {
+      const fileReponse = {
+        originalname: file.originalname,
+        encoding: file.encoding,
+        mimetype: file.mimetype,
+        id: file.id,
+        filename: file.filename,
+        metadata: file.metadata,
+        bucketName: file.bucketName,
+        chunkSize: file.chunkSize,
+        size: file.size,
+        md5: file.md5,
+        uploadDate: file.uploadDate,
+        contentType: file.contentType,
+      };
       response.push(file);
     });
-    const sendData = {
-      client: company,
-      files: response,
-      bucketName: 'company_' + company,
-    };
-    const responseData = await SendAndResponseData(
-      this.filesServiceClient,
-      'files:company:upload',
-      sendData,
-    );
+    const sendData = { owner: req.user.userID, files: response, id: id };
+    const responseData = await SendAndResponseData(this.filesServiceClient, 'files:company:avatar:upload', sendData);
     this.logger.log(cyan(responseData));
     return responseData;
   }

@@ -169,8 +169,8 @@ export class ClientController {
   })
   @ApiParam({ name: 'id', description: 'Укажите ID клиента' })
   @ApiOperation({
-    summary: 'Загрузка документов, файлов клиента',
-    description: Core.OperationReadMe('docs/clients/upload.md'),
+    summary: 'Загрузка документов',
+    description: Core.OperationReadMe('docs/files/upload.md'),
   })
   @ApiNotFoundResponse({ description: 'Контакт не найден' })
   @UseInterceptors(FilesInterceptor('file', 10, fileOptions))
@@ -195,8 +195,8 @@ export class ClientController {
 
   @Get('/attachments/:id/list')
   @ApiOperation({
-    summary: 'Список всех файлов для клиента',
-    description: Core.OperationReadMe('docs/clients/download.md'),
+    summary: 'Список всех файлов',
+    description: Core.OperationReadMe('docs/files/download.md'),
   })
   @ApiResponse({ type: ResponseSuccessDto, status: HttpStatus.OK })
   @ApiUnauthorizedResponse({
@@ -215,7 +215,7 @@ export class ClientController {
   @Get('/attachments/:id/download/:fileID')
   @ApiOperation({
     summary: 'Скачать файл (документ)',
-    description: Core.OperationReadMe('docs/clients/download.md'),
+    description: Core.OperationReadMe('docs/files/download.md'),
   })
   @ApiResponse({ type: ResponseSuccessDto, status: HttpStatus.OK })
   @ApiUnauthorizedResponse({
@@ -237,10 +237,39 @@ export class ClientController {
     return responseData;
   }
 
+  /** DELETE ATTACHMENT FILE  */
+
+  @Delete('/attachments/:id/delete/:fileID')
+  @ApiOperation({
+    summary: 'Удалить файл (документ)',
+    description: Core.OperationReadMe('docs/files/download.md'),
+  })
+  @ApiResponse({ type: ResponseSuccessDto, status: HttpStatus.OK })
+  @ApiUnauthorizedResponse({
+    type: ResponseUnauthorizedDto,
+    status: HttpStatus.UNAUTHORIZED,
+  })
+  async deleteFile(
+    @Req() req: any,
+    @Param('id') id: string,
+    @Param('fileID') file: string,
+  ): Promise<Core.Response.Answer | Core.Response.Error> {
+    const sendData = {
+      id: id,
+      file: file,
+      owner: req.user,
+    };
+    const responseData = await SendAndResponseData(this.filesServiceClient, 'files:clients:delete', sendData);
+    this.logger.log(cyan(responseData));
+    return responseData;
+  }
+
+  /** GET AVATAR BY ID */
+
   @Get('/avatar/:id')
   @ApiOperation({
-    summary: 'Фото или аватар клиента',
-    description: Core.OperationReadMe('docs/profile/avatar.md'),
+    summary: 'Фото или аватар',
+    description: Core.OperationReadMe('docs/files/avatar.md'),
   })
   @Auth('Admin', 'Manager')
   @ApiResponse({ type: ResponseSuccessDto, status: HttpStatus.OK })
@@ -250,7 +279,7 @@ export class ClientController {
   })
   async showAvatar(@Req() req: any, @Param('id') id: string): Promise<Core.Response.Answer | Core.Response.Error> {
     const sendData = { owner: req.user, id: id };
-    const responseData = await SendAndResponseData(this.filesServiceClient, 'files:client:avatar:show', sendData);
+    const responseData = await SendAndResponseData(this.filesServiceClient, 'files:clients:avatar:show', sendData);
     this.logger.log(cyan(responseData));
     return responseData;
   }
@@ -270,8 +299,8 @@ export class ClientController {
     },
   })
   @ApiOperation({
-    summary: 'Загрузка фото или аватар клиента',
-    description: Core.OperationReadMe('docs/profile/avatar.md'),
+    summary: 'Загрузка фото или аватар компании',
+    description: Core.OperationReadMe('docs/files/avatar.md'),
   })
   @ApiUnauthorizedResponse({
     type: ResponseUnauthorizedDto,
@@ -300,7 +329,7 @@ export class ClientController {
       response.push(file);
     });
     const sendData = { owner: req.user.userID, files: response, id: id };
-    const responseData = await SendAndResponseData(this.filesServiceClient, 'files:client:avatar:upload', sendData);
+    const responseData = await SendAndResponseData(this.filesServiceClient, 'files:clients:avatar:upload', sendData);
     this.logger.log(cyan(responseData));
     return responseData;
   }
