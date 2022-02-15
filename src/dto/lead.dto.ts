@@ -1,8 +1,8 @@
 import { Core } from 'crm-core';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, OmitType } from '@nestjs/swagger';
 import { ClientContactDto } from './client.dto';
 import { CompanyDto } from './company.dto';
-import { ExampleCompany, ExampleFullCompany } from 'src/helpers/example-company';
+import { ExampleFullCompany } from 'src/helpers/example-company';
 import { ExampleClient } from '../helpers/example-client';
 
 export class ObjectData {
