@@ -114,7 +114,7 @@ export class CompanyController {
    * Список всех компаний
    * <<<<<<<<<<<<<<<<<<<<
    */
-  @Get('/')
+  @Get('/list')
   @ApiOperation({
     summary: 'Список всех компаний',
     description: Core.OperationReadMe('docs/company/list.md'),
