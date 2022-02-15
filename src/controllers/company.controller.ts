@@ -60,7 +60,7 @@ export class CompanyController {
    * @param req
    * @param companyData
    */
-  @Post('/')
+  @Post('/create')
   @ApiOperation({
     summary: 'Создание компании',
     description: Core.OperationReadMe('docs/company/create.md'),
