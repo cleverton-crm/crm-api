@@ -135,7 +135,7 @@ export class DealsController {
     return response;
   }
 
-  @Get('/')
+  @Get('/list')
   @ApiOperation({
     summary: 'Список сделок',
     description: Core.OperationReadMe('docs/deals/list.md'),

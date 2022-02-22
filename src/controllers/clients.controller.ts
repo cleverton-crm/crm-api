@@ -78,7 +78,7 @@ export class ClientController {
 
   /** GET LIST CLIENTS */
 
-  @Get('/')
+  @Get('/list')
   @ApiOperation({
     summary: 'Список всех клиентов',
     description: Core.OperationReadMe('docs/clients/list.md'),
@@ -130,9 +130,9 @@ export class ClientController {
     return response;
   }
 
-  /** CHANGE STATUS / DELETE (ARCHIVE) CLIENT */
+  /** DELETE (ARCHIVE) CLIENT */
 
-  @Delete('/:id/status')
+  @Delete('/:id/archive')
   @ApiParam({ name: 'id', type: 'string' })
   @ApiQuery({ name: 'active', type: 'boolean', enum: ['true', 'false'] })
   @ApiOperation({

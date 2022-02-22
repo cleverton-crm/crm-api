@@ -70,7 +70,7 @@ export class CarsController {
     return response;
   }
 
-  @Get('/')
+  @Get('/list')
   @ApiOperation({
     summary: 'Список транспорта',
     description: Core.OperationReadMe('docs/cars/list.md'),
@@ -99,7 +99,7 @@ export class CarsController {
     return response;
   }
 
-  @Delete('/:id/status')
+  @Delete('/:id/archive')
   @ApiParam({ name: 'id', type: 'string' })
   @ApiQuery({ name: 'active', type: 'boolean', enum: ['true', 'false'] })
   @ApiOperation({
@@ -116,7 +116,7 @@ export class CarsController {
     return response;
   }
 
-  @Patch('/:id')
+  @Patch('/:id/update')
   @ApiQuery({ name: 'owner', required: false })
   @ApiQuery({ name: 'company', required: false })
   @ApiOperation({
