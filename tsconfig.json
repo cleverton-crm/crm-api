@@ -8,7 +8,7 @@
     "allowSyntheticDefaultImports": true,
     "target": "es2019",
     "sourceMap": true,
-    "outDir": "./dist",
+    "outDir": "./gateway",
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true

@@ -1,4 +1,5 @@
 # compiled output
+/gateway
 /dist
 /node_modules
 development.json
