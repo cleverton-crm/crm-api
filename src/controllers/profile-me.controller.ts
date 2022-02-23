@@ -211,8 +211,8 @@ export class ProfileControllerMe {
     type: ResponseUnauthorizedDto,
     status: HttpStatus.UNAUTHORIZED,
   })
-  async showAvatar(@Req() req: any, @Param('id') id: string): Promise<Core.Response.Answer | Core.Response.Error> {
-    const sendData = { owner: req.user, id: id };
+  async showAvatar(@Req() req: any): Promise<Core.Response.Answer | Core.Response.Error> {
+    const sendData = { owner: req.user, id: req.user.userID };
     const responseData = await SendAndResponseData(this.filesServiceClient, 'files:profile:avatar:show', sendData);
     this.logger.log(cyan(responseData));
     return responseData;
