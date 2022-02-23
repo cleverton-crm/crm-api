@@ -165,9 +165,14 @@ export class DealsController {
     summary: 'Архивация сделки',
     description: Core.OperationReadMe('docs/deals/archive.md'),
   })
-  async archiveDeal(@Param('id') id: string, @Query('active') active: boolean): Promise<Core.Response.Answer> {
+  async archiveDeal(
+    @Param('id') id: string,
+    @Query('active') active: boolean,
+    @Req() req: any,
+  ): Promise<Core.Response.Answer> {
     const sendData = {
       id: id,
+      userId: req.user.userID,
       active: active,
     };
     const response = await SendAndResponseData(this.dealsServiceClient, 'deals:archive', sendData);

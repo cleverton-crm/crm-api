@@ -56,6 +56,10 @@ export class StatusDealsController {
   }
 
   @Patch('/change/:id/:priority')
+  @ApiOperation({
+    summary: 'Изменение приоритета статуса',
+    description: Core.OperationReadMe('docs/status/change_priority.md'),
+  })
   async changePriority(@Param('id') id: string, @Param('priority') priority: number) {
     const sendData = {
       id: id,

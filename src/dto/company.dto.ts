@@ -383,4 +383,5 @@ export class CompanyDto implements Core.Company.Schema {
   @ApiProperty()
   web: string;
   active: boolean;
+  avatar: Map<string, any>;
 }

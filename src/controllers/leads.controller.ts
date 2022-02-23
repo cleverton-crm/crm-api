@@ -75,11 +75,17 @@ export class LeadsController {
     summary: 'Изменение данных компании',
     description: Core.OperationReadMe('docs/leads/update_company.md'),
   })
-  async updateLeadCompany(@Param('id') id: string, @Param('cid') cid: string, @Body() updateData: CompanyDto) {
+  async updateLeadCompany(
+    @Param('id') id: string,
+    @Param('cid') cid: string,
+    @Body() updateData: CompanyDto,
+    @Req() req: any,
+  ) {
     const sendData = {
       id: id,
       cid: cid,
       data: updateData,
+      owner: req.user,
     };
     const response = await SendAndResponseData(this.leadsServiceClient, 'leads:company:update', sendData);
     this.logger.log(cyan(JSON.stringify(response)));
@@ -91,11 +97,17 @@ export class LeadsController {
     summary: 'Изменение данных клиента',
     description: Core.OperationReadMe('docs/leads/update_client.md'),
   })
-  async updateLeadClient(@Param('id') id: string, @Param('cid') cid: string, @Body() updateData: ClientDto) {
+  async updateLeadClient(
+    @Param('id') id: string,
+    @Param('cid') cid: string,
+    @Body() updateData: ClientDto,
+    @Req() req: any,
+  ) {
     const sendData = {
       id: id,
       cid: cid,
       data: updateData,
+      owner: req.user,
     };
     const response = await SendAndResponseData(this.leadsServiceClient, 'leads:client:update', sendData);
     this.logger.log(cyan(JSON.stringify(response)));
@@ -203,9 +215,14 @@ export class LeadsController {
     summary: 'Архивация лида',
     description: Core.OperationReadMe('docs/leads/archive.md'),
   })
-  async archiveLead(@Param('id') id: string, @Query('active') active: boolean): Promise<Core.Response.Answer> {
+  async archiveLead(
+    @Param('id') id: string,
+    @Query('active') active: boolean,
+    @Req() req: any,
+  ): Promise<Core.Response.Answer> {
     const sendData = {
       id: id,
+      userId: req.user.userID,
       active: active,
     };
     const response = await SendAndResponseData(this.leadsServiceClient, 'leads:archive', sendData);

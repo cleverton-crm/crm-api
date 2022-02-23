@@ -76,6 +76,7 @@ export class ClientDto implements Core.Client.Schema {
 
   @ApiProperty()
   licenses: LicensesDto;
+  avatar: Map<string, any>;
 }
 
 export class ClientContactDto extends ClientDto {

@@ -57,4 +57,5 @@ export class CarDto implements Core.Cars.Schema {
 
   @ApiProperty({ example: { tractor: '5700', semitrailer: '2480' } })
   calibration: CarVehicle;
+  avatar: Map<string, any>;
 }

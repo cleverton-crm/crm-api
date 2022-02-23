@@ -64,7 +64,6 @@ export class CarsController {
   ): Promise<any> {
     carData.owner = owner || req.user.userID;
     carData.company = company;
-    console.log(carData);
     const response = await SendAndResponseData(this.carsServiceClient, 'cars:create', carData);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
@@ -106,9 +105,14 @@ export class CarsController {
     summary: 'Архивация транспорта',
     description: Core.OperationReadMe('docs/cars/archive.md'),
   })
-  async archiveCar(@Param('id') id: string, @Query('active') active: boolean): Promise<Core.Response.Answer> {
+  async archiveCar(
+    @Param('id') id: string,
+    @Query('active') active: boolean,
+    @Req() req: any,
+  ): Promise<Core.Response.Answer> {
     const sendData = {
       id: id,
+      userId: req.user.userID,
       active: active,
     };
     const response = await SendAndResponseData(this.carsServiceClient, 'cars:archive', sendData);
@@ -128,15 +132,15 @@ export class CarsController {
     @Query('company') company: string,
     @Query('owner') owner: string,
     @Body() carData: CarDto,
+    @Req() req: any,
   ): Promise<Core.Response.Answer> {
-    if (owner) {
-      carData.owner = owner;
-    }
+    carData.owner = owner || req.user.userID;
     if (company) {
       carData.company = company;
     }
     const sendData = {
       id: id,
+      userId: req.user.userID,
       data: carData,
     };
     const response = await SendAndResponseData(this.carsServiceClient, 'cars:update', sendData);

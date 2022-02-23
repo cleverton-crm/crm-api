@@ -72,11 +72,7 @@ export class CompanyController {
     @Req() req: any,
     @Body() companyData: CompanyDto,
   ): Promise<Core.Response.Answer> {
-    if (ownerId) {
-      companyData.owner = ownerId;
-    } else {
-      companyData.owner = req.user.userID;
-    }
+    companyData.owner = ownerId || req.user.userID;
     const response = await SendAndResponseData(this.companyServiceClient, 'company:create', companyData);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
@@ -89,6 +85,7 @@ export class CompanyController {
    * @param ownerId
    * @param companyData
    * @param id
+   * @param req
    */
   @Patch('/:id/update')
   @ApiOperation({
@@ -96,12 +93,16 @@ export class CompanyController {
     description: Core.OperationReadMe('docs/company/update.md'),
   })
   @ApiQuery({ name: 'owner', required: false })
-  async updateCompany(@Param('id') id: string, @Query('owner') ownerId: string, @Body() companyData: CompanyDto) {
-    if (ownerId) {
-      companyData.owner = ownerId;
-    }
+  async updateCompany(
+    @Param('id') id: string,
+    @Query('owner') ownerId: string,
+    @Body() companyData: CompanyDto,
+    @Req() req: any,
+  ) {
+    companyData.owner = ownerId || req.user.userID;
     const sendData = {
       id: id,
+      userId: req.user.userID,
       data: companyData,
     };
     const response = await SendAndResponseData(this.companyServiceClient, 'company:update', sendData);
@@ -142,13 +143,17 @@ export class CompanyController {
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
+
+  /**
+   * Проверка существования компании с указанным ИНН
+   * @param inn
+   */
   @Get('/:inn/checkout')
   @ApiOperation({
     summary: 'Проверка ИНН компании',
     description: Core.OperationReadMe('docs/company/checkout.md'),
   })
   async checkoutCompany(@Param('inn') inn: string) {
-    console.log(inn);
     const response = await SendAndResponseData(this.companyServiceClient, 'company:checkout', inn);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
@@ -158,6 +163,7 @@ export class CompanyController {
    * Архивация компании
    * @param id
    * @param active
+   * @param req
    */
   @Delete('/:id/archive')
   @ApiParam({ name: 'id', type: 'string' })
@@ -166,9 +172,14 @@ export class CompanyController {
     summary: 'Архивация компании',
     description: Core.OperationReadMe('docs/company/archive.md'),
   })
-  async archiveCompany(@Param('id') id: string, @Query('active') active: boolean): Promise<Core.Response.Answer> {
+  async archiveCompany(
+    @Param('id') id: string,
+    @Query('active') active: boolean,
+    @Req() req: any,
+  ): Promise<Core.Response.Answer> {
     const sendData = {
       id: id,
+      userId: req.user.userID,
       active: active,
     };
     const response = await SendAndResponseData(this.companyServiceClient, 'company:archive', sendData);

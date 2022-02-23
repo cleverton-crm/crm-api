@@ -120,9 +120,10 @@ export class ClientController {
     summary: 'Изменение данных клиента',
     description: Core.OperationReadMe('docs/clients/update.md'),
   })
-  async updatePersona(@Param('id') id: string, @Body() updateData: ClientDto) {
+  async updatePersona(@Param('id') id: string, @Body() updateData: ClientDto, @Req() req: any) {
     const sendData = {
       id: id,
+      userId: req.user.userID,
       data: updateData,
     };
     const response = await SendAndResponseData(this.personaServiceClient, 'client:update', sendData);
@@ -139,9 +140,14 @@ export class ClientController {
     summary: 'Архивация клиента',
     description: Core.OperationReadMe('docs/clients/archive.md'),
   })
-  async archivePersona(@Param('id') id: string, @Query('active') active: boolean): Promise<Core.Response.Answer> {
+  async archivePersona(
+    @Param('id') id: string,
+    @Query('active') active: boolean,
+    @Req() req: any,
+  ): Promise<Core.Response.Answer> {
     const sendData = {
       id: id,
+      userId: req.user.userID,
       active: active,
     };
     const response = await SendAndResponseData(this.personaServiceClient, 'client:archive', sendData);
