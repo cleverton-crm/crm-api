@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   Inject,
@@ -18,22 +19,19 @@ import {
   ApiConsumes,
   ApiNotFoundResponse,
   ApiOperation,
+  ApiParam,
   ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { cyan } from 'cli-color';
-import {
-  ProfilePersonaDto,
-  ResponseNotFoundDto,
-  ResponseSuccessDto,
-  ResponseUnauthorizedDto,
-} from '../dto';
+import { ProfilePersonaDto, ResponseNotFoundDto, ResponseSuccessDto, ResponseUnauthorizedDto } from '../dto';
 import { Core } from 'crm-core';
 import { SendAndResponseData } from '../helpers/global';
 import { Auth } from '../decorators/auth.decorator';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { fileImagesOptions } from '../helpers/file-images-options';
+import { fileOptions } from '../helpers/file-options';
 
 @ApiTags('Profile Me')
 @Controller('profile')
@@ -66,20 +64,160 @@ export class ProfileControllerMe {
   @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
   async myDataPersona(@Req() req: any) {
     const sendData = { id: req.user.userID };
-    const response = await SendAndResponseData(
-      this.profileServiceClient,
-      'profile:me',
-      sendData,
-    );
+    const response = await SendAndResponseData(this.profileServiceClient, 'profile:me', sendData);
     this.logger.log(cyan(response));
     return response;
   }
 
   /**
-   * Загрузка аватара или фотографии
-   * @param file
+   * Обновление данных в профиле по ID
    * @param req
+   * @param profileData
    */
+  @Patch('/me/change')
+  @ApiOperation({
+    summary: 'Обновление данных',
+    description: Core.OperationReadMe('docs/profile/update.md'),
+  })
+  @Auth('Admin')
+  @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
+  async update(@Req() req: any, @Body() profileData: ProfilePersonaDto) {
+    profileData.id = req.user.userID;
+    const response = await SendAndResponseData(this.profileServiceClient, 'profile:update', profileData);
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+
+  /** UPLOAD FILES ALL */
+
+  @Post('/me/attachments/upload/')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+        comments: {
+          type: 'string',
+        },
+      },
+    },
+  })
+  @ApiOperation({
+    summary: 'Загрузка документов',
+    description: Core.OperationReadMe('docs/files/upload.md'),
+  })
+  @ApiNotFoundResponse({ description: 'Контакт не найден' })
+  @UseInterceptors(FilesInterceptor('file', 10, fileOptions))
+  async upload(@UploadedFiles() file, @Body() comment, @Req() req: any): Promise<any> {
+    const response = [];
+    file.forEach((file) => {
+      response.push(file);
+    });
+    const sendData = {
+      owner: req.user.userID,
+      client: req.user.userID,
+      files: response,
+      bucketName: 'profile_' + req.user.userID,
+      comments: comment.comments,
+    };
+    const responseData = await SendAndResponseData(this.filesServiceClient, 'files:profile:upload', sendData);
+    this.logger.log(cyan(responseData));
+    return responseData;
+  }
+
+  /** GET LIST FILES */
+
+  @Get('/me/attachments/list')
+  @ApiOperation({
+    summary: 'Список всех файлов',
+    description: Core.OperationReadMe('docs/files/download.md'),
+  })
+  @ApiResponse({ type: ResponseSuccessDto, status: HttpStatus.OK })
+  @ApiUnauthorizedResponse({
+    type: ResponseUnauthorizedDto,
+    status: HttpStatus.UNAUTHORIZED,
+  })
+  async fileList(@Req() req: any): Promise<Core.Response.Answer | Core.Response.Error> {
+    const sendData = { id: req.user.userID, owner: req.user.userID };
+    const responseData = await SendAndResponseData(this.filesServiceClient, 'files:profile:list', sendData);
+    this.logger.log(cyan(responseData));
+    return responseData;
+  }
+
+  /** GET FILES BY ID */
+
+  @Get('/me/attachments/download/:fileID')
+  @ApiOperation({
+    summary: 'Скачать файл (документ)',
+    description: Core.OperationReadMe('docs/files/download.md'),
+  })
+  @ApiResponse({ type: ResponseSuccessDto, status: HttpStatus.OK })
+  @ApiUnauthorizedResponse({
+    type: ResponseUnauthorizedDto,
+    status: HttpStatus.UNAUTHORIZED,
+  })
+  async download(@Req() req: any, @Param('fileID') file: string): Promise<Core.Response.Answer | Core.Response.Error> {
+    const sendData = {
+      id: req.user.userID,
+      file: file,
+      owner: req.user,
+    };
+    const responseData = await SendAndResponseData(this.filesServiceClient, 'files:profile:download', sendData);
+    this.logger.log(cyan(responseData));
+    return responseData;
+  }
+
+  /** DELETE ATTACHMENT FILE  */
+
+  @Delete('/attachments/:id/delete/:fileID')
+  @ApiOperation({
+    summary: 'Удалить файл (документ)',
+    description: Core.OperationReadMe('docs/files/download.md'),
+  })
+  @ApiResponse({ type: ResponseSuccessDto, status: HttpStatus.OK })
+  @ApiUnauthorizedResponse({
+    type: ResponseUnauthorizedDto,
+    status: HttpStatus.UNAUTHORIZED,
+  })
+  async deleteFile(
+    @Req() req: any,
+    @Param('id') id: string,
+    @Param('fileID') file: string,
+  ): Promise<Core.Response.Answer | Core.Response.Error> {
+    const sendData = {
+      id: id,
+      file: file,
+      owner: req.user,
+    };
+    const responseData = await SendAndResponseData(this.filesServiceClient, 'files:profile:delete', sendData);
+    this.logger.log(cyan(responseData));
+    return responseData;
+  }
+
+  /** GET AVATAR BY ID */
+
+  @Get('/me/avatar')
+  @ApiOperation({
+    summary: 'Фото или аватар',
+    description: Core.OperationReadMe('docs/files/avatar.md'),
+  })
+  @Auth('Admin', 'Manager')
+  @ApiResponse({ type: ResponseSuccessDto, status: HttpStatus.OK })
+  @ApiUnauthorizedResponse({
+    type: ResponseUnauthorizedDto,
+    status: HttpStatus.UNAUTHORIZED,
+  })
+  async showAvatar(@Req() req: any, @Param('id') id: string): Promise<Core.Response.Answer | Core.Response.Error> {
+    const sendData = { owner: req.user, id: id };
+    const responseData = await SendAndResponseData(this.filesServiceClient, 'files:profile:avatar:show', sendData);
+    this.logger.log(cyan(responseData));
+    return responseData;
+  }
+
   @Post('/me/avatar/upload')
   @Auth('Admin', 'Manager')
   @ApiConsumes('multipart/form-data')
@@ -95,8 +233,8 @@ export class ProfileControllerMe {
     },
   })
   @ApiOperation({
-    summary: 'Загрузка фото или аватар пользователя',
-    description: Core.OperationReadMe('docs/profile/avatar.md'),
+    summary: 'Загрузка фото или аватар',
+    description: Core.OperationReadMe('docs/files/avatar.md'),
   })
   @ApiUnauthorizedResponse({
     type: ResponseUnauthorizedDto,
@@ -105,7 +243,7 @@ export class ProfileControllerMe {
   })
   @ApiResponse({ type: ResponseSuccessDto, status: HttpStatus.OK })
   @UseInterceptors(FilesInterceptor('file', 10, fileImagesOptions))
-  async upload(@UploadedFiles() file, @Req() req: any): Promise<any> {
+  async uploadAvatar(@UploadedFiles() file, @Req() req: any): Promise<any> {
     const response = [];
     file.forEach((file) => {
       const fileReponse = {
@@ -124,64 +262,9 @@ export class ProfileControllerMe {
       };
       response.push(file);
     });
-    const sendData = { userID: req.user.userID, files: response };
-    const responseData = await SendAndResponseData(
-      this.filesServiceClient,
-      'files:avatar',
-      sendData,
-    );
+    const sendData = { owner: req.user.userID, files: response, id: req.user.userID };
+    const responseData = await SendAndResponseData(this.filesServiceClient, 'files:profile:avatar:upload', sendData);
     this.logger.log(cyan(responseData));
     return responseData;
-  }
-
-  /**
-   * Получение аватара по авторизации
-   * @param req
-   */
-  @Get('/me/avatar')
-  @ApiOperation({
-    summary: 'Фото или аватар пользователя',
-    description: Core.OperationReadMe('docs/profile/avatar.md'),
-  })
-  @Auth('Admin', 'Manager')
-  @ApiResponse({ type: ResponseSuccessDto, status: HttpStatus.OK })
-  @ApiUnauthorizedResponse({
-    type: ResponseUnauthorizedDto,
-    status: HttpStatus.UNAUTHORIZED,
-  })
-  async showAvatar(
-    @Req() req: any,
-  ): Promise<Core.Response.Answer | Core.Response.Error> {
-    const sendData = { id: req.user.userID };
-    const responseData = await SendAndResponseData(
-      this.filesServiceClient,
-      'files:avatar:show',
-      sendData,
-    );
-    this.logger.log(cyan(responseData));
-    return responseData;
-  }
-
-  /**
-   * Обновление данных в профиле по ID
-   * @param req
-   * @param profileData
-   */
-  @Patch('/me/change')
-  @ApiOperation({
-    summary: 'Обновление данных',
-    description: Core.OperationReadMe('docs/profile/update.md'),
-  })
-  @Auth('Admin')
-  @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
-  async update(@Req() req: any, @Body() profileData: ProfilePersonaDto) {
-    profileData.id = req.user.userID;
-    const response = await SendAndResponseData(
-      this.profileServiceClient,
-      'profile:update',
-      profileData,
-    );
-    this.logger.log(cyan(JSON.stringify(response)));
-    return response;
   }
 }
