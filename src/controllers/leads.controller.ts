@@ -139,8 +139,7 @@ export class LeadsController {
   })
   @ApiPagination()
   async listLead(@MongoPaginationDecorator() pagination: MongoPagination): Promise<Core.Response.Answer> {
-    const sendData = { pagination: pagination };
-    const response = await SendAndResponseData(this.leadsServiceClient, 'leads:list', sendData);
+    const response = await SendAndResponseData(this.leadsServiceClient, 'leads:list', pagination);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
