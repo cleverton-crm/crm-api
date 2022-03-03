@@ -36,6 +36,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { fileOptions } from '../helpers/file-options';
 import { ResponseSuccessDto, ResponseUnauthorizedDto } from '../dto';
 import { fileImagesOptions } from '../helpers/file-images-options';
+import { ApiPagination } from '../decorators/pagination.decorator';
 
 @ApiTags('Deals')
 @Controller('deals')
@@ -140,9 +141,9 @@ export class DealsController {
     summary: 'Список сделок',
     description: Core.OperationReadMe('docs/deals/list.md'),
   })
+  @ApiPagination()
   async listDeals(@MongoPaginationDecorator() pagination: MongoPagination): Promise<Core.Response.Answer> {
-    const sendData = { pagination: pagination };
-    const response = await SendAndResponseData(this.dealsServiceClient, 'deals:list', sendData);
+    const response = await SendAndResponseData(this.dealsServiceClient, 'deals:list', { pagination: pagination });
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
