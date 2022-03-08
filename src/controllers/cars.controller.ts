@@ -35,6 +35,8 @@ import { ResponseSuccessDto, ResponseUnauthorizedDto } from '../dto';
 import { fileImagesOptions } from '../helpers/file-images-options';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { fileOptions } from '../helpers/file-options';
+import { ApiPagination } from '../decorators/pagination.decorator';
+import { MongoPagination, MongoPaginationDecorator } from '../decorators/mongo.pagination.decorator';
 
 @ApiTags('Cars')
 @Auth('Admin', 'Manager')
@@ -75,9 +77,13 @@ export class CarsController {
     description: Core.OperationReadMe('docs/cars/list.md'),
   })
   @ApiQuery({ name: 'company', required: false })
-  async listCars(@Query('company') company: string): Promise<Core.Response.Answer> {
+  @ApiPagination()
+  async listCars(
+    @Query('company') company: string,
+    @MongoPaginationDecorator() pagination: MongoPagination,
+  ): Promise<Core.Response.Answer> {
     let response;
-    let sendData = {};
+    let sendData = { pagination: pagination };
     if (company !== undefined) {
       sendData = Object.assign(sendData, { company: company });
     }
