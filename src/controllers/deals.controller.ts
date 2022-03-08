@@ -30,13 +30,13 @@ import { ClientProxy } from '@nestjs/microservices';
 import { Core } from 'crm-core';
 import { SendAndResponseData } from '../helpers/global';
 import { cyan } from 'cli-color';
-import { DealComment, LeadDto } from '../dto/lead.dto';
 import { MongoPagination, MongoPaginationDecorator } from '../decorators/mongo.pagination.decorator';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { fileOptions } from '../helpers/file-options';
 import { ResponseSuccessDto, ResponseUnauthorizedDto } from '../dto';
 import { fileImagesOptions } from '../helpers/file-images-options';
 import { ApiPagination } from '../decorators/pagination.decorator';
+import { DealComment, DealDto } from '../dto/deal.dto';
 
 @ApiTags('Deals')
 @Controller('deals')
@@ -52,12 +52,17 @@ export class DealsController {
     this.logger = new Logger(DealsController.name);
   }
 
-  @Post('/create')
+  @Post('/create/:client')
   @ApiOperation({
     summary: 'Создание сделки',
     description: Core.OperationReadMe('docs/deals/create.md'),
   })
-  async createDeal(@Req() req: any, @Body() dealData: LeadDto): Promise<Core.Response.Answer> {
+  async createDeal(
+    @Req() req: any,
+    @Body() dealData: DealDto,
+    @Param('client') client: string,
+  ): Promise<Core.Response.Answer> {
+    dealData.client = client;
     const sendData = {
       data: dealData,
       owner: req.user,
@@ -72,7 +77,7 @@ export class DealsController {
     summary: 'Изменение сделки',
     description: Core.OperationReadMe('docs/deals/update.md'),
   })
-  async updateDeal(@Param('id') id: string, @Req() req: any, @Body() dealData: LeadDto): Promise<Core.Response.Answer> {
+  async updateDeal(@Param('id') id: string, @Req() req: any, @Body() dealData: DealDto): Promise<Core.Response.Answer> {
     const sendData = {
       id: id,
       userId: req.user.userID,
