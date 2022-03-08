@@ -20,12 +20,12 @@ export class ActivityController {
 
   @Get('/list')
   @ApiOperation({
-    summary: 'Список историй изменения',
+    summary: 'Список историй изменений',
     description: Core.OperationReadMe('docs/activity/list.md'),
   })
   @ApiPagination()
   async listActivity(@MongoPaginationDecorator() pagination: MongoPagination): Promise<Core.Response.Answer> {
-    const response = await SendAndResponseData(this.activityServiceClient, 'activity:list', { pagination: pagination });
+    const response = await SendAndResponseData(this.activityServiceClient, 'activity:list', pagination);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
@@ -35,7 +35,7 @@ export class ActivityController {
     summary: 'Поиск истории изменения',
     description: Core.OperationReadMe('docs/activity/find.md'),
   })
-  async findLead(@Param('id') id: string): Promise<Core.Response.Answer> {
+  async findActivity(@Param('id') id: string): Promise<Core.Response.Answer> {
     const response = await SendAndResponseData(this.activityServiceClient, 'activity:find', id);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
