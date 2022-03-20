@@ -85,12 +85,15 @@ export class ClientController {
   })
   @ApiPagination()
   @ApiQuery({ name: 'company', required: false })
+  @ApiQuery({ name: 'searchFilter', required: false })
   async listPersona(
     @MongoPaginationDecorator() pagination: MongoPagination,
     @Query('company') company: string,
+    @Query('searchFilter') searchFilter: string,
+    @Req() req: any,
   ): Promise<ResponseRecordsDataDto> {
     let response;
-    let sendData = { pagination: pagination };
+    let sendData = { pagination: pagination, searchFilter: searchFilter, req: req };
     if (company !== undefined) {
       sendData = Object.assign(sendData, { company: company });
     }

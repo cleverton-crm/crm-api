@@ -146,9 +146,43 @@ export class DealsController {
     summary: 'Список сделок',
     description: Core.OperationReadMe('docs/deals/list.md'),
   })
+  @ApiQuery({ name: 'searchFilter', required: false })
+  @ApiQuery({ name: 'company', required: false })
+  @ApiQuery({ name: 'client', required: false })
+  @ApiQuery({ name: 'status', required: false })
+  @ApiQuery({ name: 'fuelType', required: false })
+  @ApiQuery({ name: 'source', required: false })
+  @ApiQuery({ name: 'createdAt', required: false })
+  @ApiQuery({ name: 'updatedAt', required: false })
+  @ApiQuery({ name: 'active', required: false, enum: ['true', 'false'] })
   @ApiPagination()
-  async listDeals(@MongoPaginationDecorator() pagination: MongoPagination): Promise<Core.Response.Answer> {
-    const response = await SendAndResponseData(this.dealsServiceClient, 'deals:list', { pagination: pagination });
+  async listDeals(
+    @MongoPaginationDecorator() pagination: MongoPagination,
+    @Query('searchFilter') searchFilter: string,
+    @Query('company') company: string,
+    @Query('client') client: string,
+    @Query('status') status: string,
+    @Query('fuelType') fuelType: string,
+    @Query('source') source: string,
+    @Query('createdAt') createdAt: string,
+    @Query('updatedAt') updatedAt: string,
+    @Query('active') active: boolean = true,
+    @Req() req: any,
+  ): Promise<Core.Response.Answer> {
+    let sendData = {
+      pagination: pagination,
+      searchFilter: searchFilter,
+      req: req.user,
+      company: company,
+      client: client,
+      status: status,
+      fuelType: fuelType,
+      source: source,
+      active: active,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+    };
+    const response = await SendAndResponseData(this.dealsServiceClient, 'deals:list', sendData);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
