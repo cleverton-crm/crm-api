@@ -130,7 +130,7 @@ export class CompanyController {
     const sendData = {
       searchFilter: searchFilter,
       pagination: pagination,
-      req: req,
+      req: req.user,
     };
     const response = await SendAndResponseData(this.companyServiceClient, 'company:list', sendData);
     this.logger.log(cyan(JSON.stringify(response)));

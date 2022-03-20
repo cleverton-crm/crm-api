@@ -93,7 +93,7 @@ export class ClientController {
     @Req() req: any,
   ): Promise<ResponseRecordsDataDto> {
     let response;
-    let sendData = { pagination: pagination, searchFilter: searchFilter, req: req };
+    let sendData = { pagination: pagination, searchFilter: searchFilter, req: req.user };
     if (company !== undefined) {
       sendData = Object.assign(sendData, { company: company });
     }
