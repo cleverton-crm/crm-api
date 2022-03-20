@@ -25,6 +25,7 @@ export class AuthGuard implements CanActivate {
         id: user.userID,
         email: user.email,
         access: token,
+        filterQuery: filterGuard,
       };
       return true;
     } catch (e) {
