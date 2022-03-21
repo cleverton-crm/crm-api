@@ -153,6 +153,8 @@ export class LeadsController {
     @Query('source') source: string,
     @Query('createdAt') createdAt: string,
     @Query('updatedAt') updatedAt: string,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
     @Query('active') active: boolean = true,
     @Req() req: any,
   ): Promise<Core.Response.Answer> {
@@ -166,6 +168,8 @@ export class LeadsController {
       active: active,
       createdAt: createdAt,
       updatedAt: updatedAt,
+      startDate: startDate,
+      endDate: endDate,
     };
     const response = await SendAndResponseData(this.leadsServiceClient, 'leads:list', sendData);
     this.logger.log(cyan(JSON.stringify(response)));

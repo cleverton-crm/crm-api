@@ -121,16 +121,22 @@ export class CompanyController {
     description: Core.OperationReadMe('docs/company/list.md'),
   })
   @ApiQuery({ name: 'searchFilter', required: false })
+  @ApiQuery({ name: 'createdAt', required: false })
+  @ApiQuery({ name: 'updatedAt', required: false })
   @ApiPagination()
   async listCompanies(
     @MongoPaginationDecorator() pagination: Core.MongoPagination,
     @Query('searchFilter') searchFilter: string,
+    @Query('createdAt') createdAt: string,
+    @Query('updatedAt') updatedAt: string,
     @Req() req: any,
   ): Promise<ResponseRecordsDataDto> {
     const sendData = {
       searchFilter: searchFilter,
       pagination: pagination,
       req: req.user,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
     };
     const response = await SendAndResponseData(this.companyServiceClient, 'company:list', sendData);
     this.logger.log(cyan(JSON.stringify(response)));
