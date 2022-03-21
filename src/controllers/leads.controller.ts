@@ -176,6 +176,30 @@ export class LeadsController {
     return response;
   }
 
+  @Get('/clients/list')
+  @ApiOperation({
+    summary: 'Список клиентов лидов',
+    description: Core.OperationReadMe('docs/leads/list_clients.md'),
+  })
+  @ApiPagination()
+  async listLeadClients(@MongoPaginationDecorator() pagination: MongoPagination): Promise<Core.Response.Answer> {
+    const response = await SendAndResponseData(this.leadsServiceClient, 'leads:clients:list', pagination);
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+
+  @Get('/companies/list')
+  @ApiOperation({
+    summary: 'Список компаний лидов',
+    description: Core.OperationReadMe('docs/leads/list_companies.md'),
+  })
+  @ApiPagination()
+  async listLeadCompanies(@MongoPaginationDecorator() pagination: MongoPagination): Promise<Core.Response.Answer> {
+    const response = await SendAndResponseData(this.leadsServiceClient, 'leads:companies:list', pagination);
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+
   /** FIND LEAD */
 
   @Get('/find/:id')
