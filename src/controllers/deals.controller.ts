@@ -57,12 +57,15 @@ export class DealsController {
     summary: 'Создание сделки',
     description: Core.OperationReadMe('docs/deals/create.md'),
   })
+  @ApiQuery({ name: 'company', required: false })
   async createDeal(
     @Req() req: any,
     @Body() dealData: DealDto,
     @Param('client') client: string,
+    @Query('company') company: string,
   ): Promise<Core.Response.Answer> {
     dealData.client = client;
+    dealData.company = company;
     const sendData = {
       data: dealData,
       owner: req.user,
