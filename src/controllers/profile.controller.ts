@@ -1,16 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpStatus,
-  Inject,
-  Logger,
-  Param,
-  Patch,
-  Post,
-  Query,
-  Req,
-} from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Inject, Logger, Param, Patch, Post, Query, Req } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
   ApiNotFoundResponse,
@@ -21,12 +9,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { cyan } from 'cli-color';
-import {
-  ProfilePersonaDto,
-  ResponseNotFoundDto,
-  ResponseSuccessDto,
-  ResponseUnauthorizedDto,
-} from '../dto';
+import { ProfilePersonaDto, ResponseNotFoundDto, ResponseSuccessDto, ResponseUnauthorizedDto } from '../dto';
 import { Core } from 'crm-core';
 import { SendAndResponseData } from '../helpers/global';
 import { Auth } from '../decorators/auth.decorator';
@@ -57,17 +40,31 @@ export class ProfileController {
     description: Core.OperationReadMe('docs/profile/create.md'),
   })
   @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
-  async createPersona(
-    @Body() profileData: ProfilePersonaDto,
-    @Req() req: any,
-  ): Promise<Core.Response.Answer> {
+  async createPersona(@Body() profileData: ProfilePersonaDto, @Req() req: any): Promise<Core.Response.Answer> {
     profileData.id = req.user.userID;
-    const response = await SendAndResponseData(
-      this.profileServiceClient,
-      'profile:new',
-      profileData,
-    );
+    const response = await SendAndResponseData(this.profileServiceClient, 'profile:new', profileData);
     this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+
+  @Get('/')
+  @ApiOperation({
+    summary: 'Получение профилей пользователей',
+    description: Core.OperationReadMe('docs/profile/update.md'),
+  })
+  @Auth('Admin')
+  @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
+  @ApiUnauthorizedResponse({
+    type: ResponseUnauthorizedDto,
+    status: HttpStatus.UNAUTHORIZED,
+  })
+  @ApiNotFoundResponse({
+    type: ResponseNotFoundDto,
+    status: HttpStatus.NOT_FOUND,
+  })
+  async getProfilesList(): Promise<Core.Profiles.Schema> {
+    const response = await SendAndResponseData(this.profileServiceClient, 'profile:get:all', true);
+    this.logger.log(cyan(response));
     return response;
   }
 
@@ -93,11 +90,7 @@ export class ProfileController {
   })
   async getProfile(@Param('id') id: string): Promise<Core.Profiles.Schema> {
     const sendData = { id: id };
-    const response = await SendAndResponseData(
-      this.profileServiceClient,
-      'profile:get:id',
-      sendData,
-    );
+    const response = await SendAndResponseData(this.profileServiceClient, 'profile:get:id', sendData);
     this.logger.log(cyan(response));
     return response;
   }
@@ -121,11 +114,7 @@ export class ProfileController {
     status: HttpStatus.NOT_FOUND,
   })
   async getProfiles() {
-    const response = await SendAndResponseData(
-      this.profileServiceClient,
-      'profile:get:all',
-      {},
-    );
+    const response = await SendAndResponseData(this.profileServiceClient, 'profile:get:all', {});
     this.logger.log(cyan(response));
     return response;
   }
@@ -149,11 +138,7 @@ export class ProfileController {
     status: HttpStatus.NOT_FOUND,
   })
   async getProfilesArchive() {
-    const response = await SendAndResponseData(
-      this.profileServiceClient,
-      'profile:get:archive',
-      {},
-    );
+    const response = await SendAndResponseData(this.profileServiceClient, 'profile:get:archive', {});
     this.logger.log(cyan(response));
     return response;
   }
@@ -170,16 +155,9 @@ export class ProfileController {
   })
   @Auth('Admin')
   @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
-  async update(
-    @Param('id') id: string,
-    @Body() profileData: ProfilePersonaDto,
-  ) {
+  async update(@Param('id') id: string, @Body() profileData: ProfilePersonaDto) {
     profileData.id = id;
-    const response = await SendAndResponseData(
-      this.profileServiceClient,
-      'profile:update',
-      profileData,
-    );
+    const response = await SendAndResponseData(this.profileServiceClient, 'profile:update', profileData);
     this.logger.log(cyan(response));
     return response;
   }
@@ -198,11 +176,7 @@ export class ProfileController {
   @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
   async blockProfile(@Query('status') status: string, @Param('id') id: string) {
     const sendData = { id: id, status: status };
-    const response = await SendAndResponseData(
-      this.profileServiceClient,
-      'profile:status',
-      sendData,
-    );
+    const response = await SendAndResponseData(this.profileServiceClient, 'profile:status', sendData);
     this.logger.log(cyan(response));
     return response;
   }
