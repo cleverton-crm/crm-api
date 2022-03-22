@@ -83,7 +83,7 @@ export class DealsController {
   async updateDeal(@Param('id') id: string, @Req() req: any, @Body() dealData: DealDto): Promise<Core.Response.Answer> {
     const sendData = {
       id: id,
-      userId: req.user.userID,
+      req: req.user,
       data: dealData,
     };
     const response = await SendAndResponseData(this.dealsServiceClient, 'deals:update', sendData);
@@ -136,7 +136,7 @@ export class DealsController {
   ): Promise<Core.Response.Answer> {
     const sendData = {
       id: id,
-      userId: req.user.userID,
+      req: req.user,
       comments: commentData.comments,
     };
     const response = await SendAndResponseData(this.dealsServiceClient, 'deals:comment', sendData);
@@ -195,8 +195,12 @@ export class DealsController {
     summary: 'Поиск сделки',
     description: Core.OperationReadMe('docs/deals/find.md'),
   })
-  async findDeal(@Param('id') id: string): Promise<Core.Response.Answer> {
-    const response = await SendAndResponseData(this.dealsServiceClient, 'deals:find', id);
+  async findDeal(@Param('id') id: string, @Req() req: any): Promise<Core.Response.Answer> {
+    const sendData = {
+      id: id,
+      req: req.user,
+    };
+    const response = await SendAndResponseData(this.dealsServiceClient, 'deals:find', sendData);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
@@ -215,7 +219,7 @@ export class DealsController {
   ): Promise<Core.Response.Answer> {
     const sendData = {
       id: id,
-      userId: req.user.userID,
+      userId: req.user,
       active: active,
     };
     const response = await SendAndResponseData(this.dealsServiceClient, 'deals:archive', sendData);

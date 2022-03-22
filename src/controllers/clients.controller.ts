@@ -123,8 +123,12 @@ export class ClientController {
     description: Core.OperationReadMe('docs/clients/find.md'),
   })
   @ApiParam({ name: 'id', description: 'ID клиента компании' })
-  async findPersona(@Param('id') id: string) {
-    const response = await SendAndResponseData(this.personaServiceClient, 'client:find', id);
+  async findPersona(@Param('id') id: string, @Req() req: any) {
+    const sendData = {
+      id: id,
+      req: req.user,
+    };
+    const response = await SendAndResponseData(this.personaServiceClient, 'client:find', sendData);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
@@ -139,7 +143,7 @@ export class ClientController {
   async updatePersona(@Param('id') id: string, @Body() updateData: ClientDto, @Req() req: any) {
     const sendData = {
       id: id,
-      userId: req.user.userID,
+      req: req.user,
       data: updateData,
     };
     const response = await SendAndResponseData(this.personaServiceClient, 'client:update', sendData);
@@ -163,7 +167,7 @@ export class ClientController {
   ): Promise<Core.Response.Answer> {
     const sendData = {
       id: id,
-      userId: req.user.userID,
+      userId: req.user,
       active: active,
     };
     const response = await SendAndResponseData(this.personaServiceClient, 'client:archive', sendData);

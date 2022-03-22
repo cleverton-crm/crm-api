@@ -81,9 +81,10 @@ export class CarsController {
   async listCars(
     @Query('company') company: string,
     @MongoPaginationDecorator() pagination: MongoPagination,
+    @Req() req: any,
   ): Promise<Core.Response.Answer> {
     let response;
-    let sendData = { pagination: pagination };
+    let sendData = { pagination: pagination, req: req.user };
     if (company !== undefined) {
       sendData = Object.assign(sendData, { company: company });
     }
@@ -97,9 +98,12 @@ export class CarsController {
     summary: 'Поиск транспорта по ID',
     description: Core.OperationReadMe('docs/cars/find.md'),
   })
-  async findCar(@Param('id') id: string): Promise<Core.Response.Answer> {
-    const response = await SendAndResponseData(this.carsServiceClient, 'cars:find', id);
-
+  async findCar(@Param('id') id: string, @Req() req: any): Promise<Core.Response.Answer> {
+    let sendData = {
+      id: id,
+      req: req.user,
+    };
+    const response = await SendAndResponseData(this.carsServiceClient, 'cars:find', sendData);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
@@ -118,7 +122,7 @@ export class CarsController {
   ): Promise<Core.Response.Answer> {
     const sendData = {
       id: id,
-      userId: req.user.userID,
+      req: req.user,
       active: active,
     };
     const response = await SendAndResponseData(this.carsServiceClient, 'cars:archive', sendData);
@@ -146,7 +150,7 @@ export class CarsController {
     }
     const sendData = {
       id: id,
-      userId: req.user.userID,
+      req: req.user,
       data: carData,
     };
     const response = await SendAndResponseData(this.carsServiceClient, 'cars:update', sendData);

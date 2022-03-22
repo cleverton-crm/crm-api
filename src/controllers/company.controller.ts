@@ -129,12 +129,10 @@ export class CompanyController {
     @Query('searchFilter') searchFilter: string,
     @Query('createdAt') createdAt: string,
     @Query('updatedAt') updatedAt: string,
-    @Req() req: any,
   ): Promise<ResponseRecordsDataDto> {
     const sendData = {
       searchFilter: searchFilter,
       pagination: pagination,
-      req: req.user,
       createdAt: createdAt,
       updatedAt: updatedAt,
     };

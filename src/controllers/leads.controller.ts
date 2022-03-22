@@ -207,8 +207,12 @@ export class LeadsController {
     summary: 'Поиск лида',
     description: Core.OperationReadMe('docs/leads/find.md'),
   })
-  async findLead(@Param('id') id: string): Promise<Core.Response.Answer> {
-    const response = await SendAndResponseData(this.leadsServiceClient, 'leads:find', id);
+  async findLead(@Param('id') id: string, @Req() req: any): Promise<Core.Response.Answer> {
+    const sendData = {
+      id: id,
+      req: req.user,
+    };
+    const response = await SendAndResponseData(this.leadsServiceClient, 'leads:find', sendData);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
@@ -240,7 +244,7 @@ export class LeadsController {
   ): Promise<Core.Response.Answer> {
     const sendData = {
       id: id,
-      userId: req.user.userID,
+      userId: req.user,
       comments: commentData,
     };
     const response = await SendAndResponseData(this.leadsServiceClient, 'leads:comment', sendData);
@@ -277,7 +281,7 @@ export class LeadsController {
   ): Promise<Core.Response.Answer> {
     const sendData = {
       id: id,
-      userId: req.user.userID,
+      userId: req.user,
       active: active,
     };
     const response = await SendAndResponseData(this.leadsServiceClient, 'leads:archive', sendData);
