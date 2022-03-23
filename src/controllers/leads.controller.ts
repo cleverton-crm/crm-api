@@ -182,8 +182,15 @@ export class LeadsController {
     description: Core.OperationReadMe('docs/leads/list_clients.md'),
   })
   @ApiPagination()
-  async listLeadClients(@MongoPaginationDecorator() pagination: MongoPagination): Promise<Core.Response.Answer> {
-    const response = await SendAndResponseData(this.leadsServiceClient, 'leads:clients:list', pagination);
+  async listLeadClients(
+    @MongoPaginationDecorator() pagination: MongoPagination,
+    @Req() req: any,
+  ): Promise<Core.Response.Answer> {
+    const sendData = {
+      pagination: pagination,
+      req: req.user,
+    };
+    const response = await SendAndResponseData(this.leadsServiceClient, 'leads:clients:list', sendData);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
@@ -194,8 +201,15 @@ export class LeadsController {
     description: Core.OperationReadMe('docs/leads/list_companies.md'),
   })
   @ApiPagination()
-  async listLeadCompanies(@MongoPaginationDecorator() pagination: MongoPagination): Promise<Core.Response.Answer> {
-    const response = await SendAndResponseData(this.leadsServiceClient, 'leads:companies:list', pagination);
+  async listLeadCompanies(
+    @MongoPaginationDecorator() pagination: MongoPagination,
+    @Req() req: any,
+  ): Promise<Core.Response.Answer> {
+    const sendData = {
+      pagination: pagination,
+      req: req.user,
+    };
+    const response = await SendAndResponseData(this.leadsServiceClient, 'leads:companies:list', sendData);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
