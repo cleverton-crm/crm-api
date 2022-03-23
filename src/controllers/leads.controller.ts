@@ -231,6 +231,36 @@ export class LeadsController {
     return response;
   }
 
+  @Get('/client/find/:id')
+  @ApiOperation({
+    summary: 'Поиск клиента лида',
+    description: Core.OperationReadMe('docs/leads/find_client.md'),
+  })
+  async findLeadClient(@Param('id') id: string, @Req() req: any): Promise<Core.Response.Answer> {
+    const sendData = {
+      id: id,
+      req: req.user,
+    };
+    const response = await SendAndResponseData(this.leadsServiceClient, 'leads:client:find', sendData);
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+
+  @Get('/company/find/:id')
+  @ApiOperation({
+    summary: 'Поиск компании лида',
+    description: Core.OperationReadMe('docs/leads/find_company.md'),
+  })
+  async findLeadCompany(@Param('id') id: string, @Req() req: any): Promise<Core.Response.Answer> {
+    const sendData = {
+      id: id,
+      req: req.user,
+    };
+    const response = await SendAndResponseData(this.leadsServiceClient, 'leads:company:find', sendData);
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+
   @Patch('/done/:id')
   @ApiOperation({
     summary: 'Лид переходит в завершенную сделку / Конвертируется в Сделку',
