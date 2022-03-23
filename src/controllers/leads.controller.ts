@@ -143,6 +143,8 @@ export class LeadsController {
   @ApiQuery({ name: 'source', required: false })
   @ApiQuery({ name: 'createdAt', required: false })
   @ApiQuery({ name: 'updatedAt', required: false })
+  @ApiQuery({ name: 'startDate', required: false })
+  @ApiQuery({ name: 'endDate', required: false })
   @ApiQuery({ name: 'active', required: false, enum: ['true', 'false'] })
   @ApiPagination()
   async listLead(
