@@ -123,18 +123,30 @@ export class CompanyController {
   @ApiQuery({ name: 'searchFilter', required: false })
   @ApiQuery({ name: 'createdAt', required: false })
   @ApiQuery({ name: 'updatedAt', required: false })
+  @ApiQuery({ name: 'inn', required: false })
+  @ApiQuery({ name: 'name', required: false })
+  @ApiQuery({ name: 'bank', required: false })
+  @ApiQuery({ name: 'email', required: false })
   @ApiPagination()
   async listCompanies(
     @MongoPaginationDecorator() pagination: Core.MongoPagination,
     @Query('searchFilter') searchFilter: string,
     @Query('createdAt') createdAt: string,
     @Query('updatedAt') updatedAt: string,
+    @Query('inn') inn: string,
+    @Query('name') name: string,
+    @Query('bank') bank: string,
+    @Query('email') email: string,
   ): Promise<ResponseRecordsDataDto> {
     const sendData = {
       searchFilter: searchFilter,
       pagination: pagination,
       createdAt: createdAt,
       updatedAt: updatedAt,
+      inn: inn,
+      name: name,
+      bank: bank,
+      email: email,
     };
     const response = await SendAndResponseData(this.companyServiceClient, 'company:list', sendData);
     this.logger.log(cyan(JSON.stringify(response)));

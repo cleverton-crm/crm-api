@@ -89,6 +89,11 @@ export class ClientController {
   @ApiQuery({ name: 'birthDate', required: false })
   @ApiQuery({ name: 'createdAt', required: false })
   @ApiQuery({ name: 'updatedAt', required: false })
+  @ApiQuery({ name: 'first', required: false })
+  @ApiQuery({ name: 'last', required: false })
+  @ApiQuery({ name: 'middle', required: false })
+  @ApiQuery({ name: 'email', required: false })
+  @ApiQuery({ name: 'workPhone', required: false })
   async listPersona(
     @MongoPaginationDecorator() pagination: MongoPagination,
     @Query('company') company: string,
@@ -96,6 +101,11 @@ export class ClientController {
     @Query('birthDate') birthDate: string,
     @Query('createdAt') createdAt: string,
     @Query('updatedAt') updatedAt: string,
+    @Query('first') first: string,
+    @Query('last') last: string,
+    @Query('middle') middle: string,
+    @Query('email') email: string,
+    @Query('workPhone') workPhone: string,
     @Req() req: any,
   ): Promise<ResponseRecordsDataDto> {
     let response;
@@ -106,6 +116,11 @@ export class ClientController {
       createdAt: createdAt,
       updatedAt: updatedAt,
       birthDate: birthDate,
+      first: first,
+      last: last,
+      middle: middle,
+      email: email,
+      workPhone: workPhone,
     };
     if (company !== undefined) {
       sendData = Object.assign(sendData, { company: company });
