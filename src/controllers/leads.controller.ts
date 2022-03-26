@@ -327,7 +327,7 @@ export class LeadsController {
   ): Promise<Core.Response.Answer> {
     const sendData = {
       id: id,
-      userId: req.user,
+      req: req.user,
       active: active,
     };
     const response = await SendAndResponseData(this.leadsServiceClient, 'leads:archive', sendData);

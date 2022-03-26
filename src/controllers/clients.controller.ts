@@ -182,7 +182,7 @@ export class ClientController {
   ): Promise<Core.Response.Answer> {
     const sendData = {
       id: id,
-      userId: req.user,
+      req: req.user,
       active: active,
     };
     const response = await SendAndResponseData(this.personaServiceClient, 'client:archive', sendData);

@@ -219,7 +219,7 @@ export class DealsController {
   ): Promise<Core.Response.Answer> {
     const sendData = {
       id: id,
-      userId: req.user,
+      req: req.user,
       active: active,
     };
     const response = await SendAndResponseData(this.dealsServiceClient, 'deals:archive', sendData);
