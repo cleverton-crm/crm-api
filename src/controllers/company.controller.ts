@@ -127,6 +127,7 @@ export class CompanyController {
   @ApiQuery({ name: 'name', required: false })
   @ApiQuery({ name: 'bank', required: false })
   @ApiQuery({ name: 'email', required: false })
+  @ApiQuery({ name: 'active', required: false, enum: ['true', 'false'] })
   @ApiPagination()
   async listCompanies(
     @MongoPaginationDecorator() pagination: Core.MongoPagination,
@@ -137,6 +138,7 @@ export class CompanyController {
     @Query('name') name: string,
     @Query('bank') bank: string,
     @Query('email') email: string,
+    @Query('active') active: boolean = true,
   ): Promise<ResponseRecordsDataDto> {
     const sendData = {
       searchFilter: searchFilter,
@@ -147,6 +149,7 @@ export class CompanyController {
       name: name,
       bank: bank,
       email: email,
+      active: active,
     };
     const response = await SendAndResponseData(this.companyServiceClient, 'company:list', sendData);
     this.logger.log(cyan(JSON.stringify(response)));

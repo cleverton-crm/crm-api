@@ -94,6 +94,7 @@ export class ClientController {
   @ApiQuery({ name: 'middle', required: false })
   @ApiQuery({ name: 'email', required: false })
   @ApiQuery({ name: 'workPhone', required: false })
+  @ApiQuery({ name: 'active', required: false, enum: ['true', 'false'] })
   async listPersona(
     @MongoPaginationDecorator() pagination: MongoPagination,
     @Query('company') company: string,
@@ -106,6 +107,7 @@ export class ClientController {
     @Query('middle') middle: string,
     @Query('email') email: string,
     @Query('workPhone') workPhone: string,
+    @Query('active') active: boolean = true,
     @Req() req: any,
   ): Promise<ResponseRecordsDataDto> {
     let response;
@@ -121,6 +123,7 @@ export class ClientController {
       middle: middle,
       email: email,
       workPhone: workPhone,
+      active: active,
     };
     if (company !== undefined) {
       sendData = Object.assign(sendData, { company: company });

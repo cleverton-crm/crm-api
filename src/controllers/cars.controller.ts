@@ -77,14 +77,16 @@ export class CarsController {
     description: Core.OperationReadMe('docs/cars/list.md'),
   })
   @ApiQuery({ name: 'company', required: false })
+  @ApiQuery({ name: 'active', required: false, enum: ['true', 'false'] })
   @ApiPagination()
   async listCars(
     @Query('company') company: string,
     @MongoPaginationDecorator() pagination: MongoPagination,
+    @Query('active') active: boolean = true,
     @Req() req: any,
   ): Promise<Core.Response.Answer> {
     let response;
-    let sendData = { pagination: pagination, req: req.user };
+    let sendData = { pagination: pagination, req: req.user, active: active };
     if (company !== undefined) {
       sendData = Object.assign(sendData, { company: company });
     }
