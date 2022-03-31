@@ -20,10 +20,11 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { HttpExceptionFilter } from './filters/http-exception.filter';
 import * as path from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { CarsController } from './controllers/cars.controller';
+import { CarsController } from './controllers';
 import { NewsController } from './controllers/news.controller';
 import { StatusDealsController } from './controllers/status-deals.controller';
 import { ActivityController } from './controllers/activity.controller';
+import { ParkCompanyController } from './controllers';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { ActivityController } from './controllers/activity.controller';
     ProfileController,
     ProfileControllerMe,
     CompanyController,
+    ParkCompanyController,
     ClientController,
     CarsController,
     StatusDealsController,

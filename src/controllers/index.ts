@@ -8,4 +8,5 @@ export * from './leads.controller';
 export * from './settings.controller';
 export * from './profile.controller';
 export * from './profile-me.controller';
+export * from './park.controller';
 export * from './files.controller';
