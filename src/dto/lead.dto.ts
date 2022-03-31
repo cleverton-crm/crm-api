@@ -40,7 +40,7 @@ export class LeadDto implements Core.Deals.Schema {
   @ApiProperty({ example: 10 })
   amountFuel: number;
 
-  @ApiProperty({ example: '₽' })
+  @ApiProperty({ example: 'RUB' })
   currency?: string;
 
   @ApiProperty()
@@ -61,3 +61,5 @@ export class LeadDto implements Core.Deals.Schema {
   })
   contacts?: [ClientContactDto, CompanyDto];
 }
+
+export class UpdateLeadDto extends OmitType(LeadDto, ['contacts'] as const) {}

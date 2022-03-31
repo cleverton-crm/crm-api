@@ -3,7 +3,7 @@ import { Body, Controller, Delete, Get, Inject, Logger, Param, Patch, Post, Quer
 import { Auth } from '../decorators/auth.decorator';
 import { ClientProxy } from '@nestjs/microservices';
 import { Core } from 'crm-core';
-import { DealComment, LeadDto } from '../dto/lead.dto';
+import { DealComment, LeadDto, UpdateLeadDto } from '../dto/lead.dto';
 import { SendAndResponseData } from '../helpers/global';
 import { cyan } from 'cli-color';
 import { ApiPagination } from '../decorators/pagination.decorator';
@@ -120,7 +120,11 @@ export class LeadsController {
     summary: 'Изменение лида',
     description: Core.OperationReadMe('docs/leads/update.md'),
   })
-  async updateLead(@Param('id') id: string, @Req() req: any, @Body() leadData: LeadDto): Promise<Core.Response.Answer> {
+  async updateLead(
+    @Param('id') id: string,
+    @Req() req: any,
+    @Body() leadData: UpdateLeadDto,
+  ): Promise<Core.Response.Answer> {
     const sendData = {
       id: id,
       owner: req.user,
