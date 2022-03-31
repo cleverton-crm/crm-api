@@ -15,12 +15,6 @@ export class ParkCompanyObjectDto {
 
   @ApiProperty({ example: [] })
   fuels: ParkCompanyFuelDto[]; // Виды топлива
-
-  // @ApiProperty({ example: 50 })
-  // resultCapacity: number; // Емкость по объекту (складывается из всех видов топлива)
-  //
-  // @ApiProperty({ example: 50 })
-  // resultConsumption: number; // Потребление по объекту (складывается из всех видов топлива)
 }
 
 export class UpdateParkCompanyObjectDto extends OmitType(ParkCompanyObjectDto, ['fuels'] as const) {}
@@ -44,12 +38,6 @@ export class ParkCompanyDto {
 
   @ApiProperty({ example: {} })
   store: Map<string, ParkCompanyObjectDto>;
-
-  // @ApiProperty({ example: 150 })
-  // allCapacity: number;
-  //
-  // @ApiProperty({ example: 50 })
-  // allConsumption: number;
 }
 
 export class ParkCompanyRequestDto {
