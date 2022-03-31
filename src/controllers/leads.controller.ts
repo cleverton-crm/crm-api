@@ -1,5 +1,18 @@
-import { ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { Body, Controller, Delete, Get, Inject, Logger, Param, Patch, Post, Query, Req } from '@nestjs/common';
+import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpStatus,
+  Inject,
+  Logger,
+  Param,
+  Patch,
+  Post,
+  Query,
+  Req,
+} from '@nestjs/common';
 import { Auth } from '../decorators/auth.decorator';
 import { ClientProxy } from '@nestjs/microservices';
 import { Core } from 'crm-core';
@@ -33,6 +46,19 @@ export class LeadsController {
       owner: req.user,
     };
     const response = await SendAndResponseData(this.leadsServiceClient, 'leads:create', sendData);
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+
+  @Post('/company/create/:id')
+  @ApiOperation({
+    summary: 'Создание компании лида',
+    description: Core.OperationReadMe('docs/company/create.md'),
+  })
+  @ApiResponse({ type: CompanyDto, status: HttpStatus.OK })
+  async createLeadCompany(@Req() req: any, @Body() companyData: CompanyDto): Promise<Core.Response.Answer> {
+    companyData.owner = req.user.userID;
+    const response = await SendAndResponseData(this.leadsServiceClient, 'leads:company:create', companyData);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
