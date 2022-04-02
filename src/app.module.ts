@@ -25,6 +25,7 @@ import { NewsController } from './controllers/news.controller';
 import { StatusDealsController } from './controllers/status-deals.controller';
 import { ActivityController } from './controllers/activity.controller';
 import { ParkCompanyController } from './controllers';
+import { TaskController } from './controllers/task.controller';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { ParkCompanyController } from './controllers';
     StatusDealsController,
     LeadsController,
     DealsController,
+    TaskController,
     ActivityController,
     NewsController,
     FilesController,

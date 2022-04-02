@@ -5,4 +5,5 @@ export * from './roles.dto';
 export * from './profile.dto';
 export * from './company.dto';
 export * from './park.dto';
+export * from './task.dto';
 export * from './client.dto';
