@@ -94,7 +94,7 @@ export class ClientController {
   @ApiQuery({ name: 'middle', required: false })
   @ApiQuery({ name: 'email', required: false })
   @ApiQuery({ name: 'workPhone', required: false })
-  @ApiQuery({ name: 'active', required: false, enum: ['true', 'false'] })
+  @ApiQuery({ name: 'active', type: 'boolean', required: true, enum: ['true', 'false'] })
   async listPersona(
     @MongoPaginationDecorator() pagination: MongoPagination,
     @Query('company') company: string,
