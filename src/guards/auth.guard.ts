@@ -37,7 +37,8 @@ export class AuthGuard implements CanActivate {
       }
 
       const userData = await SendAndResponseData(this.userService, 'user:email', user.email);
-
+      console.log(user);
+      console.log(userData);
       if (userData === null || userData === undefined) {
         messageAccess = messageAccess + '! Не верный ключ авторизации!';
         throw new UnauthorizedException(messageAccess);
