@@ -78,7 +78,6 @@ export class ProfileController {
     summary: 'Получение одного профиля пользователя',
     description: Core.OperationReadMe('docs/profile/update.md'),
   })
-  @Auth('Admin')
   @ApiResponse({ type: ProfilePersonaDto, status: HttpStatus.OK })
   @ApiUnauthorizedResponse({
     type: ResponseUnauthorizedDto,
