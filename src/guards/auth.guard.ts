@@ -36,20 +36,20 @@ export class AuthGuard implements CanActivate {
         filterGuard = { owner: user.userID };
       }
 
-      const userData = await SendAndResponseData(this.userService, 'user:email', user.email);
-      console.log(user);
-      console.log(userData);
-      if (userData === null || userData === undefined) {
-        messageAccess = messageAccess + '! Не верный ключ авторизации!';
-        throw new UnauthorizedException(messageAccess);
-      } else {
-        if (userData?.data.accessToken !== token) {
-          messageAccess =
-            messageAccess +
-            '! Возможно, кто то вошел вашим аккаунтом с другово оборудования! Пожалуйста смените пароль!';
-          throw new UnauthorizedException(messageAccess);
-        }
-      }
+      // const userData = await SendAndResponseData(this.userService, 'user:email', user.email);
+      // console.log(user);
+      // console.log(userData);
+      // if (userData === null || userData === undefined) {
+      //   messageAccess = messageAccess + '! Не верный ключ авторизации!';
+      //   throw new UnauthorizedException(messageAccess);
+      // } else {
+      //   if (userData?.data.accessToken !== token) {
+      //     messageAccess =
+      //       messageAccess +
+      //       '! Возможно, кто то вошел вашим аккаунтом с другово оборудования! Пожалуйста смените пароль!';
+      //     throw new UnauthorizedException(messageAccess);
+      //   }
+      // }
 
       req.user = {
         id: user.userID,
