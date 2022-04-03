@@ -14,6 +14,7 @@ import { SendAndResponseData } from '../helpers/global';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
+  private logger: Logger = new Logger(AuthGuard.name);
   constructor(
     @Inject('USER_SERVICE') private readonly userService: ClientProxy,
     private readonly jwtService: JwtService,
@@ -26,7 +27,7 @@ export class AuthGuard implements CanActivate {
       const authHeader = req.headers.authorization;
       const bearer = authHeader.split(' ')[0];
       const token = authHeader.split(' ')[1];
-
+      this.logger.debug(authHeader);
       if (bearer !== 'Bearer' || !token) {
         throw new UnauthorizedException('Access denied');
       }
@@ -36,7 +37,8 @@ export class AuthGuard implements CanActivate {
         filterGuard = { owner: user.userID };
       }
 
-      // const userData = await SendAndResponseData(this.userService, 'user:email', user.email);
+      const userData = await SendAndResponseData(this.userService, 'user:email', user.email);
+      this.logger.debug(userData);
       // console.log(user);
       // console.log(userData);
       // if (userData === null || userData === undefined) {
@@ -57,6 +59,7 @@ export class AuthGuard implements CanActivate {
         access: token,
         filterQuery: filterGuard,
       };
+      this.logger.debug(req.user);
       return true;
     } catch (e) {
       // throw new HttpException({ statusCode: e.status, message:  }, HttpStatus.UNAUTHORIZED);
