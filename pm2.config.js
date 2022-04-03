@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'crm-api',
-      script: './gateway/main.js',
+      script: './dist/main.js',
       watch: false,
       wait_ready: true,
       stop_exit_codes: [0],
