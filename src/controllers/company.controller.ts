@@ -52,6 +52,18 @@ export class CompanyController {
     this.logger = new Logger(CompanyController.name);
   }
 
+  @Post('/import')
+  @ApiOperation({
+    summary: 'Импорт данных',
+    description: Core.OperationReadMe('docs/company/create.md'),
+  })
+  @ApiResponse({ type: CompanyDto, status: HttpStatus.OK })
+  async importCompany(@Req() req: any): Promise<Core.Response.Answer> {
+    const response = await SendAndResponseData(this.companyServiceClient, 'company:csv', true);
+    this.logger.log(cyan(JSON.stringify(response)));
+    return response;
+  }
+
   /**
    * <<<<<<<<<<<<<<<<<<<<
    * Создание компании
@@ -127,7 +139,7 @@ export class CompanyController {
   @ApiQuery({ name: 'name', required: false })
   @ApiQuery({ name: 'bank', required: false })
   @ApiQuery({ name: 'email', required: false })
-  @ApiQuery({ name: 'active', required: false, enum: ['true', 'false'] })
+  @ApiQuery({ name: 'active', type: 'boolean', required: true, enum: ['true', 'false'] })
   @ApiPagination()
   async listCompanies(
     @MongoPaginationDecorator() pagination: Core.MongoPagination,
