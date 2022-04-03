@@ -23,8 +23,7 @@ export class AuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
     let messageAccess = 'Требуется авторизация в системе';
-    const userData = await SendAndResponseData(this.userService, 'user:email', 'user01@cleverdeus.com');
-    this.logger.debug(userData);
+
     try {
       const authHeader = req.headers.authorization;
       const bearer = authHeader.split(' ')[0];
