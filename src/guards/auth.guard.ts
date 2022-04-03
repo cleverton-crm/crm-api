@@ -59,8 +59,8 @@ export class AuthGuard implements CanActivate {
       };
       return true;
     } catch (e) {
-      throw new HttpException({ statusCode: e.status, message: e.message || messageAccess }, HttpStatus.UNAUTHORIZED);
-      //throw new UnauthorizedException('Требуется авторизация в системе');
+      // throw new HttpException({ statusCode: e.status, message:  }, HttpStatus.UNAUTHORIZED);
+      throw new UnauthorizedException(messageAccess);
     }
   }
 }
