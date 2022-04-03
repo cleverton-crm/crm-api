@@ -128,7 +128,7 @@ export class ParkCompanyController {
     return response;
   }
 
-  @Get('/list')
+  @Get('/list/:companyId')
   @ApiOperation({
     summary: 'Список хранилищ компаний',
     description: Core.OperationReadMe('docs/park/list.md'),
@@ -138,6 +138,7 @@ export class ParkCompanyController {
   @ApiQuery({ name: 'active', required: false, enum: ['true', 'false'] })
   @ApiPagination()
   async listParks(
+    @Param('companyId') companyId: string,
     @MongoPaginationDecorator() pagination: MongoPagination,
     @Query('createdAt') createdAt: string,
     @Query('updatedAt') updatedAt: string,
@@ -145,6 +146,7 @@ export class ParkCompanyController {
     @Req() req: any,
   ) {
     let sendData = {
+      companyId: companyId,
       pagination: pagination,
       req: req.user,
       active: active,
