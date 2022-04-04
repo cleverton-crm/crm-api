@@ -38,7 +38,7 @@ import { MongoPagination, MongoPaginationDecorator } from '../decorators/mongo.p
 import { fileImagesOptions } from '../helpers/file-images-options';
 
 @ApiTags('Companies')
-//@Auth('Admin', 'Manager')
+@Auth('Admin', 'Manager')
 @Controller('companies')
 export class CompanyController {
   private logger: Logger;
