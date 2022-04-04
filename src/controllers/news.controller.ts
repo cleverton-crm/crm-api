@@ -26,13 +26,15 @@ import {
 } from '@nestjs/common';
 import { Auth } from '../decorators/auth.decorator';
 import { ClientProxy } from '@nestjs/microservices';
-import { NewsCommentDto, NewsDto, NewsUpdateDto } from '../dto/news.dto';
+import { NewsCommentDto, NewsDto, NewsUpdateDto } from '../dto';
 import { Core } from 'crm-core';
 import { SendAndResponseData } from '../helpers/global';
 import { cyan } from 'cli-color';
 import { ResponseSuccessDto, ResponseUnauthorizedDto } from '../dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { fileImagesOptions } from '../helpers/file-images-options';
+import { ApiPagination } from '../decorators/pagination.decorator';
+import { MongoPagination, MongoPaginationDecorator } from '../decorators/mongo.pagination.decorator';
 
 @ApiTags('News')
 @Auth('Admin', 'Manager')
@@ -41,7 +43,7 @@ export class NewsController {
   private logger: Logger;
 
   constructor(
-    @Inject('NEWS_SERVICE') private readonly newsServiceClient: ClientProxy,
+    @Inject('COMPANY_SERVICE') private readonly newsServiceClient: ClientProxy,
     @Inject('FILES_SERVICE')
     private readonly filesServiceClient: ClientProxy,
   ) {
@@ -54,28 +56,36 @@ export class NewsController {
     description: Core.OperationReadMe('docs/news/create.md'),
   })
   async createNews(@Req() req: any, @Body() newsData: NewsDto): Promise<Core.Response.Answer> {
-    newsData.author = req.user.userID;
-    const response = await SendAndResponseData(this.newsServiceClient, 'news:create', newsData);
+    const sendData = {
+      data: newsData,
+      req: req.user,
+    };
+    const response = await SendAndResponseData(this.newsServiceClient, 'news:create', sendData);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
-  @Patch('/:id/update')
+  @Patch('/update/:id')
   @ApiOperation({
     summary: 'Редактирование новости',
     description: Core.OperationReadMe('docs/news/update.md'),
   })
-  async updateNews(@Param('id') id: string, @Body() newsData: NewsUpdateDto): Promise<Core.Response.Answer> {
+  async updateNews(
+    @Param('id') id: string,
+    @Body() newsData: NewsUpdateDto,
+    @Req() req: any,
+  ): Promise<Core.Response.Answer> {
     const sendData = {
       id: id,
       data: newsData,
+      req: req.user,
     };
     const response = await SendAndResponseData(this.newsServiceClient, 'news:update', sendData);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
-  @Patch('/:id/comment')
+  @Patch('/comment/:id')
   @ApiOperation({
     summary: 'Добавление комментария к новости',
     description: Core.OperationReadMe('docs/news/comment_create.md'),
@@ -87,7 +97,7 @@ export class NewsController {
   ): Promise<Core.Response.Answer> {
     const sendData = {
       id: id,
-      userId: req.user.userID,
+      req: req.user,
       comments: commentData.comments,
     };
     const response = await SendAndResponseData(this.newsServiceClient, 'news:comment', sendData);
@@ -95,18 +105,27 @@ export class NewsController {
     return response;
   }
 
-  @Get('/')
+  @Get('/list')
   @ApiOperation({
     summary: 'Список новостей',
     description: Core.OperationReadMe('docs/news/list.md'),
   })
-  async listNews(): Promise<Core.Response.Answer> {
-    const response = await SendAndResponseData(this.newsServiceClient, 'news:list', true);
+  @ApiQuery({ name: 'active', required: false, enum: ['true', 'false'] })
+  @ApiPagination()
+  async listNews(
+    @MongoPaginationDecorator() pagination: MongoPagination,
+    @Query('active') active: boolean = true,
+  ): Promise<Core.Response.Answer> {
+    const sendData = {
+      pagination: pagination,
+      active: active,
+    };
+    const response = await SendAndResponseData(this.newsServiceClient, 'news:list', sendData);
     this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
-  @Get('/:id/find')
+  @Get('/find/:id')
   @ApiOperation({
     summary: 'Поиск новости',
     description: Core.OperationReadMe('docs/news/find.md'),
@@ -174,17 +193,22 @@ export class NewsController {
     return responseData;
   }
 
-  @Delete('/:id/status')
+  @Delete('/archive/:id')
   @ApiParam({ name: 'id', type: 'string' })
   @ApiQuery({ name: 'active', type: 'boolean', enum: ['true', 'false'] })
   @ApiOperation({
     summary: 'Архивация новости',
     description: Core.OperationReadMe('docs/news/archive.md'),
   })
-  async archiveNews(@Param('id') id: string, @Query('active') active: boolean): Promise<Core.Response.Answer> {
+  async archiveNews(
+    @Param('id') id: string,
+    @Query('active') active: boolean,
+    @Req() req: any,
+  ): Promise<Core.Response.Answer> {
     const sendData = {
       id: id,
       active: active,
+      req: req.user,
     };
     const response = await SendAndResponseData(this.newsServiceClient, 'news:archive', sendData);
     this.logger.log(cyan(JSON.stringify(response)));

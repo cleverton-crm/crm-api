@@ -6,6 +6,7 @@ export * from './cars.controller';
 export * from './deals.controller';
 export * from './leads.controller';
 export * from './task.controller';
+export * from './news.controller';
 export * from './settings.controller';
 export * from './profile.controller';
 export * from './profile-me.controller';

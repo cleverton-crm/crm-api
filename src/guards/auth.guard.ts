@@ -28,7 +28,7 @@ export class AuthGuard implements CanActivate {
       const authHeader = req.headers.authorization;
       const bearer = authHeader.split(' ')[0];
       const token = authHeader.split(' ')[1];
-      this.logger.debug(authHeader);
+      // this.logger.debug(authHeader);
       if (bearer !== 'Bearer' || !token) {
         throw new UnauthorizedException('Access denied');
       }
@@ -58,7 +58,7 @@ export class AuthGuard implements CanActivate {
         access: token,
         filterQuery: filterGuard,
       };
-      this.logger.debug(req.user);
+      // this.logger.debug(req.user);
       return true;
     } catch (e) {
       // throw new HttpException({ statusCode: e.status, message:  }, HttpStatus.UNAUTHORIZED);

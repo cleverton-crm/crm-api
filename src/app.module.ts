@@ -8,6 +8,10 @@ import {
   ProfileController,
   ProfileControllerMe,
   RolesController,
+  CarsController,
+  NewsController,
+  TaskController,
+  ParkCompanyController,
   SettingController,
   UserController,
 } from './controllers';
@@ -20,12 +24,8 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { HttpExceptionFilter } from './filters/http-exception.filter';
 import * as path from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { CarsController } from './controllers';
-import { NewsController } from './controllers/news.controller';
 import { StatusDealsController } from './controllers/status-deals.controller';
 import { ActivityController } from './controllers/activity.controller';
-import { ParkCompanyController } from './controllers';
-import { TaskController } from './controllers/task.controller';
 
 @Module({
   imports: [
