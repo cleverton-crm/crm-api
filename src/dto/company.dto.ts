@@ -1,5 +1,5 @@
 import { Core } from 'crm-core';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, OmitType } from '@nestjs/swagger';
 import { ExampleCompany } from 'src/helpers/example-company';
 
 export class CompanyBankDto implements Core.Company.Bank {
@@ -383,3 +383,5 @@ export class CompanyDto implements Core.Company.Schema {
   active: boolean;
   avatar: Map<string, any>;
 }
+
+export class UpdateCompanyDto extends OmitType(CompanyDto, ['requisites'] as const) {}

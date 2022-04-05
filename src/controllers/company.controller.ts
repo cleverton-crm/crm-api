@@ -28,7 +28,13 @@ import {
 import { ClientProxy } from '@nestjs/microservices';
 import { Core } from 'crm-core';
 import { cyan } from 'cli-color';
-import { CompanyDto, ResponseRecordsDataDto, ResponseSuccessDto, ResponseUnauthorizedDto } from '../dto';
+import {
+  CompanyDto,
+  ResponseRecordsDataDto,
+  ResponseSuccessDto,
+  ResponseUnauthorizedDto,
+  UpdateCompanyDto,
+} from '../dto';
 import { SendAndResponseData } from '../helpers/global';
 import { Auth } from '../decorators/auth.decorator';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -108,7 +114,7 @@ export class CompanyController {
   async updateCompany(
     @Param('id') id: string,
     @Query('owner') ownerId: string,
-    @Body() companyData: CompanyDto,
+    @Body() companyData: UpdateCompanyDto,
     @Req() req: any,
   ) {
     companyData.owner = ownerId || req.user.userID;
