@@ -320,10 +320,10 @@ export class CarsController {
   })
   @ApiResponse({ type: ResponseSuccessDto, status: HttpStatus.OK })
   @UseInterceptors(FilesInterceptor('file', 10, fileImagesOptions))
-  async uploadAvatar(@UploadedFiles() file, @Req() req: any, @Param('id') id: string): Promise<any> {
+  async uploadAvatar(@Req() req: any, @Param('id') id: string, @UploadedFiles() file): Promise<any> {
     const response = [];
     file.forEach((file) => {
-      const fileReponse = {
+      const fileResponse = {
         originalname: file.originalname,
         encoding: file.encoding,
         mimetype: file.mimetype,

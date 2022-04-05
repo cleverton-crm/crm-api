@@ -142,7 +142,7 @@ export class NewsController {
    * @param file
    * @param req
    */
-  @Post('/picture/:id/upload')
+  @Post('/announcement/upload/:id')
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -157,38 +157,39 @@ export class NewsController {
   })
   @ApiOperation({
     summary: 'Загрузка фото для новости',
-    description: Core.OperationReadMe('docs/news/picture_upload.md'),
+    description: Core.OperationReadMe('docs/files/upload.md'),
   })
   @ApiResponse({ type: ResponseSuccessDto, status: HttpStatus.OK })
-  @UseInterceptors(FilesInterceptor('file', 10, fileImagesOptions))
-  async uploadNewsPicture(@Param('id') id: string, @UploadedFiles() file, @Req() req: any): Promise<any> {
+  @UseInterceptors(FilesInterceptor('file', 1, fileImagesOptions))
+  async uploadNewsPicture(@Req() req: any, @Param('id') id: string, @UploadedFiles() file): Promise<any> {
     const response = [];
     file.forEach((file) => {
       response.push(file);
     });
-    const sendData = { newsID: id, files: response };
-    const responseData = await SendAndResponseData(this.filesServiceClient, 'files:news:picture:upload', sendData);
+    const sendData = { owner: req.user.userID, files: response, id: id };
+    const responseData = await SendAndResponseData(this.filesServiceClient, 'files:news:avatar:upload', sendData);
     this.logger.log(cyan(responseData));
     return responseData;
   }
 
   /**
    * Получение аватара по авторизации
+   * @param req
    * @param id
    */
-  @Get('/picture/:id/show')
+  @Get('/announcement/show/:id')
   @ApiOperation({
     summary: 'Фото новости',
-    description: Core.OperationReadMe('docs/news/picture.md'),
+    description: Core.OperationReadMe('docs/files/show_news_photo.md'),
   })
   @ApiResponse({ type: ResponseSuccessDto, status: HttpStatus.OK })
   @ApiUnauthorizedResponse({
     type: ResponseUnauthorizedDto,
     status: HttpStatus.UNAUTHORIZED,
   })
-  async showAvatar(@Param('id') id: string): Promise<Core.Response.Answer | Core.Response.Error> {
-    const sendData = { id: id };
-    const responseData = await SendAndResponseData(this.filesServiceClient, 'files:news:picture:show', sendData);
+  async showAvatar(@Req() req: any, @Param('id') id: string): Promise<Core.Response.Answer | Core.Response.Error> {
+    const sendData = { owner: req.user, id: id };
+    const responseData = await SendAndResponseData(this.filesServiceClient, 'files:news:avatar:show', sendData);
     this.logger.log(cyan(responseData));
     return responseData;
   }
