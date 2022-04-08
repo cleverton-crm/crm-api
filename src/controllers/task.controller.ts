@@ -3,7 +3,6 @@ import { ClientProxy } from '@nestjs/microservices';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Core } from 'crm-core';
 import { SendAndResponseData } from '../helpers/global';
-import { cyan } from 'cli-color';
 import { Auth } from '../decorators/auth.decorator';
 import { TaskDto } from '../dto';
 import { MongoPagination, MongoPaginationDecorator } from '../decorators/mongo.pagination.decorator';
@@ -34,7 +33,6 @@ export class TaskController {
     }
     taskData.owner = req.user.userID;
     const response = await SendAndResponseData(this.taskServiceClient, 'task:create', taskData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -58,9 +56,7 @@ export class TaskController {
       data: updateData,
       req: req.user,
     };
-    console.log(sendData);
     const response = await SendAndResponseData(this.taskServiceClient, 'task:update', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -117,7 +113,6 @@ export class TaskController {
   })
   async findTask(@Param('id') id: string) {
     const response = await SendAndResponseData(this.taskServiceClient, 'task:find', id);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -132,7 +127,6 @@ export class TaskController {
       req: req.user,
     };
     const response = await SendAndResponseData(this.taskServiceClient, 'task:delete', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 }

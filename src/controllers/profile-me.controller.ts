@@ -65,7 +65,6 @@ export class ProfileControllerMe {
   async myDataPersona(@Req() req: any) {
     const sendData = { id: req.user.userID };
     const response = await SendAndResponseData(this.profileServiceClient, 'profile:me', sendData);
-    this.logger.log(cyan(response));
     return response;
   }
 
@@ -84,7 +83,6 @@ export class ProfileControllerMe {
   async update(@Req() req: any, @Body() profileData: ProfilePersonaDto) {
     profileData.id = req.user.userID;
     const response = await SendAndResponseData(this.profileServiceClient, 'profile:update', profileData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -125,7 +123,6 @@ export class ProfileControllerMe {
       comments: comment.comments,
     };
     const responseData = await SendAndResponseData(this.filesServiceClient, 'files:profile:upload', sendData);
-    this.logger.log(cyan(responseData));
     return responseData;
   }
 
@@ -144,7 +141,6 @@ export class ProfileControllerMe {
   async fileList(@Req() req: any): Promise<Core.Response.Answer | Core.Response.Error> {
     const sendData = { id: req.user.userID, owner: req.user.userID };
     const responseData = await SendAndResponseData(this.filesServiceClient, 'files:profile:list', sendData);
-    this.logger.log(cyan(responseData));
     return responseData;
   }
 
@@ -167,7 +163,6 @@ export class ProfileControllerMe {
       owner: req.user,
     };
     const responseData = await SendAndResponseData(this.filesServiceClient, 'files:profile:download', sendData);
-    this.logger.log(cyan(responseData));
     return responseData;
   }
 
@@ -194,7 +189,6 @@ export class ProfileControllerMe {
       owner: req.user,
     };
     const responseData = await SendAndResponseData(this.filesServiceClient, 'files:profile:delete', sendData);
-    this.logger.log(cyan(responseData));
     return responseData;
   }
 
@@ -214,7 +208,6 @@ export class ProfileControllerMe {
   async showAvatar(@Req() req: any): Promise<Core.Response.Answer | Core.Response.Error> {
     const sendData = { owner: req.user, id: req.user.userID };
     const responseData = await SendAndResponseData(this.filesServiceClient, 'files:profile:avatar:show', sendData);
-    this.logger.log(cyan(responseData));
     return responseData;
   }
 
@@ -264,7 +257,6 @@ export class ProfileControllerMe {
     });
     const sendData = { owner: req.user.userID, files: response, id: req.user.userID };
     const responseData = await SendAndResponseData(this.filesServiceClient, 'files:profile:avatar:upload', sendData);
-    this.logger.log(cyan(responseData));
     return responseData;
   }
 }

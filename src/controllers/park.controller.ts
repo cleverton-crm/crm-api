@@ -40,7 +40,6 @@ export class ParkCompanyController {
       parkData: parkData,
     };
     const response = await SendAndResponseData(this.parkCompanyServiceClient, 'park:create', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -56,7 +55,6 @@ export class ParkCompanyController {
       req: req.user,
     };
     const response = await SendAndResponseData(this.parkCompanyServiceClient, 'park:store:create', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -78,7 +76,6 @@ export class ParkCompanyController {
       req: req.user,
     };
     const response = await SendAndResponseData(this.parkCompanyServiceClient, 'park:fuel:create', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -100,7 +97,6 @@ export class ParkCompanyController {
       req: req.user,
     };
     const response = await SendAndResponseData(this.parkCompanyServiceClient, 'park:store:update', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -124,7 +120,6 @@ export class ParkCompanyController {
       req: req.user,
     };
     const response = await SendAndResponseData(this.parkCompanyServiceClient, 'park:fuel:update', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -154,7 +149,6 @@ export class ParkCompanyController {
       updatedAt: updatedAt,
     };
     const response = await SendAndResponseData(this.parkCompanyServiceClient, 'park:list', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -169,7 +163,6 @@ export class ParkCompanyController {
       req: req.user,
     };
     const response = await SendAndResponseData(this.parkCompanyServiceClient, 'park:find', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -186,7 +179,6 @@ export class ParkCompanyController {
       req: req.user,
     };
     const response = await SendAndResponseData(this.parkCompanyServiceClient, 'park:archive', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -202,7 +194,6 @@ export class ParkCompanyController {
       req: req.user,
     };
     const response = await SendAndResponseData(this.parkCompanyServiceClient, 'park:store:delete', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -224,7 +215,6 @@ export class ParkCompanyController {
       req: req.user,
     };
     const response = await SendAndResponseData(this.parkCompanyServiceClient, 'park:fuel:delete', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 }

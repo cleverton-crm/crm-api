@@ -71,7 +71,6 @@ export class DealsController {
       owner: req.user,
     };
     const response = await SendAndResponseData(this.dealsServiceClient, 'deals:create', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -87,7 +86,6 @@ export class DealsController {
       data: dealData,
     };
     const response = await SendAndResponseData(this.dealsServiceClient, 'deals:update', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -103,7 +101,6 @@ export class DealsController {
       owner: req.user,
     };
     const response = await SendAndResponseData(this.dealsServiceClient, 'deals:change:status', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -120,7 +117,6 @@ export class DealsController {
       owner: req.user,
     };
     const response = await SendAndResponseData(this.dealsServiceClient, 'deals:change:owner', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -140,7 +136,6 @@ export class DealsController {
       comments: commentData.comments,
     };
     const response = await SendAndResponseData(this.dealsServiceClient, 'deals:comment', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -186,7 +181,6 @@ export class DealsController {
       updatedAt: updatedAt,
     };
     const response = await SendAndResponseData(this.dealsServiceClient, 'deals:list', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -201,7 +195,6 @@ export class DealsController {
       req: req.user,
     };
     const response = await SendAndResponseData(this.dealsServiceClient, 'deals:find', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -223,7 +216,6 @@ export class DealsController {
       active: active,
     };
     const response = await SendAndResponseData(this.dealsServiceClient, 'deals:archive', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -265,7 +257,6 @@ export class DealsController {
       comments: comment.comments,
     };
     const responseData = await SendAndResponseData(this.filesServiceClient, 'files:deals:upload', sendData);
-    this.logger.log(cyan(responseData));
     return responseData;
   }
 
@@ -284,7 +275,6 @@ export class DealsController {
   async fileList(@Req() req: any, @Param('id') id: string): Promise<Core.Response.Answer | Core.Response.Error> {
     const sendData = { id: id, owner: req.user.userID };
     const responseData = await SendAndResponseData(this.filesServiceClient, 'files:deals:list', sendData);
-    this.logger.log(cyan(responseData));
     return responseData;
   }
 
@@ -311,7 +301,6 @@ export class DealsController {
       owner: req.user,
     };
     const responseData = await SendAndResponseData(this.filesServiceClient, 'files:deals:download', sendData);
-    this.logger.log(cyan(responseData));
     return responseData;
   }
 
@@ -338,7 +327,6 @@ export class DealsController {
       owner: req.user,
     };
     const responseData = await SendAndResponseData(this.filesServiceClient, 'files:deals:delete', sendData);
-    this.logger.log(cyan(responseData));
     return responseData;
   }
 
@@ -358,7 +346,6 @@ export class DealsController {
   async showAvatar(@Req() req: any, @Param('id') id: string): Promise<Core.Response.Answer | Core.Response.Error> {
     const sendData = { owner: req.user, id: id };
     const responseData = await SendAndResponseData(this.filesServiceClient, 'files:deals:avatar:show', sendData);
-    this.logger.log(cyan(responseData));
     return responseData;
   }
 
@@ -408,7 +395,6 @@ export class DealsController {
     });
     const sendData = { owner: req.user.userID, files: response, id: id };
     const responseData = await SendAndResponseData(this.filesServiceClient, 'files:deals:avatar:upload', sendData);
-    this.logger.log(cyan(responseData));
     return responseData;
   }
 }

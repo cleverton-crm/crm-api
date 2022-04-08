@@ -186,7 +186,6 @@ export class CompanyController {
   })
   async findCompany(@Param('id') id: string) {
     const response = await SendAndResponseData(this.companyServiceClient, 'company:find', id);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -201,7 +200,6 @@ export class CompanyController {
   })
   async checkoutCompany(@Param('inn') inn: string) {
     const response = await SendAndResponseData(this.companyServiceClient, 'company:checkout', inn);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -229,7 +227,6 @@ export class CompanyController {
       active: active,
     };
     const response = await SendAndResponseData(this.companyServiceClient, 'company:archive', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -271,7 +268,6 @@ export class CompanyController {
       comments: comment.comments,
     };
     const responseData = await SendAndResponseData(this.filesServiceClient, 'files:company:upload', sendData);
-    this.logger.log(cyan(responseData));
     return responseData;
   }
 
@@ -290,7 +286,6 @@ export class CompanyController {
   async fileList(@Req() req: any, @Param('id') id: string): Promise<Core.Response.Answer | Core.Response.Error> {
     const sendData = { id: id, owner: req.user.userID };
     const responseData = await SendAndResponseData(this.filesServiceClient, 'files:company:list', sendData);
-    this.logger.log(cyan(responseData));
     return responseData;
   }
 
@@ -317,7 +312,6 @@ export class CompanyController {
       owner: req.user,
     };
     const responseData = await SendAndResponseData(this.filesServiceClient, 'files:company:download', sendData);
-    this.logger.log(cyan(responseData));
     return responseData;
   }
 
@@ -344,7 +338,6 @@ export class CompanyController {
       owner: req.user,
     };
     const responseData = await SendAndResponseData(this.filesServiceClient, 'files:company:delete', sendData);
-    this.logger.log(cyan(responseData));
     return responseData;
   }
 
@@ -364,7 +357,6 @@ export class CompanyController {
   async showAvatar(@Req() req: any, @Param('id') id: string): Promise<Core.Response.Answer | Core.Response.Error> {
     const sendData = { owner: req.user, id: id };
     const responseData = await SendAndResponseData(this.filesServiceClient, 'files:company:avatar:show', sendData);
-    this.logger.log(cyan(responseData));
     return responseData;
   }
 
@@ -414,7 +406,6 @@ export class CompanyController {
     });
     const sendData = { owner: req.user.userID, files: response, id: id };
     const responseData = await SendAndResponseData(this.filesServiceClient, 'files:company:avatar:upload', sendData);
-    this.logger.log(cyan(responseData));
     return responseData;
   }
 }

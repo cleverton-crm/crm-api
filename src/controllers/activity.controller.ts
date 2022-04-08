@@ -26,7 +26,6 @@ export class ActivityController {
   @ApiPagination()
   async listActivity(@MongoPaginationDecorator() pagination: MongoPagination): Promise<Core.Response.Answer> {
     const response = await SendAndResponseData(this.activityServiceClient, 'activity:list', pagination);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -37,7 +36,6 @@ export class ActivityController {
   })
   async findActivity(@Param('id') id: string): Promise<Core.Response.Answer> {
     const response = await SendAndResponseData(this.activityServiceClient, 'activity:find', id);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 }

@@ -43,7 +43,6 @@ export class ProfileController {
   async createPersona(@Body() profileData: ProfilePersonaDto, @Req() req: any): Promise<Core.Response.Answer> {
     profileData.id = req.user.userID;
     const response = await SendAndResponseData(this.profileServiceClient, 'profile:new', profileData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -64,14 +63,12 @@ export class ProfileController {
   })
   async getProfilesList(): Promise<Core.Profiles.Schema> {
     const response = await SendAndResponseData(this.profileServiceClient, 'profile:get:all', true);
-    this.logger.log(cyan(response));
     return response;
   }
 
   /**
    * Обновление данных в профиле по ID
    * @param id
-   * @param profileData
    */
   @Get('/:id')
   @ApiOperation({
@@ -90,7 +87,6 @@ export class ProfileController {
   async getProfile(@Param('id') id: string): Promise<Core.Profiles.Schema> {
     const sendData = { id: id };
     const response = await SendAndResponseData(this.profileServiceClient, 'profile:get:id', sendData);
-    this.logger.log(cyan(response));
     return response;
   }
 
@@ -114,7 +110,6 @@ export class ProfileController {
   })
   async getProfiles() {
     const response = await SendAndResponseData(this.profileServiceClient, 'profile:get:all', {});
-    this.logger.log(cyan(response));
     return response;
   }
 
@@ -138,13 +133,12 @@ export class ProfileController {
   })
   async getProfilesArchive() {
     const response = await SendAndResponseData(this.profileServiceClient, 'profile:get:archive', {});
-    this.logger.log(cyan(response));
     return response;
   }
 
   /**
    * Обновление данных в профиле по ID
-   * @param req
+   * @param id
    * @param profileData
    */
   @Patch('/:id/update')
@@ -157,13 +151,13 @@ export class ProfileController {
   async update(@Param('id') id: string, @Body() profileData: ProfilePersonaDto) {
     profileData.id = id;
     const response = await SendAndResponseData(this.profileServiceClient, 'profile:update', profileData);
-    this.logger.log(cyan(response));
     return response;
   }
 
   /**
    *  по ID
    * @param status
+   * @param id
    */
   @Patch('/:id/status')
   @ApiOperation({
@@ -176,7 +170,6 @@ export class ProfileController {
   async blockProfile(@Query('status') status: string, @Param('id') id: string) {
     const sendData = { id: id, status: status };
     const response = await SendAndResponseData(this.profileServiceClient, 'profile:status', sendData);
-    this.logger.log(cyan(response));
     return response;
   }
 }

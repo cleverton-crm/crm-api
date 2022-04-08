@@ -25,7 +25,6 @@ export class FilesController {
       'files:list',
       {},
     );
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 }

@@ -18,7 +18,6 @@ import { ClientProxy } from '@nestjs/microservices';
 import { Core } from 'crm-core';
 import { DealComment, LeadDto, UpdateLeadDto } from '../dto/lead.dto';
 import { SendAndResponseData } from '../helpers/global';
-import { cyan } from 'cli-color';
 import { ApiPagination } from '../decorators/pagination.decorator';
 import { MongoPagination, MongoPaginationDecorator } from '../decorators/mongo.pagination.decorator';
 import { ClientDto, CompanyDto } from '../dto';
@@ -46,7 +45,6 @@ export class LeadsController {
       owner: req.user,
     };
     const response = await SendAndResponseData(this.leadsServiceClient, 'leads:create', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -59,7 +57,6 @@ export class LeadsController {
   async createLeadCompany(@Req() req: any, @Body() companyData: CompanyDto): Promise<Core.Response.Answer> {
     companyData.owner = req.user.userID;
     const response = await SendAndResponseData(this.leadsServiceClient, 'leads:company:create', companyData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -75,7 +72,6 @@ export class LeadsController {
       owner: req.user,
     };
     const response = await SendAndResponseData(this.leadsServiceClient, 'leads:change:status', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -92,7 +88,6 @@ export class LeadsController {
       owner: req.user,
     };
     const response = await SendAndResponseData(this.leadsServiceClient, 'leads:change:owner', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -114,7 +109,6 @@ export class LeadsController {
       owner: req.user,
     };
     const response = await SendAndResponseData(this.leadsServiceClient, 'leads:company:update', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -136,7 +130,6 @@ export class LeadsController {
       owner: req.user,
     };
     const response = await SendAndResponseData(this.leadsServiceClient, 'leads:client:update', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -157,7 +150,6 @@ export class LeadsController {
       data: leadData,
     };
     const response = await SendAndResponseData(this.leadsServiceClient, 'leads:update', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -204,7 +196,6 @@ export class LeadsController {
       endDate: endDate,
     };
     const response = await SendAndResponseData(this.leadsServiceClient, 'leads:list', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -223,7 +214,6 @@ export class LeadsController {
       req: req.user,
     };
     const response = await SendAndResponseData(this.leadsServiceClient, 'leads:clients:list', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -242,7 +232,6 @@ export class LeadsController {
       req: req.user,
     };
     const response = await SendAndResponseData(this.leadsServiceClient, 'leads:companies:list', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -259,7 +248,6 @@ export class LeadsController {
       req: req.user,
     };
     const response = await SendAndResponseData(this.leadsServiceClient, 'leads:find', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -274,7 +262,6 @@ export class LeadsController {
       req: req.user,
     };
     const response = await SendAndResponseData(this.leadsServiceClient, 'leads:client:find', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -289,7 +276,6 @@ export class LeadsController {
       req: req.user,
     };
     const response = await SendAndResponseData(this.leadsServiceClient, 'leads:company:find', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -304,7 +290,6 @@ export class LeadsController {
       owner: req.user,
     };
     const response = await SendAndResponseData(this.leadsServiceClient, 'leads:done', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -324,7 +309,6 @@ export class LeadsController {
       comments: commentData,
     };
     const response = await SendAndResponseData(this.leadsServiceClient, 'leads:comment', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -339,7 +323,6 @@ export class LeadsController {
       owner: req.user,
     };
     const response = await SendAndResponseData(this.leadsServiceClient, 'leads:failure', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -361,7 +344,6 @@ export class LeadsController {
       active: active,
     };
     const response = await SendAndResponseData(this.leadsServiceClient, 'leads:archive', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 }

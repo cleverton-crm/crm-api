@@ -29,7 +29,6 @@ import { ClientProxy } from '@nestjs/microservices';
 import { NewsCommentDto, NewsDto, NewsUpdateDto } from '../dto';
 import { Core } from 'crm-core';
 import { SendAndResponseData } from '../helpers/global';
-import { cyan } from 'cli-color';
 import { ResponseSuccessDto, ResponseUnauthorizedDto } from '../dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { fileImagesOptions } from '../helpers/file-images-options';
@@ -61,7 +60,6 @@ export class NewsController {
       req: req.user,
     };
     const response = await SendAndResponseData(this.newsServiceClient, 'news:create', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -81,7 +79,6 @@ export class NewsController {
       req: req.user,
     };
     const response = await SendAndResponseData(this.newsServiceClient, 'news:update', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -101,7 +98,6 @@ export class NewsController {
       comments: commentData.comments,
     };
     const response = await SendAndResponseData(this.newsServiceClient, 'news:comment', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -121,7 +117,6 @@ export class NewsController {
       active: active,
     };
     const response = await SendAndResponseData(this.newsServiceClient, 'news:list', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -132,7 +127,6 @@ export class NewsController {
   })
   async findNews(@Param('id') id: string): Promise<Core.Response.Answer> {
     const response = await SendAndResponseData(this.newsServiceClient, 'news:find', id);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -168,7 +162,6 @@ export class NewsController {
     });
     const sendData = { owner: req.user.userID, files: response, id: id };
     const responseData = await SendAndResponseData(this.filesServiceClient, 'files:news:avatar:upload', sendData);
-    this.logger.log(cyan(responseData));
     return responseData;
   }
 
@@ -190,7 +183,6 @@ export class NewsController {
   async showAvatar(@Req() req: any, @Param('id') id: string): Promise<Core.Response.Answer | Core.Response.Error> {
     const sendData = { owner: req.user, id: id };
     const responseData = await SendAndResponseData(this.filesServiceClient, 'files:news:avatar:show', sendData);
-    this.logger.log(cyan(responseData));
     return responseData;
   }
 
@@ -212,7 +204,6 @@ export class NewsController {
       req: req.user,
     };
     const response = await SendAndResponseData(this.newsServiceClient, 'news:archive', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 }

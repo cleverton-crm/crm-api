@@ -5,7 +5,6 @@ import { ClientProxy } from '@nestjs/microservices';
 import { Core } from 'crm-core';
 import { StatusDealsDto } from '../dto/status-deals.dto';
 import { SendAndResponseData } from '../helpers/global';
-import { cyan } from 'cli-color';
 
 @ApiTags('Status Deals')
 @Auth('Admin', 'Manager')
@@ -30,7 +29,6 @@ export class StatusDealsController {
       owner: req.user,
     };
     const response = await SendAndResponseData(this.statusDealsServiceClient, 'status:create', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -51,7 +49,6 @@ export class StatusDealsController {
       data: statusData,
     };
     const response = await SendAndResponseData(this.statusDealsServiceClient, 'status:update', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -66,7 +63,6 @@ export class StatusDealsController {
       priority: priority,
     };
     const response = await SendAndResponseData(this.statusDealsServiceClient, 'status:change:priority', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -79,7 +75,6 @@ export class StatusDealsController {
   })
   async listStatus(): Promise<Core.Response.Answer> {
     const response = await SendAndResponseData(this.statusDealsServiceClient, 'status:list', true);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -92,7 +87,6 @@ export class StatusDealsController {
   })
   async findStatus(@Param('id') id: string): Promise<Core.Response.Answer> {
     const response = await SendAndResponseData(this.statusDealsServiceClient, 'status:find', id);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
@@ -111,7 +105,6 @@ export class StatusDealsController {
       active: active,
     };
     const response = await SendAndResponseData(this.statusDealsServiceClient, 'status:archive', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 }
