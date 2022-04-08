@@ -170,7 +170,6 @@ export class CompanyController {
       active: active,
     };
     const response = await SendAndResponseData(this.companyServiceClient, 'company:list', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 

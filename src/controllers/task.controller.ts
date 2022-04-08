@@ -73,7 +73,17 @@ export class TaskController {
   @ApiQuery({ name: 'updatedAt', required: false })
   @ApiQuery({ name: 'startDate', required: false })
   @ApiQuery({ name: 'endDate', required: false })
-  @ApiQuery({ name: 'linkType', required: false })
+  @ApiQuery({
+    name: 'linkType',
+    required: false,
+    description: 'Принимает тип объекта, к которому привязана задача: company, client, task, cars',
+    example: 'company',
+  })
+  @ApiQuery({
+    name: 'linkId',
+    required: false,
+    description: 'Прнимает ID по объекту к которому привязан. Должен совпадать с типом',
+  })
   @ApiQuery({ name: 'status', required: false, enum: ['true', 'false'] })
   @ApiPagination()
   async listTasks(
@@ -84,6 +94,7 @@ export class TaskController {
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
     @Query('linkType') linkType: string,
+    @Query('linkId') linkId: string,
   ) {
     const sendData = {
       createdAt: createdAt,
@@ -93,9 +104,9 @@ export class TaskController {
       endDate: endDate,
       pagination: pagination,
       linkType: linkType,
+      linkId: linkId,
     };
     const response = await SendAndResponseData(this.taskServiceClient, 'task:list', sendData);
-    this.logger.log(cyan(JSON.stringify(response)));
     return response;
   }
 
