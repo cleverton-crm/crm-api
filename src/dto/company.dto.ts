@@ -348,7 +348,7 @@ export class CompanyDto implements Core.Company.Schema {
   clients: string[];
   @ApiProperty({ type: CompanyBankDto })
   bank: CompanyBankDto;
-  @ApiProperty()
+  @ApiProperty({ example: [] })
   client: Array<string>;
   @ApiProperty({ example: ExampleCompany.data.address.value })
   companyLocation: string;
@@ -368,7 +368,7 @@ export class CompanyDto implements Core.Company.Schema {
   permissions: Map<string, any>;
   @ApiProperty()
   phoneNumber: string;
-  @ApiProperty()
+  @ApiProperty({ example: [] })
   phones: Array<string>;
   @ApiProperty({ example: ExampleCompany.data.address.value })
   postLocation: string;
@@ -376,7 +376,7 @@ export class CompanyDto implements Core.Company.Schema {
   requisites: CompanyRequisitesDto;
   @ApiProperty()
   source: string;
-  @ApiProperty()
+  @ApiProperty({ example: [] })
   tags: Array<string>;
   @ApiProperty()
   web: string;

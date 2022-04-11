@@ -20,7 +20,7 @@ import { DealComment, LeadDto, UpdateLeadDto } from '../dto/lead.dto';
 import { SendAndResponseData } from '../helpers/global';
 import { ApiPagination } from '../decorators/pagination.decorator';
 import { MongoPagination, MongoPaginationDecorator } from '../decorators/mongo.pagination.decorator';
-import { ClientDto, CompanyDto } from '../dto';
+import { ClientDto, CompanyDto, UpdateCompanyDto } from '../dto';
 
 @ApiTags('Leads')
 @Auth('Admin', 'Manager')
@@ -99,14 +99,14 @@ export class LeadsController {
   async updateLeadCompany(
     @Param('id') id: string,
     @Param('cid') cid: string,
-    @Body() updateData: CompanyDto,
+    @Body() updateData: UpdateCompanyDto,
     @Req() req: any,
   ) {
     const sendData = {
       id: id,
       cid: cid,
       data: updateData,
-      owner: req.user,
+      req: req.user,
     };
     const response = await SendAndResponseData(this.leadsServiceClient, 'leads:company:update', sendData);
     return response;
