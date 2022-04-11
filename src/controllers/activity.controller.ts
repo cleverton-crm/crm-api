@@ -1,6 +1,6 @@
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../decorators/auth.decorator';
-import { Controller, Get, Inject, Logger, Param } from '@nestjs/common';
+import { Controller, Get, Inject, Logger, Param, Query } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { Core } from 'crm-core';
 import { ApiPagination } from '../decorators/pagination.decorator';
@@ -23,9 +23,28 @@ export class ActivityController {
     summary: 'Список историй изменений',
     description: Core.OperationReadMe('docs/activity/list.md'),
   })
+  @ApiQuery({
+    name: 'type',
+    required: false,
+    description: 'Тип объекта, который был изменен: company, client, task, cars',
+  })
+  @ApiQuery({
+    name: 'objectId',
+    required: false,
+    description: 'Идентификатор объекта, который был изменен',
+  })
   @ApiPagination()
-  async listActivity(@MongoPaginationDecorator() pagination: MongoPagination): Promise<Core.Response.Answer> {
-    const response = await SendAndResponseData(this.activityServiceClient, 'activity:list', pagination);
+  async listActivity(
+    @MongoPaginationDecorator() pagination: MongoPagination,
+    @Query('type') type: string,
+    @Query('objectId') objectId: string,
+  ): Promise<Core.Response.Answer> {
+    const sendData = {
+      type: type,
+      objectId: objectId,
+      pagination: pagination,
+    };
+    const response = await SendAndResponseData(this.activityServiceClient, 'activity:list', sendData);
     return response;
   }
 
